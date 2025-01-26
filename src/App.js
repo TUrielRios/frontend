@@ -1,5 +1,5 @@
 import React from "react"
-import MarketingQuiz from "./components/MarketingQuiz"
+import MarketingQuiz from "./components/MarketingQuiz/MarketingQuiz"
 import "./App.css"
 
 function App() {

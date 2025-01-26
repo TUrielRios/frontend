@@ -1,9 +1,9 @@
 import React, { useState, useRef, useMemo } from "react";
-import QuizProgress from "./QuizProgress";
-import QuizQuestion from "./QuizQuestion";
-import QuizResult from "./QuizResult";
-import QuizChart from "./QuizChart";
-import { questions } from "../data/questions";
+import QuizProgress from "../QuizProgress/QuizProgress";
+import QuizQuestion from "../QuizQuestion/QuizQuestion";
+import QuizResult from "../QuizResult/QuizResult";
+import QuizChart from "../QuizChart/QuizChart";
+import { questions } from "../../data/questions";
 import styles from "./MarketingQuiz.module.css"; // Import the CSS Module
 
 function MarketingQuiz() {
