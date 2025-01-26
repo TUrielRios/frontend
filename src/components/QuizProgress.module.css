@@ -1,0 +1,29 @@
+.container {
+    margin-bottom: 2rem;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .progressBar {
+    height: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+  }
+  
+  .progressFill {
+    height: 100%;
+    background-color: #3ffff3;
+    border-radius: 9999px;
+    transition: all 0.3s ease-in-out;
+  }

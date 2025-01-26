@@ -1,38 +1,97 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;600;700;800;900&family=Red+Hat+Text:wght@300;400;500;600;700&display=swap");
+
+:root {
+  --primary: #0a2ff1;
+  --primary-light: rgba(10, 47, 241, 0.8);
+  --accent: #3ffff3;
+  --white: #fcfcfc;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  font-family: "Red Hat Text", sans-serif;
+  background: #0a2ff1;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.heading-font {
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.form-input {
+  width: 100%;
+  font-size: 1.25rem;
+  padding: 1rem;
+  border-radius: 9999px;
+  color: #0a2ff1;
+  border: 1px solid #0a2ff1;
+  background: white;
+}
+
+.form-input::placeholder {
+  color: rgba(10, 47, 241, 0.5);
+}
+
+.form-input:focus {
+  outline: none;
+  border: 1px solid #0a2ff1;
+}
+
+.form-label {
+  font-size: 1.125rem;
+  font-weight: 500;
   color: white;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
-.App-link {
-  color: #61dafb;
+.btn-quiz {
+  background: #0a2ff1;
+  color: white;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  font-family: "Red Hat Display", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+  min-width: 140px;
+  justify-content: center;
+  border: 1px solid white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn-quiz:hover {
+  background: #0926c9;
+}
+
+.btn-quiz:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes neon-pulse {
+  0% {
+    filter: 
+      drop-shadow(0 0 2px var(--accent)) 
+      drop-shadow(0 0 4px var(--accent));
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    filter: 
+      drop-shadow(0 0 5px var(--accent)) 
+      drop-shadow(0 0 10px var(--accent));
   }
+  100% {
+    filter: 
+      drop-shadow(0 0 2px var(--accent)) 
+      drop-shadow(0 0 4px var(--accent));
+  }
+}
+
+.neon-effect {
+  animation: neon-pulse 2s infinite;
+}
+
+.progress-indicator {
+  background-color: #3ffff3;
 }

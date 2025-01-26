@@ -1,0 +1,10 @@
+.container {
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  .wrapper {
+    max-width: 56rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
