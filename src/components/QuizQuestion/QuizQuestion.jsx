@@ -1,7 +1,15 @@
 import React from "react";
 import styles from "./QuizQuestion.module.css";
 
-function QuizQuestion({ question, currentAnswer, setCurrentAnswer, handleNext, handlePrevious, isFirstQuestion }) {
+function QuizQuestion({
+  question,
+  currentAnswer,
+  setCurrentAnswer,
+  handleNext,
+  handlePrevious,
+  isFirstQuestion,
+  currentPhase, // Nueva prop para indicar la fase actual
+}) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -9,6 +17,8 @@ function QuizQuestion({ question, currentAnswer, setCurrentAnswer, handleNext, h
         <p className={styles.subtitle}>Evaluamos tu estrategia actual para potenciar tu marca</p>
       </div>
       <div className={styles.header}>
+        {/* Mostrar la fase actual */}
+        <p className={styles.phaseIndicator}>Fase {currentPhase}</p>
         <p className={styles.question}>{question.text}</p>
         <div className={styles.inputContainer}>
           <label className={styles.label}>Califica del 1 al 10*</label>
@@ -19,7 +29,7 @@ function QuizQuestion({ question, currentAnswer, setCurrentAnswer, handleNext, h
             value={currentAnswer === null ? "" : currentAnswer}
             onChange={(e) =>
               setCurrentAnswer(
-                e.target.value === "" ? null : Math.min(Math.max(Number.parseInt(e.target.value, 10), 1), 10),
+                e.target.value === "" ? null : Math.min(Math.max(Number.parseInt(e.target.value, 10), 1), 10)
               )
             }
             placeholder="Ingrese un número del 1 al 10"

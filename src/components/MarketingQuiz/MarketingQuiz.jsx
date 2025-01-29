@@ -13,11 +13,30 @@ function MarketingQuiz() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const chartRef = useRef(null);
 
+  // Calcular la fase actual
+  const currentPhase = Math.floor(currentQuestion / 10) + 1;
+
+  // Calcular el número de preguntas respondidas hasta la pregunta actual
+  const answeredCount = useMemo(() => {
+    let count = 0;
+    for (let i = 0; i <= currentQuestion; i++) {
+      const question = questions[i];
+      const answerKey = `${question.category}-${question.phase}`;
+      if (answers[answerKey] !== undefined) {
+        count++;
+      }
+    }
+    return count;
+  }, [currentQuestion, answers]);
+
   const handleNext = () => {
     if (currentAnswer !== null && currentAnswer >= 1 && currentAnswer <= 10) {
+      const question = questions[currentQuestion];
+      const answerKey = `${question.category}-${question.phase}`;
+
       setAnswers((prev) => ({
         ...prev,
-        [questions[currentQuestion].category]: currentAnswer,
+        [answerKey]: currentAnswer,
       }));
 
       if (currentQuestion < questions.length - 1) {
@@ -32,13 +51,15 @@ function MarketingQuiz() {
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion((prev) => prev - 1);
-      setCurrentAnswer(answers[questions[currentQuestion - 1].category] || null);
+      const previousQuestion = questions[currentQuestion - 1];
+      const answerKey = `${previousQuestion.category}-${previousQuestion.phase}`;
+      setCurrentAnswer(answers[answerKey] || null);
     }
   };
 
   const progress = useMemo(() => {
-    return (Object.keys(answers).length / questions.length) * 100;
-  }, [answers]);
+    return (answeredCount / questions.length) * 100;
+  }, [answeredCount]);
 
   return (
     <div className={styles.container}>
@@ -46,7 +67,7 @@ function MarketingQuiz() {
         {!quizCompleted && (
           <QuizProgress
             progress={progress}
-            answeredCount={Object.keys(answers).length}
+            answeredCount={answeredCount}
             totalQuestions={questions.length}
           />
         )}
@@ -59,6 +80,7 @@ function MarketingQuiz() {
             handleNext={handleNext}
             handlePrevious={handlePrevious}
             isFirstQuestion={currentQuestion === 0}
+            currentPhase={currentPhase} // Pasar la fase actual
           />
         ) : (
           <QuizResult chartRef={chartRef} answers={answers} />
