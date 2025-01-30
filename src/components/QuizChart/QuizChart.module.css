@@ -18,12 +18,16 @@
   }
   
   .chartContainer {
-    padding: 1.5rem;
-  }
-  
-  .chartWrapper {
+    padding: 1.5rem; /* Aumenta el padding si es necesario */
+    width: 100%; /* Asegúrate de que ocupe todo el ancho disponible */
+    height: 500px; /* Aumenta esta altura para que sea más grande */
+}
+
+.chartWrapper {
     position: relative;
-  }
+    width: 100%;
+    height: 100%;
+}
   
   .neonEffect {
     animation: neon-pulse 2s infinite;

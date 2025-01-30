@@ -71,8 +71,9 @@ function MarketingQuiz() {
             totalQuestions={questions.length}
           />
         )}
-
-        {!quizCompleted ? (
+        <div className={styles.twoContainers}>
+          <div className={styles.questionsDiv}>
+          {!quizCompleted ? (
           <QuizQuestion
             question={questions[currentQuestion]}
             currentAnswer={currentAnswer}
@@ -85,8 +86,14 @@ function MarketingQuiz() {
         ) : (
           <QuizResult chartRef={chartRef} answers={answers} />
         )}
+          </div>
+          <div className={styles.chartDiv}>
+          <QuizChart chartRef={chartRef} answers={answers} />
+          </div>
 
-        <QuizChart chartRef={chartRef} answers={answers} />
+
+
+        </div>
       </div>
     </div>
   );

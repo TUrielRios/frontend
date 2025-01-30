@@ -4,7 +4,21 @@
   }
   
   .wrapper {
-    max-width: 56rem;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
   }
+  .twoContainers{
+    display: flex;
+    gap: 20px;
+  }
+.chartDiv {
+    flex: 2; /* Asegúrate de que este div tenga suficiente espacio relativo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.questionsDiv{
+  flex: 1;
+  display: flex;
+}
