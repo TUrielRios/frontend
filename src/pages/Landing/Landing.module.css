@@ -1,0 +1,204 @@
+.container {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    background-color: #0041ff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 30px;
+    filter: brightness(0) invert(1);
+  }
+  
+  .menuButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .menuIcon {
+    color: white;
+  }
+  
+  .hero {
+    background-color: #0041ff;
+    padding: 60px 40px;
+    position: relative;
+    min-height: 300px;
+  }
+  
+  .heroContent {
+    max-width: 600px;
+  }
+  
+  .heroContent h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .primaryButton {
+    background-color: white;
+    color: #0041ff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .heroShape {
+    position: absolute;
+    right: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    height: 200px;
+    background-color: #00f0ff;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    transform: rotate(45deg);
+  }
+  
+  .heroShape span {
+    transform: rotate(-45deg);
+  }
+  
+  .main {
+    background-color: white;
+    padding: 60px 40px;
+  }
+  
+  .mainDescription {
+    text-align: center;
+    color: #0041ff;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 60px;
+  }
+  
+  .contentGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .hexagonImage {
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .modelContent {
+    color: #0041ff;
+  }
+  
+  .modelContent h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .modelContent p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  
+  .cta {
+    text-align: center;
+    color: #0041ff;
+    margin-top: 60px;
+  }
+  
+  .cta h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .cta p {
+    margin-bottom: 30px;
+  }
+  
+  .ctaButtons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .downloadButton {
+    background: none;
+    border: 2px solid #0041ff;
+    color: #0041ff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .actionButton {
+    background-color: #0041ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .footer {
+    background-color: #1a1a1a;
+    padding: 40px;
+    text-align: center;
+    color: white;
+  }
+  
+  .footerLogo {
+    height: 30px;
+    filter: brightness(0) invert(1);
+    margin-bottom: 20px;
+  }
+  
+  .socialLinks {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .socialLinks a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  @media (max-width: 768px) {
+    .heroContent h1 {
+      font-size: 36px;
+    }
+  
+    .heroShape {
+      display: none;
+    }
+  
+    .contentGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .ctaButtons {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
+  

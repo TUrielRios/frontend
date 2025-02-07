@@ -1,0 +1,168 @@
+.container {
+    min-height: 100vh;
+    background-color: #0041ff;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 40px;
+    filter: brightness(0) invert(1);
+  }
+  
+  .userIcon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+  
+  .content {
+    padding-right: 40px;
+  }
+  
+  .title {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    line-height: 1.2;
+  }
+  
+  .subtitle {
+    color: #00f0ff;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .description {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  
+  .privacy {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  .formContainer {
+    background-color: white;
+    border-radius: 20px;
+    padding: 40px;
+    color: #000;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .formGroup label {
+    color: #0041ff;
+    font-size: 14px;
+  }
+  
+  .input,
+  .select {
+    padding: 12px;
+    border: 1px solid #0041ff;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #0041ff;
+  }
+  
+  .select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%230041FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+  
+  .checkboxGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #0041ff;
+  }
+  
+  .link {
+    color: #0041ff;
+    text-decoration: underline;
+  }
+  
+  .submitButton {
+    background-color: #0041ff;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .timeEstimate {
+    text-align: center;
+    font-size: 14px;
+    color: #0041ff;
+    margin-top: 12px;
+  }
+  
+  @media (max-width: 1024px) {
+    .main {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  
+    .content {
+      padding-right: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .title {
+      font-size: 36px;
+    }
+  
+    .subtitle {
+      font-size: 20px;
+    }
+  
+    .description {
+      font-size: 16px;
+    }
+  }
+  
+  
