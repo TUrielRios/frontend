@@ -1,0 +1,91 @@
+.hero {
+    background-color: #0041ff;
+    padding: 60px 40px;
+    position: relative;
+    min-height: 300px;
+  }
+  
+  .heroContent {
+    max-width: 600px;
+  }
+  
+  .heroContent h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .primaryButton {
+    background-color: white;
+    color: #0041ff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .heroShape {
+    position: absolute;
+    right: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 300px;
+  }
+  
+  .radarChart {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .radarArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(
+      50% 30% /* punto superior */,
+      85% 40% /* punto superior derecha */,
+      100% 60% /* punto derecha */,
+      100% 80% /* punto inferior derecha */,
+      50% 100% /* punto inferior */,
+      0% 60% /* punto inferior izquierda */,
+      0% 60% /* punto izquierda */,
+      5% 20% /* punto superior izquierda */
+    );
+    background-color: #00f0ff;
+    transform: rotate(45deg);
+  }
+  
+  .label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    background-color: white;
+    color: #ff0000;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .heroContent h1 {
+      font-size: 36px;
+    }
+  
+    .heroShape {
+      display: none;
+    }
+  }
+  
+  

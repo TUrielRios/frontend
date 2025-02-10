@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import styles from "./Questionnaire.module.css"
+import QuizChart from "../../components/QuizChart/QuizChart"
 
 const Questionnaire = () => {
   const [currentStep, setCurrentStep] = useState(0)
@@ -44,9 +45,93 @@ const Questionnaire = () => {
       title: "ATRACTIVO",
       icon: "☀️",
       description: [
-        "El atractivo en el branding se refiere a la capacidad de una marca para captar y mantener la atención de su público objetivo. Más allá de la estética, abarca cómo una marca satisface las motivaciones fundamentales de su audiencia, desde necesidades funcionales hasta deseos emocionales. Es la mezcla de forma y sustancia que hace que una marca no solo sea visible, sino también memorable.",
+        "El atractivo en el branding se refiere a la capacidad de una marca para captar y mantener la atención de su público objetivo. Más allá de la estética, abarca cómo una marca satisface las motivaciones fundamentales de su audiencia, desde necesidades funcionales hasta deseos emocionales.",
         "El atractivo no es un atributo superficial; es un componente esencial que determina si los consumidores elegirán interactuar con una marca en un mercado saturado de opciones.",
       ],
+    },
+    {
+      type: "question",
+      title: "Atractivo",
+      questionNumber: 2,
+      totalQuestions: 10,
+      question: "¿Nuestra personalidad de marca resuena emocionalmente con el público?",
+      options: ["Nunca", "Casi nunca", "A veces", "La mayoría de las veces", "Siempre"],
+    },
+    {
+      type: "concept",
+      factor: "Tercer factor",
+      title: "RECIPROCIDAD",
+      icon: "🔄",
+      description: [
+        "La reciprocidad es un principio psicológico que postula que las personas tienden a devolver los favores o compensar las acciones recibidas.",
+        "En el branding, esto significa que cuando una marca ofrece valor antes de pedir algo a cambio, como contenido útil, productos gratuitos o experiencias exclusivas, los consumidores se sienten inclinados a corresponder con lealtad o compras.",
+        "Este principio es la base de estrategias como el modelo freemium, donde las marcas primero ofrecen algo valioso sin costo, con la expectativa de que los usuarios eventualmente se conviertan en clientes de pago.",
+      ],
+    },
+    {
+      type: "question",
+      title: "Reciprocidad",
+      questionNumber: 3,
+      totalQuestions: 10,
+      question: "¿Incorporamos la retroalimentación en nuestras mejoras?",
+      options: ["Nunca", "Casi nunca", "A veces", "La mayoría de las veces", "Siempre"],
+    },
+    {
+      type: "concept",
+      factor: "Cuarto factor",
+      title: "AUTORIDAD",
+      icon: "🏛️",
+      description: [
+        "La autoridad en el branding se refiere al nivel de confianza y respeto que una marca ha ganado en su industria o entre su audiencia. Las marcas con autoridad no solo son reconocidas, sino que también son vistas como líderes de opinión y referentes en su campo.",
+        "Esta autoridad puede ser el resultado de años de experiencia, innovación constante o la capacidad de ofrecer soluciones fiables y de alta calidad.",
+        "Una marca con autoridad no necesita esforzarse demasiado para ser escuchada; su reputación habla por sí misma.",
+      ],
+    },
+    {
+      type: "question",
+      title: "Autoridad",
+      questionNumber: 4,
+      totalQuestions: 10,
+      question: "¿Hemos recibido premios o certificaciones por nuestra calidad?",
+      options: ["Nunca", "Casi nunca", "A veces", "La mayoría de las veces", "Siempre"],
+    },
+    {
+      type: "concept",
+      factor: "Quinto factor",
+      title: "AUTENTICIDAD",
+      icon: "⭐",
+      description: [
+        "La autenticidad es el pegamento que une la identidad de una marca con las expectativas de los consumidores. En un mundo donde la transparencia es cada vez más valorada, las marcas auténticas en su propósito, valores y acciones ganan la confianza y admiración de su público.",
+        "La autenticidad no se puede fabricar; debe ser intrínseca y evidente en cada aspecto de la marca.",
+        "Ser auténtico significa ser coherente en lo que se dice y se hace, y ser fiel a la identidad de la marca, incluso cuando las tendencias del mercado sugieren lo contrario.",
+      ],
+    },
+    {
+      type: "question",
+      title: "Autenticidad",
+      questionNumber: 5,
+      totalQuestions: 10,
+      question: "¿Mantuvimos nuestros valores en tiempos de economía difíciles?",
+      options: ["Nunca", "Casi nunca", "A veces", "La mayoría de las veces", "Siempre"],
+    },
+    {
+      type: "concept",
+      factor: "Sexto factor",
+      title: "CONSISTENCIA Y COMPROMISO",
+      icon: "✓",
+      description: [
+        "El compromiso y la consistencia son fundamentales para generar confianza en una marca. Cuando una marca se compromete con una promesa y la cumple de manera consistente a lo largo del tiempo, construye una reputación sólida y confiable.",
+        "En un entorno donde muchas marcas fallan en cumplir lo que prometen, aquellas que lo logran se destacan y ganan la lealtad de los consumidores.",
+        "La consistencia no sólo se refiere a mantener la calidad del producto o servicio, sino también a la coherencia en la comunicación, el diseño y la experiencia del cliente.",
+      ],
+    },
+    {
+      type: "question",
+      title: "Consistencia y compromiso",
+      questionNumber: 6,
+      totalQuestions: 10,
+      question: "¿Comunicamos en forma coherente a lo largo de todos nuestros puntos de contacto?",
+      options: ["Nunca", "Casi nunca", "A veces", "La mayoría de las veces", "Siempre"],
     },
   ]
 
@@ -93,7 +178,7 @@ const Questionnaire = () => {
           <div className={styles.questionScreen}>
             <div className={styles.questionCard}>
               <div className={styles.questionHeader}>
-                <span className={styles.icon}>👍</span>
+                <span className={styles.icon}>{screens[currentStep - 1].icon}</span>
                 <h2>{currentScreen.title}</h2>
               </div>
 
@@ -130,7 +215,9 @@ const Questionnaire = () => {
               </div>
             </div>
 
-            <div className={styles.hexagonDiagram}>{/* Add your hexagon diagram here */}</div>
+            <div className={styles.hexagonDiagram}>
+              <QuizChart answers={1}/>
+            </div>
           </div>
         )}
       </main>

@@ -35,7 +35,8 @@ function QuizChart({ answers }) {
       labels: phases,
       datasets: [
         {
-          label: "Perfil de Marketing Digital",
+          label: "",
+          display: "hidden",
           data: phases.map((phase) => calculatePhaseAverage(phase)),
           backgroundColor: "rgba(54, 162, 235, 0.4)",
           borderColor: "#36A2EB",
@@ -110,9 +111,6 @@ function QuizChart({ answers }) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2 className={styles.title}>Perfil de Marketing Digital</h2>
-      </div>
       <div className={styles.chartContainer}>
         <Radar data={chartData} options={options} className={styles.chartWrapper} />
       </div>

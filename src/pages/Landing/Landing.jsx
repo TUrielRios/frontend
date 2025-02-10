@@ -1,6 +1,9 @@
 import styles from "./Landing.module.css"
 import graphic from "../../assets/diamantte-azul.svg"
 import { useNavigate } from "react-router-dom"
+import logo from '../../assets/logo.png'
+import HeroSection from "../../components/HeroSection/HeroSection"
+import Footer from "../../components/Footer/Footer"
 
 const Landing = () => {
     const navigate = useNavigate()
@@ -10,9 +13,10 @@ const Landing = () => {
     }
   return (
     <div className={styles.container}>
+
       <header className={styles.header}>
         <img
-          src=""
+          src={logo}
           alt="La Cocina"
           className={styles.logo}
         />
@@ -20,20 +24,11 @@ const Landing = () => {
           <span className={styles.menuIcon}>≡</span>
         </button>
       </header>
-
+      {/* PRIMERA SECCION*/}
       <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1>
-            El diamante
-            <br />
-            de la influencia
-          </h1>
-          <button className={styles.primaryButton}>Comenzar →</button>
-        </div>
-        <div className={styles.heroShape}>
-          <span>Aprender</span>
-        </div>
+        <HeroSection />
       </section>
+      {/* SEGUNDA SECCION*/}
 
       <main className={styles.main}>
         <p className={styles.mainDescription}>
@@ -85,27 +80,8 @@ const Landing = () => {
         </div>
       </main>
 
-      <footer className={styles.footer}>
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-9JkQoR2qTtXjDJGQKSjvAsK4Vd4iDx.png"
-          alt="La Cocina"
-          className={styles.footerLogo}
-        />
-        <div className={styles.socialLinks}>
-          <a href="#" aria-label="Instagram">
-            ○
-          </a>
-          <a href="#" aria-label="Twitter">
-            ○
-          </a>
-          <a href="#" aria-label="LinkedIn">
-            ○
-          </a>
-          <a href="#" aria-label="Facebook">
-            ○
-          </a>
-        </div>
-        <p>2023 La Cocina derechos de Marca. Todos los derechos reservados.</p>
+      <footer>
+        <Footer />
       </footer>
     </div>
   )
