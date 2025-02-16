@@ -1,8 +1,8 @@
-"use client"
-
 import { useState } from "react"
 import styles from "./Questionnaire.module.css"
 import QuizChart from "../../components/QuizChart/QuizChart"
+import logo from '../../assets/logo.png'
+
 
 const Questionnaire = () => {
   const [currentStep, setCurrentStep] = useState(0)
@@ -141,7 +141,7 @@ const Questionnaire = () => {
     <div className={styles.container}>
       <header className={styles.header}>
         <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-eSNOuWaEx34kV1mRYSB7JfPT1OwPe6.png"
+          src={logo}
           alt="La Cocina"
           className={styles.logo}
         />

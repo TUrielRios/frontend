@@ -1,5 +1,7 @@
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
+import logo from '../../assets/logo.png'
+
 
 const Form = () => {
     const navigate = useNavigate()
@@ -10,7 +12,7 @@ const Form = () => {
     <div className={styles.container}>
       <header className={styles.header}>
         <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gs1eA0PERO8pqLqZWFtUOZiDgD9fPz.png"
+          src={logo}
           alt="La Cocina"
           className={styles.logo}
         />
