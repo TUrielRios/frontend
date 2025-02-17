@@ -13,12 +13,12 @@ import styles from "./QuizChart.module.css";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-function QuizChart({ answers }) {
+function QuizChart({ data }) {
   const calculatePhaseAverage = (phase) => {
-    const phaseAnswers = Object.entries(answers).filter(([key]) => key.includes(phase));
-    if (phaseAnswers.length === 0) return 0;
-    const sum = phaseAnswers.reduce((acc, [, value]) => acc + value, 0);
-    return sum / phaseAnswers.length;
+    const phasedata = Object.entries(data).filter(([key]) => key.includes(phase));
+    if (phasedata.length === 0) return 0;
+    const sum = phasedata.reduce((acc, [, value]) => acc + value, 0);
+    return sum / phasedata.length;
   };
 
   const chartData = useMemo(() => {
@@ -50,7 +50,7 @@ function QuizChart({ answers }) {
         },
       ],
     };
-  }, [answers]);
+  }, [data]);
 
   const options = {
     scales: {
