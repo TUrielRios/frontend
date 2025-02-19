@@ -57,7 +57,7 @@ const Questionnaire = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/preguntas")
+        const response = await fetch("https://lacocina-backend.onrender.com/api/preguntas")
         if (!response.ok) {
           throw new Error("Error al obtener las preguntas")
         }
