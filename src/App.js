@@ -1,5 +1,4 @@
 import React from "react"
-import MarketingQuiz from "./components/MarketingQuiz/MarketingQuiz"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // <-- Cambiado aquí
 
 import "./App.css"

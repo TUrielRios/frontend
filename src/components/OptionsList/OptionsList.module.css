@@ -1,0 +1,29 @@
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .optionLabel {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .optionLabel:hover {
+    background: #f9fafb;
+  }
+  
+  .optionInput {
+    margin-right: 1rem;
+  }
+  
+  .optionText {
+    color: #374151;
+  }
+  
+  

@@ -1,64 +1,20 @@
 .wrapper {
-  height: 400px;
+  min-height: 100vh;
   background-color: #0000ff;
   display: flex;
   flex-direction: column;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 4rem;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 40px;
-}
-
-.logoIcon {
-  background: white;
-  color: #0000ff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.logoText {
-  color: white;
-  display: flex;
-  flex-direction: column;
-  font-size: 1.1rem;
-}
-
-.logoSubtext {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
-
-.userButton {
-  color: white;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
 
 .container {
   flex: 1;
   display: flex;
   gap: 2rem;
-  padding: 2rem;
+  padding: 0rem 2rem;
   justify-content: center;
   align-items: flex-start;
 }
+
 .wholeContainer {
   width: 100%;
   display: flex;
@@ -66,12 +22,6 @@
 }
 
 .questionBox {
-  background: white;
-  border-radius: 24px;
-  width: 600px;
-  position: relative;
-  padding: 2rem;
-}.questionBox {
   background: white;
   border-radius: 24px;
   width: 600px;
@@ -245,5 +195,134 @@
   line-height: 1.8;
   margin-bottom: 1rem;
   font-size: 1.1rem;
+}
+
+/* Estilos para la pantalla de resultados finales */
+.resultsContainer {
+  display: flex;
+  padding: 2rem 4rem;
+  gap: 2rem;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.resultsContent {
+  flex: 1;
+  max-width: 600px;
+}
+
+.resultsTitle {
+  font-size: 4rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.resultsText {
+  color: white;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.resultsText p {
+  margin-bottom: 1.5rem;
+}
+
+.contactLink {
+  color: #00ffff;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.downloadButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.downloadBookBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #0000ff;
+  border: none;
+  border-radius: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadResultsBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadBookBtn:hover,
+.downloadResultsBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resultsChartContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+}
+
+.sidebar {
+  width: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading,
+.error {
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #ff4d4f;
+}
+
+/* Estilos responsivos */
+@media (max-width: 1024px) {
+  .resultsContainer {
+    flex-direction: column;
+    padding: 2rem;
+  }
+
+  .resultsContent,
+  .resultsChartContainer {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem 2rem;
+  }
+
+  .downloadButtons {
+    flex-direction: column;
+  }
 }
 

@@ -1,0 +1,60 @@
+.questionBox {
+    background: white;
+    border-radius: 24px;
+    width: 600px;
+    position: relative;
+    padding: 2rem;
+  }
+  
+  .questionContent {
+    position: relative;
+  }
+  
+  .questionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #0000ff;
+    margin-bottom: 1.5rem;
+  }
+  
+  .questionIcon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .questionTitle {
+    margin-bottom: 2rem;
+  }
+  
+  .questionNumber {
+    display: inline-block;
+    background: rgba(0, 0, 255, 0.1);
+    color: #0000ff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+  }
+  
+  .questionText {
+    font-weight: 500;
+  }
+  
+  .nextButton {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #0000ff;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  
