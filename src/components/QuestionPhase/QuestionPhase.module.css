@@ -25,6 +25,9 @@
   
   .questionTitle {
     margin-bottom: 2rem;
+    color: #0000ff;
+    font-weight: 500;
+    font-size: 1.5rem;
   }
   
   .questionNumber {

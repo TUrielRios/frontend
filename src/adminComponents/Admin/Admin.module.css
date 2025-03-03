@@ -1,0 +1,28 @@
+.adminLayout {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f8ff;
+  }
+  
+  .mainContent {
+    flex: 1;
+    margin-left: 250px;
+  }
+  
+  .comingSoon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #0000ff;
+
+  }
+  
+  @media (max-width: 768px) {
+    .mainContent {
+      margin-left: 60px;
+    }
+  }
+  
+  

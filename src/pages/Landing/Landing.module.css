@@ -14,7 +14,7 @@
   }
   
   .logo {
-    height: 50px;
+    height: 40px;
     filter: brightness(0) invert(1);
   }
   
@@ -22,7 +22,7 @@
     background: none;
     border: none;
     color: white;
-    font-size: 44px;
+    font-size: 40px;
     cursor: pointer;
   }
   

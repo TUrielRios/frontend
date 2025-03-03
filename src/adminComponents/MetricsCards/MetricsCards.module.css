@@ -1,0 +1,51 @@
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .cardHeader h3 {
+    color: #666;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .icon {
+    color: #0000ff;
+    opacity: 0.8;
+  }
+  
+  .cardBody {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  
+  .value {
+    color: #0000ff;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  .trend {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .positive {
+    color: #22c55e;
+  }
+  
+  .negative {
+    color: #ef4444;
+  }
+  
+  

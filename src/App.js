@@ -1,10 +1,13 @@
 import React from "react"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // <-- Cambiado aquí
-
+import AdminDashboard from "./adminComponents/AdminDashboard/AdminDashboard"
 import "./App.css"
 import Landing from "./pages/Landing/Landing"
 import Form from "./pages/Form/Form";
 import Questionnaire from "./pages/Questionnaire/Questionnaire";
+import Users from "./pages/Users/Users";
+import Stats from "./pages/Stats/Stats";
+import Admin from "./adminComponents/Admin/Admin"
 
 function App() {
     return (
@@ -14,6 +17,10 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/form" element={<Form />} />
             <Route path="/questionnaire" element={<Questionnaire />} />
+            <Route path="/admin" element={<Admin/>} />
+            <Route path="/admin/users" element={<Users/>} />
+            <Route path="/admin/stats" element={<Stats/>} />
+
           </Routes>
         </main>
       </Router>

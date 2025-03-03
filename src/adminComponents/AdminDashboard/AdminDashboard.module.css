@@ -1,0 +1,130 @@
+.dashboard {
+  padding: 2rem;
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+
+}
+
+.periodSelector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  padding: 2rem;
+
+}
+
+.periodOptions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.periodButton {
+  background: white;
+  border: 1px solid #e0e0ff;
+  color: #666;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.periodButton.active {
+  background: #0a2ff1;
+  color: white;
+  border-color: #0a2ff1;
+}
+
+.metricsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboardSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sectionTitle {
+  color: #0a2ff1;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0a2ff1;
+}
+
+.chartTitle h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chartBody {
+  padding: 1.5rem;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.usersSection {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
+
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .periodSelector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

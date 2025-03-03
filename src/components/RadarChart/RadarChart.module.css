@@ -1,52 +1,50 @@
 .radarContainer {
-    width: 650px;
-    height: 450px;
-    position: relative;
-  }
-  
-  .radar {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .hexBackground {
-    fill: blue;
-    stroke: #00ffff;
-    stroke-width: 10;
-    stroke:#00ffff;
-    opacity: 0.9;
-  }
-  
-  .dottedLine {
-    stroke: #00ffff;
-    stroke-width: 1;
-    stroke-dasharray: 4 4;
-    opacity: 0.3;
-  }
-  
-  .dataArea {
-    fill: #00ffff;
-    fill-opacity: 0.8;
-    stroke: #00ffff;
-    stroke-width: 2;
-    transition: all 0.3s ease;
-  }
-  
-  .labelGroup {
-    transform-origin: center;
-  }
-  
-  .labelBg {
-    fill: none;
-    rx: 4;
-    ry: 4;
-    
-  }
-  
-  .label {
-    fill: #ffffff;
-    font-size: 10px;
-    font-weight: 500;
-  }
-  
-  
+  width: 650px;
+  height: 450px;
+  position: relative;
+}
+
+.radar {
+  width: 100%;
+  height: 100%;
+}
+
+.hexBackground {
+  fill: blue;
+  stroke: #00ffff;
+  stroke-width: 10;
+  stroke: #00ffff;
+  opacity: 0.9;
+}
+
+.dottedLine {
+  stroke: #00ffff;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  opacity: 0.3;
+}
+
+.dataArea {
+  fill: #00ffff;
+  fill-opacity: 0.8;
+  stroke: #00ffff;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.labelGroup {
+  transform-origin: center;
+}
+
+.labelBg {
+  fill: none;
+  rx: 4;
+  ry: 4;
+}
+
+.label {
+  fill: #ffffff;
+  font-size: 10px;
+  font-weight: 500;
+}
+

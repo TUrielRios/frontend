@@ -1,0 +1,206 @@
+.usersPage {
+    padding: 2rem;
+  }
+  
+  .content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    
+  }
+  
+  .header {
+    margin-bottom: 2rem;
+  }
+  
+  .titleSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .header h1 {
+    color: #0000ff;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  
+  .clearFiltersBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f0f0ff;
+    border: none;
+    color: #0000ff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .clearFiltersBtn:hover {
+    background: #e0e0ff;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .searchBar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+    flex: 1;
+    max-width: 300px;
+    position: relative;
+  }
+  
+  .searchBar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .clearSearchBtn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  }
+  
+  .filterGroup select {
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    color: #333;
+    background: none;
+  }
+  
+  .usersList {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+    overflow: hidden;
+  }
+  
+  .resultsCount {
+    padding: 1rem;
+    color: #666;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+  }
+  
+  .noResults {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+  }
+  
+  .noResults p {
+    margin-bottom: 1rem;
+  }
+  
+  .usersTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .usersTable th,
+  .usersTable td {
+    padding: 1rem;
+    text-align: left;
+  }
+  
+  .usersTable th {
+    background: #f8f8ff;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .userRow {
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .userRow:hover {
+    background: #f0f0ff;
+  }
+  
+  .userName {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .nameInitial {
+    width: 36px;
+    height: 36px;
+    background: #0000ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+  
+  .userName p {
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  .userName small {
+    color: #666;
+    font-size: 0.75rem;
+  }
+  
+  .score {
+    background: #f0f0ff;
+    color: #0000ff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 1024px) {
+    .filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .searchBar {
+      max-width: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .usersPage {
+      padding: 1rem;
+    }
+  }
+  
+  

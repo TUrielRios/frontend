@@ -1,5 +1,7 @@
 import React from "react"
 import styles from "./HeroSection.module.css"
+import gif from "../../assets/diamante-animacion-dos.gif"
+
 
 const HeroSection = () => {
   return (
@@ -13,9 +15,7 @@ const HeroSection = () => {
         <button className={styles.primaryButton}>Comenzar →</button>
       </div>
       <div className={styles.heroShape}>
-        <div className={styles.radarChart}>
-          <div className={styles.radarArea}></div>
-        </div>
+        <img src={gif} alt="Diamante de la influencia" />
       </div>
     </section>
   )

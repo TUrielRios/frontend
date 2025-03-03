@@ -38,6 +38,7 @@ const ResultsPhase = ({ phaseScores, onDownloadBook, onDownloadResults }) => {
             AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
             "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
           }}
+          theme="dark"
         />
       </div>
     </div>

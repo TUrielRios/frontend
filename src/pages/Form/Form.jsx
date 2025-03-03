@@ -1,6 +1,7 @@
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
 import logo from '../../assets/logo.png'
+import Header from "../../components/Header/Header"
 
 
 const Form = () => {
@@ -10,18 +11,7 @@ const Form = () => {
     }
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <img
-          src={logo}
-          alt="La Cocina"
-          className={styles.logo}
-        />
-        <div className={styles.userIcon}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" />
-          </svg>
-        </div>
-      </header>
+      <Header logo={logo} />
 
       <main className={styles.main}>
         <div className={styles.content}>
@@ -82,7 +72,7 @@ const Form = () => {
               Comenzar el cuestionario
             </button>
 
-            <p className={styles.timeEstimate}>Sólo tomará xx minutos</p>
+            <p className={styles.timeEstimate}>Sólo tomará 20 minutos</p>
           </form>
         </div>
       </main>

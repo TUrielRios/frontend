@@ -1,0 +1,155 @@
+.statsPage {
+  padding: 2rem;
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.controlsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.periodSelector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #666;
+}
+
+.periodOptions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.periodButton {
+  background: white;
+  border: 1px solid #e0e0ff;
+  color: #666;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.periodButton.active {
+  background: #0a2ff1;
+  color: white;
+  border-color: #0a2ff1;
+}
+
+.categorySelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.categoryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid #e0e0ff;
+  color: #666;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.categoryButton.active {
+  background: #0a2ff1;
+  color: white;
+  border-color: #0a2ff1;
+}
+
+.sectionTitle {
+  color: #0a2ff1;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chartRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0a2ff1;
+}
+
+.chartTitle h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chartBody {
+  padding: 1.5rem;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .chartRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .statsPage {
+    padding: 1rem;
+  }
+
+  .periodSelector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .categorySelector {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    flex-wrap: nowrap;
+  }
+}
+
