@@ -1,168 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 .container {
-    min-height: 100vh;
-    background-color: #0041ff;
-    color: white;
-    font-family: Arial, sans-serif;
-  }
+  min-height: 100vh;
+  background-color: #0041ff;
+  color: white;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.content {
+  padding-right: 40px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  color: #00f0ff;
+  font-size: 24px;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.privacy {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.formContainer {
+  background-color: white;
+  border-radius: 20px;
+  padding: 40px;
+  color: #000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  flex: 1;
+  max-height: 400px;
+}
+
+.form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.form::-webkit-scrollbar-thumb {
+  background: #0041ff;
+  border-radius: 10px;
+}
+
+.form::-webkit-scrollbar-thumb:hover {
+  background: #0035d9;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   
-  .header {
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 40px;
-    filter: brightness(0) invert(1);
-  }
-  
-  .userIcon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
+}
+
+.formGroup label {
+  color: #0041ff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.inputlarge {
+  width: 90%;
+  padding: 12px 16px;
+  border: 1px solid #0041ff;
+  border-radius: 30px;
+  font-size: 16px;
+  color: #0041ff;
+  outline: none;
+}
+
+.inputlarge::placeholder {
+  color: #0041ff;
+  opacity: 0.7;
+}
+
+.input,
+.select {
+  padding: 12px 16px;
+  border: 1px solid #0041ff;
+  border-radius: 30px;
+  font-size: 16px;
+  color: #0041ff;
+  width: 100%;
+  outline: none;
+}
+
+.input::placeholder,
+.select::placeholder {
+  color: #0041ff;
+  opacity: 0.7;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.select {
+  appearance: none;
+  padding-right: 40px;
+  background-color: transparent;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #0041ff;
+  cursor: pointer;
+}
+
+.checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #0041ff;
+  border-radius: 4px;
+  accent-color: #0041ff;
+}
+
+.link {
+  color: #0041ff;
+  text-decoration: underline;
+}
+
+.submitButton {
+  background-color: #0041ff;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: #0035d9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitButton:disabled {
+  background-color: #cccccc;
+  color: #666666; /* Cambia el color del texto */
+  border: 1px solid #999999; /* Agrega un borde */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.timeEstimate {
+  text-align: center;
+  font-size: 14px;
+  color: #0041ff;
+  margin-top: 12px;
+}
+
+@media (max-width: 1024px) {
   .main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
-  
+
   .content {
-    padding-right: 40px;
+    padding-right: 0;
   }
-  
+}
+
+@media (max-width: 768px) {
   .title {
-    font-size: 48px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    line-height: 1.2;
+    font-size: 36px;
   }
-  
+
   .subtitle {
-    color: #00f0ff;
-    font-size: 24px;
-    margin-bottom: 30px;
+    font-size: 20px;
   }
-  
+
   .description {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 40px;
-  }
-  
-  .privacy {
-    font-size: 14px;
-    opacity: 0.8;
-  }
-  
-  .formContainer {
-    background-color: white;
-    border-radius: 20px;
-    padding: 40px;
-    color: #000;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .formGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .formGroup label {
-    color: #0041ff;
-    font-size: 14px;
-  }
-  
-  .input,
-  .select {
-    padding: 12px;
-    border: 1px solid #0041ff;
-    border-radius: 8px;
     font-size: 16px;
-    color: #0041ff;
   }
-  
-  .select {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%230041FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 40px;
-  }
-  
-  .checkboxGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #0041ff;
-  }
-  
-  .link {
-    color: #0041ff;
-    text-decoration: underline;
-  }
-  
-  .submitButton {
-    background-color: #0041ff;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-  }
-  
-  .timeEstimate {
-    text-align: center;
-    font-size: 14px;
-    color: #0041ff;
-    margin-top: 12px;
-  }
-  
-  @media (max-width: 1024px) {
-    .main {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-  
-    .content {
-      padding-right: 0;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .title {
-      font-size: 36px;
-    }
-  
-    .subtitle {
-      font-size: 20px;
-    }
-  
-    .description {
-      font-size: 16px;
-    }
-  }
-  
-  
+}

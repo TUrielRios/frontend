@@ -5,12 +5,16 @@ import logo from '../../assets/logo.png'
 import HeroSection from "../../components/HeroSection/HeroSection"
 import Footer from "../../components/Footer/Footer"
 
+
 const Landing = () => {
     const navigate = useNavigate()
 
     const handleNavigate = () => {
         navigate("/form")
     }
+    const handleDownload = () => {
+      window.open("https://www.lacocina-identidad.com/libros/libro-el-diamante-de-la-influencia/", "_blank");
+  };
   return (
     <div className={styles.container}>
 
@@ -48,25 +52,23 @@ const Landing = () => {
           <div className={styles.modelContent}>
             <h2>El modelo</h2>
             <p>
-              La matriz de Influencia de la influencia, es un modelo innovador que explora cómo las marcas pueden
-              influir en el comportamiento del consumidor de una forma.
+            La matriz del Diamante de la Influencia, es un modelo innovador que analiza seis factores clave que influyen en las decisiones del consumidor de una marca.
+
             </p>
             <p>
-              La fórmula de Influencia, utiliza la técnica en el contexto creado por los 6 factores, que son el
-              resultado de años de investigación en Consumer Generated Content, Neurociencia y Analytics.
+            Su formato de hexágono, coloca a la marca en el centro rodeada por los seis factores de Cialdini: Validación Social, Atractivo, Reciprocidad, Consistencia y Compromiso, Autenticidad, y Autoridad.
             </p>
             <p>
-              El éxito del Diamante de la Influencia radica en encontrar un balance entre los factores, que se adapte a
-              los objetivos de cada marca, su categoría y mercado, para lograr influir en el comportamiento deseado.
+            El éxito del Diamante de Influencia radica en encontrar un balance entre la interacción de los factores. Cuando se logra esta sinergia, la marca no solo crece, sino que se vuelve indiscutiblemente poderosa.
             </p>
           </div>
         </div>
 
         <div className={styles.cta}>
           <h2>
-            La clave del Branding
+            <span style={{fontWeight:"900"}}>La clave del Branding</span>
             <br />
-            más que vender, es Influir
+            <span>más que vender, es Influir</span>
           </h2>
           <p>
             Te invitamos a conocer
@@ -74,8 +76,8 @@ const Landing = () => {
             el poder de influencia de tu marca
           </p>
           <div className={styles.ctaButtons}>
-            <button className={styles.downloadButton}>Descargar PDF ↓</button>
-            <button className={styles.actionButton} onClick={handleNavigate}>Comenzar</button>
+            <button className={styles.downloadButton} onClick={handleDownload}>Descargar el libro ↓</button>
+            <button className={styles.actionButton} onClick={handleNavigate}>Ir a la app</button>
           </div>
         </div>
       </main>

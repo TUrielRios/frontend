@@ -1,59 +1,57 @@
 .hero {
-    background-color: #0041ff;
-    padding: 60px 40px;
-    position: relative;
-    min-height: 300px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  
-  .heroContent {
-    max-width: 600px;
-  }
-  
+  background-color: #0041ff;
+  padding: 60px 40px;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-family: 'Red Hat Display', sans-serif;
+}
+
+.heroContent {
+  max-width: 600px;
+}
+
+.heroContent h1 {
+  color: white;
+  font-size: 3.6em;
+  margin-bottom: 30px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-family: 'Red Hat Display', sans-serif;
+}
+
+.primaryButton {
+  background-color: white;
+  color: #0041ff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Red Hat Display', sans-serif;
+}
+
+.heroShape {
+  display: flex;
+  width: 650px;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroShape img {
+  width: 350px;
+}
+
+@media (max-width: 768px) {
   .heroContent h1 {
-    color: white;
-    font-size: 48px;
-    margin-bottom: 30px;
-    font-weight: 600;
-    line-height: 1.2;
-  }
-  
-  .primaryButton {
-    background-color: white;
-    color: #0041ff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
-  .heroShape {
-    display: flex;
-    width: 650px;
-    align-self: center;
-    align-items: center;
-    justify-content: center;
-
-
-  }
-  
-  .heroShape img {
-    width: 250px;
-  }
-  
-
-  
-  @media (max-width: 768px) {
-    .heroContent h1 {
       font-size: 36px;
-    }
-  
-    .heroShape {
-      display: none;
-    }
   }
-  
-  
+
+  .heroShape {
+      display: none;
+  }
+}

@@ -12,7 +12,7 @@ const HeroSection = () => {
           <br />
           de la influencia
         </h1>
-        <button className={styles.primaryButton}>Comenzar →</button>
+        <button className={styles.primaryButton}>Ir al diamante →</button>
       </div>
       <div className={styles.heroShape}>
         <img src={gif} alt="Diamante de la influencia" />

@@ -6,11 +6,11 @@ const ResultsPhase = ({ phaseScores, onDownloadBook, onDownloadResults }) => {
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsContent}>
-        <h1 className={styles.resultsTitle}>¡Listo!</h1>
+        <h1 className={styles.resultsTitle}>¡Gracias por responder!</h1>
         <div className={styles.resultsText}>
           <p>
             Ahora que conocés el perfil de influencia de tu marca, tus fortalezas y las áreas dónde podés seguir
-            creciendo, te invitamos a descargar el libro donde vas a encontrar ejemplos y estrategias para potenciar los
+            creciendo, te invitamos a trabajar juntos estrategias para potenciar los
             diferentes factores.
           </p>
           <p>
@@ -18,14 +18,14 @@ const ResultsPhase = ({ phaseScores, onDownloadBook, onDownloadResults }) => {
             mantener la posición en la mente de los consumidores. Si deseas un análisis más profundo y personalizado
             para tu empresa y sector, no dudes en contactarnos.
           </p>
-          <div className={styles.downloadButtons}>
+          {/* <div className={styles.downloadButtons}>
             <button className={styles.downloadBookBtn} onClick={onDownloadBook}>
               Descargar el libro <Download size={16} />
             </button>
             <button className={styles.downloadResultsBtn} onClick={onDownloadResults}>
               Descargar resultado <Download size={16} />
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={styles.resultsChartContainer}>
