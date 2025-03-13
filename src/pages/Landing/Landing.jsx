@@ -1,5 +1,5 @@
 import styles from "./Landing.module.css"
-import graphic from "../../assets/diamantte-azul.svg"
+//import graphic from "../../assets/diamantte-azul.svg"
 import { useNavigate } from "react-router-dom"
 import logo from '../../assets/logo.png'
 import HeroSection from "../../components/HeroSection/HeroSection"
@@ -35,7 +35,7 @@ const Landing = () => {
       {/* SEGUNDA SECCION*/}
 
       <main className={styles.main}>
-        <p className={styles.mainDescription}>
+        {/* <p className={styles.mainDescription}>
           Un modelo innovador que explora cómo las marcas pueden influir
           <br />
           eficazmente en el comportamiento del consumidor
@@ -62,7 +62,7 @@ const Landing = () => {
             El éxito del Diamante de Influencia radica en encontrar un balance entre la interacción de los factores. Cuando se logra esta sinergia, la marca no solo crece, sino que se vuelve indiscutiblemente poderosa.
             </p>
           </div>
-        </div>
+        </div> */}
 
         <div className={styles.cta}>
           <h2>

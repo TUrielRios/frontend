@@ -41,6 +41,7 @@
   display: block;
   position: relative;
   z-index: 2;
+  font-family: 'red Hat Display', sans-serif;
 }
 
 .title {
@@ -51,12 +52,17 @@
   margin-bottom: 2rem;
   position: relative;
   z-index: 2;
+  font-family: 'red Hat Display', sans-serif;
+
 }
 
 .description {
   color: #0000ff;
   font-size: 1.25rem;
   line-height: 1.6;
+  font-weight: 500;
+  font-family: 'red Hat Display', sans-serif;
+
 }
 
 .description p {
@@ -92,9 +98,9 @@
 }
 
 .icon {
-  font-size: 120px;
   color: #0000ff;
   margin-bottom: 1rem;
+  width: 200px;
 }
 
 .iconLabel {

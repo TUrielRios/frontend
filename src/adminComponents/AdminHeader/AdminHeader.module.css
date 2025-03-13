@@ -2,23 +2,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
     border-bottom: 1px solid rgba(0, 0, 255, 0.1);
   }
   
-  .logoSection {
-    display: flex;
-    align-items: center;
-  }
-  
-  .logo {
-    height: 40px;
-  }
-  
+
   .welcomeSection {
-    flex: 1;
+    display: flex;
     margin: 0 2rem;
+    width: 100%;
+flex-direction: column;
   }
   
   .welcomeSection h1 {

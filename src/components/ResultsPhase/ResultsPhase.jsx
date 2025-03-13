@@ -1,31 +1,33 @@
-import { Download } from "lucide-react"
 import RadarChart from "../RadarChart/RadarChart"
 import styles from "./ResultsPhase.module.css"
+import textos from "../../constants/constants"
 
-const ResultsPhase = ({ phaseScores, onDownloadBook, onDownloadResults }) => {
+const ResultsPhase = ({ phaseScores }) => {
+  // Crear un array con todas las fases para marcarlas como completadas en la pantalla de resultados
+    // Función para convertir <br/> en <br/><br/>
+    const formatDescription = (text) => {
+      return text.replace(/<br\/>/g, "<br/><br/>");
+    };
+  
+    // Función para convertir el texto con <br/> en HTML
+    const createMarkup = (text) => {
+      return { __html: text };
+    };
+  const allPhases = [
+    "ATRACTIVO",
+    "VALIDACIÓN SOCIAL",
+    "RECIPROCIDAD",
+    "AUTORIDAD",
+    "AUTENTICIDAD",
+    "CONSISTENCIA Y COMPROMISO",
+  ]
+
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsContent}>
-        <h1 className={styles.resultsTitle}>¡Gracias por responder!</h1>
+      <h1 className={styles.resultsTitle}>¡Gracias por responder!</h1>
         <div className={styles.resultsText}>
-          <p>
-            Ahora que conocés el perfil de influencia de tu marca, tus fortalezas y las áreas dónde podés seguir
-            creciendo, te invitamos a trabajar juntos estrategias para potenciar los
-            diferentes factores.
-          </p>
-          <p>
-            En un mercado cada vez más competitivo y dinámico, comprender la influencia de tu marca es clave para
-            mantener la posición en la mente de los consumidores. Si deseas un análisis más profundo y personalizado
-            para tu empresa y sector, no dudes en contactarnos.
-          </p>
-          {/* <div className={styles.downloadButtons}>
-            <button className={styles.downloadBookBtn} onClick={onDownloadBook}>
-              Descargar el libro <Download size={16} />
-            </button>
-            <button className={styles.downloadResultsBtn} onClick={onDownloadResults}>
-              Descargar resultado <Download size={16} />
-            </button>
-          </div> */}
+        <p dangerouslySetInnerHTML={createMarkup(formatDescription(textos.texto_final))} />
         </div>
       </div>
       <div className={styles.resultsChartContainer}>
@@ -39,6 +41,7 @@ const ResultsPhase = ({ phaseScores, onDownloadBook, onDownloadResults }) => {
             "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
           }}
           theme="dark"
+          completedPhases={allPhases}
         />
       </div>
     </div>

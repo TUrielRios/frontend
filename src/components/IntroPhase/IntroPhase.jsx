@@ -2,7 +2,16 @@ import { ArrowRight } from "lucide-react"
 import styles from "./IntroPhase.module.css"
 
 const IntroPhase = ({ phaseInfo, onNext }) => {
-  const PhaseIcon = phaseInfo.icon
+  const phaseIcon = phaseInfo.icon
+
+  // Función para convertir <br/> en <br/><br/>
+  const formatDescription = (text) => {
+    return text.replace(/<br\/>/g, "<br/><br/>");
+  };
+  // Función para convertir el texto con <br/> en HTML
+  const createMarkup = (text) => {
+    return { __html: text };
+  };
 
   return (
     <div className={styles.introCard}>
@@ -15,19 +24,14 @@ const IntroPhase = ({ phaseInfo, onNext }) => {
             <h1 className={styles.title}>{phaseInfo.title}</h1>
             </div>
             <div className={styles.iconWrapper}>
-            <PhaseIcon className={styles.icon} />
+              <img src={phaseIcon} alt="" className={styles.icon} />
           </div>
           </div>
 
         </div>
         <div className={styles.textContent}>
         <div className={styles.description}>
-            {phaseInfo.description.map((paragraph, index) => (
-              <p key={index}>
-                {paragraph}
-                {index < phaseInfo.description.length - 1 && <br />}
-              </p>
-            ))}
+        <p dangerouslySetInnerHTML={createMarkup(formatDescription(phaseInfo.description))} />              
           </div>
           <button className={styles.nextButton} onClick={onNext}>
             <ArrowRight />

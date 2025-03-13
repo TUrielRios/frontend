@@ -4,6 +4,7 @@ import AdminDashboard from "../AdminDashboard/AdminDashboard"
 import Stats from "../../pages/Stats/Stats"
 import Users from "../../pages/Users/Users"
 import Sidebar from "../Sidebar/Sidebar"
+import Settings from "../../pages/Settings/Settings"
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -18,7 +19,7 @@ const Admin = () => {
       case "users":
         return <Users />
       case "settings":
-        return <div className={styles.comingSoon}>Configuración - Próximamente</div>
+        return <Settings />
       case "help":
         return <div className={styles.comingSoon}>Ayuda - Próximamente</div>
       default:

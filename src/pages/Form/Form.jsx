@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from '../../assets/logo.png';
 import Header from "../../components/Header/Header";
 import { ChevronDown } from "lucide-react";
+import textos from "../../constants/constants";
 
 const Form = () => {
     const navigate = useNavigate();
@@ -33,9 +34,7 @@ const Form = () => {
                     </h1>
                     <p className={styles.subtitle}>Conocé el poder de influencia de tu marca.</p>
                     <p className={styles.description}>
-                        Con este cuestionario de autoevaluación, vas a poder identificar las áreas de mejora para enfocar tus
-                        esfuerzos estratégicos en fortalecer los factores clave y, de esta manera, potenciar tu influencia en el
-                        comportamiento y la percepción de tus clientes.
+                        {textos.parrafo_formulario}
                     </p>
                     <p className={styles.privacy}>
                         Recordá que la información que proporciones es confidencial y solo se utilizará para fines estadísticos.

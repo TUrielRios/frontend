@@ -1,7 +1,7 @@
 .questionBox {
     background: white;
     border-radius: 24px;
-    width: 600px;
+    width: 550px;
     position: relative;
     padding: 2rem;
   }
@@ -16,6 +16,8 @@
     gap: 0.5rem;
     color: #0000ff;
     margin-bottom: 1.5rem;
+    font-family: 'red Hat Display', sans-serif;
+
   }
   
   .questionIcon {
@@ -28,6 +30,8 @@
     color: #0000ff;
     font-weight: 500;
     font-size: 1.5rem;
+    font-family: 'red Hat Display', sans-serif;
+
   }
   
   .questionNumber {
@@ -41,6 +45,8 @@
   
   .questionText {
     font-weight: 500;
+    font-family: 'red Hat Display', sans-serif;
+
   }
   
   .nextButton {

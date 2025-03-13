@@ -24,12 +24,13 @@ const Questionnaire = () => {
   const [phaseScores, setPhaseScores] = useState({})
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
+  const [completedPhases, setCompletedPhases] = useState([])
 
   // Cargar preguntas
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("https://lacocina-backend.onrender.com/api/preguntas")
+        const response = await fetch("https://lacocina-backend-deploy.vercel.app/preguntas")
         if (!response.ok) {
           throw new Error("Error al obtener las preguntas")
         }
@@ -117,6 +118,9 @@ const Questionnaire = () => {
     } else if (currentStep < phaseQuestions.length - 1) {
       setCurrentStep((prev) => prev + 1)
     } else {
+      // Marcar la fase actual como completada
+      setCompletedPhases((prev) => [...prev, currentPhase])
+
       const nextPhaseIndex = phases.indexOf(currentPhase) + 1
       if (nextPhaseIndex < phases.length) {
         setCurrentPhase(phases[nextPhaseIndex])
@@ -202,6 +206,7 @@ const Questionnaire = () => {
                   "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
                 }}
                 theme="dark"
+                completedPhases={completedPhases}
               />
             </aside>
           </div>
