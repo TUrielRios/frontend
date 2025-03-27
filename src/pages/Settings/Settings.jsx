@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { Save, Edit, X, RefreshCw, Search, FileText, Eye, EyeOff } from "lucide-react"
 import styles from "./Settings.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
+import QuestionsSettings from "../../adminComponents/QuestionsSettings/QuestionsSettings"
 
 const Settings = () => {
   const [texts, setTexts] = useState([])
@@ -137,7 +138,7 @@ const Settings = () => {
   return (
     <div className={styles.settingsPage}>
       <AdminHeader username="Administrador" />
-
+      <QuestionsSettings />
       <div className={styles.content}>
         <h1 className={styles.pageTitle}>Configuración de Textos</h1>
         <p className={styles.pageDescription}>

@@ -1,0 +1,780 @@
+.settingsPage {
+    background: #f8f8ff;
+    min-height: 100vh;
+  }
+  
+  .content {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+  
+  .centeredContainer {
+    width: 100%;
+    background-color: whitesmoke;
+    padding: 1rem;
+    border-radius: 20px;
+  }
+  
+  .pageTitle {
+    color: #0a2ff1;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .pageDescription {
+    color: #666;
+    font-size: 1rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  /* Selector de Modalidad */
+.modalitySelector {
+  margin-bottom: 1.5rem;
+}
+
+.modalityTabs {
+  display: flex;
+  background: white;
+  border-radius: 12px;
+  padding: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 255, 0.08);
+  width: fit-content;
+  margin: 0 auto 1.5rem;
+}
+
+.modalityTab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 8px;
+}
+
+.modalityTab:hover {
+  color: #0a2ff1;
+}
+
+.activeModality {
+  background: #f0f5ff;
+  color: #0a2ff1;
+  font-weight: 600;
+}
+
+.activeModality:after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: #0a2ff1;
+  border-radius: 3px;
+}
+  
+  /* Phase Tabs - Icon Only with Hover Text */
+  .phaseTabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    max-width: 100%;
+  }
+  
+  .phaseTabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  
+  .phaseTab {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: visible;
+    width: 70px;
+    height: 70px;
+    box-shadow: 0 4px 12px rgba(0, 0, 255, 0.12);
+    margin: 0 5px;
+    flex-shrink: 0;
+  }
+  
+  .phaseTab:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 255, 0.2);
+  }
+  
+  .phaseIconWrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .phaseIcon {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+  }
+  
+  
+  .activePhase {
+    background: #f0f5ff;
+    box-shadow: 0 4px 15px rgba(10, 47, 241, 0.25);
+    border: 2px solid #0a2ff1;
+  }
+  
+  .activePhase .phaseIcon {
+    transform: scale(1.1);
+  }
+  
+  
+  .phaseTitle {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #0a2ff1;
+    white-space: nowrap;
+  }
+  
+  .phaseCount {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 3px;
+  }
+  
+  .activeIndicator {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: linear-gradient(90deg, #0a2ff1, #4d7bf3);
+    border-radius: 2px;
+    animation: pulseIndicator 2s infinite;
+  }
+  
+  @keyframes pulseIndicator {
+    0% {
+      opacity: 0.6;
+      width: 30px;
+    }
+    50% {
+      opacity: 1;
+      width: 40px;
+    }
+    100% {
+      opacity: 0.6;
+      width: 30px;
+    }
+  }
+  
+  .questionEditorContainer {
+    display: flex;
+    gap: 2rem;
+    height: calc(100vh - 350px);
+    min-height: 500px;
+  }
+  
+  /* Lista de preguntas */
+  .questionsList {
+    width: 350px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .listHeader {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .searchContainer {
+    flex: 1;
+    position: relative;
+  }
+  
+  .searchIcon {
+    color: #0a2ff1;
+    opacity: 0.5;
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid rgba(0, 0, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+  
+  .searchInput:focus {
+    border-color: #0a2ff1;
+    box-shadow: 0 0 0 2px rgba(10, 47, 241, 0.1);
+  }
+  
+  .clearSearchBtn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .clearSearchBtn:hover {
+    background: #f0f0ff;
+  }
+  
+  .addButton {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #0a2ff1;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .addButton:hover {
+    background: #0920c5;
+    transform: translateY(-2px);
+  }
+  
+  .questionsListItems {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  
+  .questionCount {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
+    color: #666;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.05);
+    margin-bottom: 0.5rem;
+  }
+  
+  .questionItem {
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .questionItem:hover {
+    background: #f8f8ff;
+  }
+  
+  .questionItem.selected {
+    background: #f0f0ff;
+    border-left: 3px solid #0a2ff1;
+  }
+  
+  .questionIcon {
+    color: #0a2ff1;
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+  
+  .questionItemContent h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .questionMeta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .category,
+  .phase {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: #f0f0ff;
+    color: #0a2ff1;
+  }
+  
+  .phase {
+    background: #e0e0ff;
+  }
+  
+  .loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+  }
+  
+  .loadingIcon {
+    animation: spin 1.5s linear infinite;
+    margin-bottom: 1rem;
+    color: #0a2ff1;
+  }
+  
+  .noResults {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+  }
+  
+  /* Editor de preguntas - Enhanced */
+  .questionEditor {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .questionEditor:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #0a2ff1, #4d7bf3);
+    z-index: 1;
+  }
+  
+  .editorHeader {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9ff;
+  }
+  
+  .editorHeader h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #0a2ff1;
+    position: relative;
+    padding-left: 0.5rem;
+  }
+  
+  .editorHeader h2:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #0a2ff1;
+    border-radius: 3px;
+  }
+  
+  .editorActions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .deleteButton,
+  .cancelButton,
+  .saveButton {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .deleteButton:after,
+  .cancelButton:after,
+  .saveButton:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.4s ease;
+  }
+  
+  .deleteButton:hover:after,
+  .cancelButton:hover:after,
+  .saveButton:hover:after {
+    transform: translate(-50%, -50%) scale(2);
+  }
+  
+  .deleteButton {
+    background: #ffe0e0;
+    color: #ff4d4d;
+  }
+  
+  .deleteButton:hover:not(:disabled) {
+    background: #ffd0d0;
+    transform: translateY(-2px);
+  }
+  
+  .deleteButton.confirmDelete {
+    background: #ff4d4d;
+    color: white;
+    animation: pulse 1.5s infinite;
+  }
+  
+  .cancelButton {
+    background: #f0f0ff;
+    color: #666;
+  }
+  
+  .cancelButton:hover:not(:disabled) {
+    background: #e0e0ff;
+    transform: translateY(-2px);
+  }
+  
+  .saveButton {
+    background: #e0ffe0;
+    color: #00cc00;
+  }
+  
+  .saveButton:hover:not(:disabled) {
+    background: #d0ffd0;
+    transform: translateY(-2px);
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 77, 77, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 77, 77, 0);
+    }
+  }
+  
+  .savingIcon {
+    animation: spin 1.5s linear infinite;
+  }
+  
+  .editorContent {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+  
+  .formGroup {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  
+  .formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+    position: relative;
+    padding-left: 0.75rem;
+    transition: all 0.2s;
+  }
+  
+  .formGroup label:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 70%;
+    background: #0a2ff1;
+    border-radius: 3px;
+    opacity: 0.7;
+  }
+  
+  .input,
+  .textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(0, 0, 255, 0.2);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.3s;
+    font-family: inherit;
+    background: #f8f9ff;
+  }
+  
+  .textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  .input:focus,
+  .textarea:focus {
+    border-color: #0a2ff1;
+    box-shadow: 0 0 0 3px rgba(10, 47, 241, 0.1);
+    background: white;
+  }
+  
+  .input:hover,
+  .textarea:hover {
+    border-color: #0a2ff1;
+  }
+  
+  .editorFooter {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 255, 0.1);
+  }
+  
+  .questionInfo {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.75rem;
+    color: #666;
+    flex-wrap: wrap;
+  }
+  
+  .errorMessage,
+  .successMessage,
+  .deleteConfirmMessage {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.875rem;
+    border-radius: 10px;
+    margin: 1rem 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideDown 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .errorMessage:before,
+  .successMessage:before,
+  .deleteConfirmMessage:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+  }
+  
+  .errorMessage {
+    background: #fff0f0;
+    color: #cc0000;
+  }
+  
+  .errorMessage:before {
+    background: #cc0000;
+  }
+  
+  .successMessage {
+    background: #f0fff0;
+    color: #00cc00;
+  }
+  
+  .successMessage:before {
+    background: #00cc00;
+  }
+  
+  .deleteConfirmMessage {
+    background: #fff8f0;
+    color: #cc7700;
+  }
+  
+  .deleteConfirmMessage:before {
+    background: #cc7700;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .noQuestionSelected {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .noQuestionIcon {
+    color: #0a2ff1;
+    opacity: 0.2;
+    margin-bottom: 1.5rem;
+  }
+  
+  .noQuestionSelected h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    color: #0a2ff1;
+  }
+  
+  .noQuestionSelected p {
+    margin: 0 0 1.5rem;
+    max-width: 400px;
+  }
+  
+  .createButton {
+    background: #0a2ff1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .createButton:hover {
+    background: #0920c5;
+    transform: translateY(-2px);
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .questionEditorContainer {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .questionsList {
+      width: 100%;
+      height: 300px;
+    }
+  
+    .questionEditor {
+      height: 600px;
+    }
+  
+    .formRow {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .settingsPage {
+      padding: 1rem;
+    }
+  
+    .content {
+      padding: 1rem;
+    }
+  
+    .phaseTabs {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  
+    .phaseTab {
+      width: 60px;
+      height: 60px;
+    }
+  
+    .phaseIcon {
+      width: 35px;
+      height: 35px;
+    }
+  
+    .editorHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  
+    .editorActions {
+      align-self: flex-end;
+    }
+  
+    .questionInfo {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  
+  

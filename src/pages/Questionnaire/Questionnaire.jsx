@@ -25,6 +25,19 @@ const Questionnaire = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
+  const [userId, setUserId] = useState(null)
+  const [selectedModalidad, setSelectedModalidad] = useState(() => {
+    // Obtener la modalidad seleccionada del localStorage
+    return localStorage.getItem("selectedModalidad") || "Curso"
+  })
+
+  // Cargar el ID del usuario desde localStorage
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId")
+    if (storedUserId) {
+      setUserId(storedUserId)
+    }
+  }, [])
 
   // Cargar preguntas
   useEffect(() => {
@@ -40,14 +53,22 @@ const Questionnaire = () => {
           throw new Error("Estructura de datos inválida")
         }
 
+        // Filtrar preguntas por modalidad seleccionada
+        const filteredData = data.filter((question) => question.modalidad === selectedModalidad)
+
         // Agrupar preguntas por fase
-        const groupedQuestions = data.reduce((acc, question) => {
+        const groupedQuestions = filteredData.reduce((acc, question) => {
           if (!acc[question.phase]) {
             acc[question.phase] = []
           }
           acc[question.phase].push(question)
           return acc
         }, {})
+
+        // Ordenar las preguntas por ID dentro de cada fase
+        Object.keys(groupedQuestions).forEach((phase) => {
+          groupedQuestions[phase].sort((a, b) => a.id - b.id)
+        })
 
         // Definir el orden de las fases
         const phaseOrder = [
@@ -78,7 +99,58 @@ const Questionnaire = () => {
     }
 
     fetchQuestions()
-  }, [])
+  }, [selectedModalidad])
+
+  // Función para actualizar el puntaje de una fase en el backend
+  const updatePhaseScore = async (phase, score) => {
+    if (!userId) {
+      console.error("No se encontró ID de usuario para actualizar puntajes")
+      return
+    }
+
+    try {
+      // Mapear el nombre de la fase al nombre del campo en el backend
+      const phaseFieldMap = {
+        "VALIDACIÓN SOCIAL": "validacionSocial",
+        ATRACTIVO: "atractivo",
+        RECIPROCIDAD: "reciprocidad",
+        AUTORIDAD: "autoridad",
+        AUTENTICIDAD: "autenticidad",
+        "CONSISTENCIA Y COMPROMISO": "consistenciaCompromiso",
+      }
+
+      const fieldName = phaseFieldMap[phase]
+      if (!fieldName) {
+        console.error(`No se encontró mapeo para la fase: ${phase}`)
+        return
+      }
+
+      // Preparar los datos para la actualización
+      const updateData = {
+        [fieldName]: score,
+      }
+
+      console.log(`Actualizando fase ${phase} (${fieldName}) con puntaje ${score} para usuario ${userId}`)
+
+      // Enviar la actualización al backend
+      const response = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Error al actualizar el puntaje: ${errorText}`)
+      }
+
+      console.log(`Puntaje de ${phase} actualizado a ${score}`)
+    } catch (err) {
+      console.error("Error al actualizar el puntaje:", err)
+    }
+  }
 
   // Manejadores de eventos
   const handleAnswer = (value) => {
@@ -118,6 +190,22 @@ const Questionnaire = () => {
     } else if (currentStep < phaseQuestions.length - 1) {
       setCurrentStep((prev) => prev + 1)
     } else {
+      // Calcular el puntaje promedio de la fase actual
+      const currentScores = phaseScores[currentPhase] || []
+      const validScores = currentScores.filter((score) => score !== undefined)
+
+      if (validScores.length > 0) {
+        const averageScore = validScores.reduce((sum, score) => sum + score, 0) / validScores.length
+        const roundedAverage = Math.round(averageScore * 10) / 10 // Redondear a 1 decimal
+
+        console.log(`Fase ${currentPhase} completada. Puntaje promedio: ${roundedAverage}`)
+
+        // Actualizar el puntaje en el backend
+        updatePhaseScore(currentPhase, roundedAverage)
+      } else {
+        console.warn(`No hay puntajes válidos para la fase ${currentPhase}`)
+      }
+
       // Marcar la fase actual como completada
       setCompletedPhases((prev) => [...prev, currentPhase])
 
@@ -126,10 +214,6 @@ const Questionnaire = () => {
         setCurrentPhase(phases[nextPhaseIndex])
         setCurrentStep(0)
         setShowIntro(true)
-        setPhaseScores((prevScores) => ({
-          ...prevScores,
-          [currentPhase]: Math.round((prevScores[currentPhase] || 0) / phaseQuestions.length),
-        }))
       } else {
         // Cuestionario completado - mostrar resultados finales
         setIsCompleted(true)

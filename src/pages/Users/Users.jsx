@@ -8,166 +8,117 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filters, setFilters] = useState({
-    role: "",
+    modalidad: "",
     industry: "",
   })
-  const [filteredUsers, setFilteredUsers] = useState([])
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Mock data
-  const users = [
-    {
-      id: 1,
-      name: "Ana García",
-      email: "ana@techsolutions.com",
-      company: "Tech Solutions",
-      role: "CEO",
-      industry: "Tecnología",
-      completionDate: "2024-03-01",
-      score: 8.5,
-      results: {
-        "VALIDACIÓN SOCIAL": 8,
-        ATRACTIVO: 9,
-        RECIPROCIDAD: 7,
-        AUTORIDAD: 8,
-        AUTENTICIDAD: 9,
-        "CONSISTENCIA Y COMPROMISO": 8,
-      },
-    },
-    {
-      id: 2,
-      name: "Carlos López",
-      email: "carlos@marketingpro.com",
-      company: "Marketing Pro",
-      role: "Director",
-      industry: "Marketing",
-      completionDate: "2024-02-28",
-      score: 7.9,
-      results: {
-        "VALIDACIÓN SOCIAL": 7,
-        ATRACTIVO: 8,
-        RECIPROCIDAD: 8,
-        AUTORIDAD: 7,
-        AUTENTICIDAD: 8,
-        "CONSISTENCIA Y COMPROMISO": 9,
-      },
-    },
-    {
-      id: 3,
-      name: "Laura Martínez",
-      email: "laura@freelance.com",
-      company: "Freelance",
-      role: "Freelancer",
-      industry: "Diseño",
-      completionDate: "2024-03-05",
-      score: 8.2,
-      results: {
-        "VALIDACIÓN SOCIAL": 8,
-        ATRACTIVO: 9,
-        RECIPROCIDAD: 8,
-        AUTORIDAD: 7,
-        AUTENTICIDAD: 9,
-        "CONSISTENCIA Y COMPROMISO": 8,
-      },
-    },
-    {
-      id: 4,
-      name: "Miguel Rodríguez",
-      email: "miguel@ventas.com",
-      company: "Ventas Express",
-      role: "Fundador",
-      industry: "Ventas",
-      completionDate: "2024-03-10",
-      score: 7.5,
-      results: {
-        "VALIDACIÓN SOCIAL": 7,
-        ATRACTIVO: 8,
-        RECIPROCIDAD: 7,
-        AUTORIDAD: 8,
-        AUTENTICIDAD: 7,
-        "CONSISTENCIA Y COMPROMISO": 8,
-      },
-    },
-    {
-      id: 5,
-      name: "Sofía Ramírez",
-      email: "sofia@techdev.com",
-      company: "Tech Development",
-      role: "CTO",
-      industry: "Tecnología",
-      completionDate: "2024-03-15",
-      score: 8.7,
-      results: {
-        "VALIDACIÓN SOCIAL": 9,
-        ATRACTIVO: 8,
-        RECIPROCIDAD: 9,
-        AUTORIDAD: 9,
-        AUTENTICIDAD: 8,
-        "CONSISTENCIA Y COMPROMISO": 9,
-      },
-    },
-    {
-      id: 6,
-      name: "Javier Moreno",
-      email: "javier@marketingdigital.com",
-      company: "Marketing Digital",
-      role: "Manager",
-      industry: "Marketing",
-      completionDate: "2024-03-12",
-      score: 7.8,
-      results: {
-        "VALIDACIÓN SOCIAL": 8,
-        ATRACTIVO: 7,
-        RECIPROCIDAD: 8,
-        AUTORIDAD: 7,
-        AUTENTICIDAD: 8,
-        "CONSISTENCIA Y COMPROMISO": 8,
-      },
-    },
-  ]
+  // Obtener usuarios reales del backend
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true)
+        
+        // Obtener usuarios de Taller y Curso en paralelo
+        const [tallerResponse, cursoResponse] = await Promise.all([
+          fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller"),
+          fetch("https://lacocina-backend-deploy.vercel.app/usuarios/curso")
+        ])
 
-  // Extraer roles y industrias únicos de los datos
-  const roles = [...new Set(users.map((user) => user.role))]
-  const industries = [...new Set(users.map((user) => user.industry))]
+        if (!tallerResponse.ok || !cursoResponse.ok) {
+          throw new Error("Error al cargar usuarios")
+        }
+
+        const tallerUsers = await tallerResponse.json()
+        const cursoUsers = await cursoResponse.json()
+
+        // Mapear a formato común
+        const formattedTallerUsers = tallerUsers.map(user => ({
+          ...user,
+          modalidad: 'Taller',
+          name: `Usuario ${user.codigoTaller}`,
+          email: '',
+          role: 'Participante Taller',
+          completionDate: user.createdAt
+        }))
+
+        const formattedCursoUsers = cursoUsers.map(user => ({
+          ...user,
+          modalidad: 'Curso',
+          name: `${user.nombre} ${user.apellido}`,
+          email: user.email,
+          role: user.cargo || 'Participante Curso',
+          completionDate: user.createdAt
+        }))
+
+        setUsers([...formattedTallerUsers, ...formattedCursoUsers])
+        setLoading(false)
+      } catch (err) {
+        setError(err.message)
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
+  }, [])
+
+  // Calcular score promedio para cada usuario
+  const usersWithScore = users.map(user => {
+    const scores = [
+      user.validacionSocial,
+      user.atractivo,
+      user.reciprocidad,
+      user.autoridad,
+      user.autenticidad,
+      user.consistenciaCompromiso
+    ].filter(score => score !== null)
+    
+    const average = scores.length > 0 
+      ? (scores.reduce((a, b) => a + b, 0) / scores.length)
+      : null
+
+    return {
+      ...user,
+      score: average || 0
+    }
+  })
+
+  // Extraer industrias únicas
+  const industries = [...new Set(users.map((user) => user.industriaSector))]
 
   // Aplicar filtros y búsqueda
-  useEffect(() => {
-    let result = [...users]
+  const filteredUsers = usersWithScore.filter(user => {
+    // Filtro de búsqueda
+    const matchesSearch = !searchTerm || 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      user.compania.toLowerCase().includes(searchTerm.toLowerCase())
 
-    // Aplicar filtro de búsqueda
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase()
-      result = result.filter(
-        (user) =>
-          user.name.toLowerCase().includes(searchLower) ||
-          user.email.toLowerCase().includes(searchLower) ||
-          user.company.toLowerCase().includes(searchLower),
-      )
-    }
+    // Filtro de modalidad
+    const matchesModalidad = !filters.modalidad || user.modalidad === filters.modalidad
 
-    // Aplicar filtro de rol
-    if (filters.role) {
-      result = result.filter((user) => user.role === filters.role)
-    }
+    // Filtro de industria
+    const matchesIndustry = !filters.industry || user.industriaSector === filters.industry
 
-    // Aplicar filtro de industria
-    if (filters.industry) {
-      result = result.filter((user) => user.industry === filters.industry)
-    }
-
-    setFilteredUsers(result)
-  }, [searchTerm, filters])
+    return matchesSearch && matchesModalidad && matchesIndustry
+  })
 
   // Limpiar todos los filtros
   const clearFilters = () => {
     setSearchTerm("")
     setFilters({
-      role: "",
+      modalidad: "",
       industry: "",
     })
   }
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = searchTerm || filters.role || filters.industry
+  const hasActiveFilters = searchTerm || filters.modalidad || filters.industry
+
+  if (loading) return <div className={styles.loading}>Cargando usuarios...</div>
+  if (error) return <div className={styles.error}>Error: {error}</div>
 
   return (
     <div className={styles.usersPage}>
@@ -200,19 +151,19 @@ const Users = () => {
             </div>
             <div className={styles.filterGroup}>
               <Filter size={20} />
-              <select value={filters.role} onChange={(e) => setFilters((prev) => ({ ...prev, role: e.target.value }))}>
-                <option value="">Todos los roles</option>
-                {roles.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
+              <select 
+                value={filters.modalidad}
+                onChange={(e) => setFilters(prev => ({ ...prev, modalidad: e.target.value }))}
+              >
+                <option value="">Todas las modalidades</option>
+                <option value="Taller">Taller</option>
+                <option value="Curso">Curso</option>
               </select>
             </div>
             <div className={styles.filterGroup}>
               <select
                 value={filters.industry}
-                onChange={(e) => setFilters((prev) => ({ ...prev, industry: e.target.value }))}
+                onChange={(e) => setFilters(prev => ({ ...prev, industry: e.target.value }))}
               >
                 <option value="">Todas las industrias</option>
                 {industries.map((industry) => (
@@ -243,33 +194,58 @@ const Users = () => {
                   <tr>
                     <th>Usuario</th>
                     <th>Empresa</th>
-                    <th>Rol</th>
+                    <th>Tipo</th>
                     <th>Industria</th>
                     <th>Fecha</th>
                     <th>Resultado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} onClick={() => setSelectedUser(user)} className={styles.userRow}>
-                      <td>
-                        <div className={styles.userName}>
-                          <span className={styles.nameInitial}>{user.name.charAt(0)}</span>
-                          <div>
-                            <p>{user.name}</p>
-                            <small>{user.email}</small>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{user.company}</td>
-                      <td>{user.role}</td>
-                      <td>{user.industry}</td>
-                      <td>{new Date(user.completionDate).toLocaleDateString()}</td>
-                      <td>
-                        <span className={styles.score}>{user.score.toFixed(1)}</span>
-                      </td>
-                    </tr>
-                  ))}
+                {filteredUsers.map((user) => (
+  <tr key={user.id} onClick={() => setSelectedUser(user)} className={styles.userRow}>
+    <td>
+      <div className={styles.userName}>
+        <span className={styles.nameInitial}>
+          {user.modalidad === 'Taller' ? 'T' : user.name.charAt(0)}
+        </span>
+        <div>
+          <p>
+            {user.modalidad === 'Taller' 
+              ? `Usuario Taller del ${new Date(user.createdAt).toLocaleDateString('es-ES', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                })}`
+              : user.name}
+          </p>
+          {user.email && <small>{user.email}</small>}
+          {user.modalidad === 'Taller' && (
+            <small className={styles.tallerCode}>{user.codigoTaller}</small>
+          )}
+        </div>
+      </div>
+    </td>
+    <td>{user.compania}</td>
+    <td>
+      <span className={`${styles.userType} ${user.modalidad === 'Taller' ? styles.taller : styles.curso}`}>
+        {user.modalidad}
+      </span>
+    </td>
+    <td>{user.industriaSector}</td>
+    <td>
+      {new Date(user.createdAt).toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })}
+    </td>
+    <td>
+      <span className={styles.score}>
+        {user.score ? user.score.toFixed(1) : 'N/A'}
+      </span>
+    </td>
+  </tr>
+))}
                 </tbody>
               </table>
             </>
@@ -283,4 +259,3 @@ const Users = () => {
 }
 
 export default Users
-
