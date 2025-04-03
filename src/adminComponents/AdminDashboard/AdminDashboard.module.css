@@ -9,7 +9,6 @@
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
-
 }
 
 .periodSelector {
@@ -19,7 +18,6 @@
   margin-bottom: 1.5rem;
   color: #666;
   padding: 2rem;
-
 }
 
 .periodOptions {
@@ -48,6 +46,57 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+}
+
+.metricCard {
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+}
+
+.metricContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.metricInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricTitle {
+  color: #666;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 0 0 0.5rem 0;
+}
+
+.metricValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0a2ff1;
+}
+
+.percentage {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.metricIcon {
+  background: rgba(10, 47, 241, 0.1);
+  padding: 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dashboardSection {
@@ -104,6 +153,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.chartFooter {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.downloadButton {
+  background: #0a2ff1;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadButton:hover {
+  background: #0926c9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
 }
 
 .usersSection {

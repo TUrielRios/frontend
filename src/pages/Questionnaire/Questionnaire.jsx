@@ -25,6 +25,8 @@ const Questionnaire = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
+  const [startedPhases, setStartedPhases] = useState([])
+
   const [userId, setUserId] = useState(null)
   const [selectedModalidad, setSelectedModalidad] = useState(() => {
     // Obtener la modalidad seleccionada del localStorage
@@ -187,6 +189,11 @@ const Questionnaire = () => {
 
     if (showIntro) {
       setShowIntro(false)
+      setShowIntro(false)
+      // Registrar que la fase ha sido iniciada
+      if (!startedPhases.includes(currentPhase)) {
+        setStartedPhases(prev => [...prev, currentPhase])
+      }
     } else if (currentStep < phaseQuestions.length - 1) {
       setCurrentStep((prev) => prev + 1)
     } else {
@@ -290,7 +297,8 @@ const Questionnaire = () => {
                   "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
                 }}
                 theme="dark"
-                completedPhases={completedPhases}
+                startedPhases={startedPhases
+                }
               />
             </aside>
           </div>

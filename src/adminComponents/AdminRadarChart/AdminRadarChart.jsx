@@ -1,16 +1,14 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import styles from "./RadarChart.module.css"
-// Importar los iconos GIF
-import validacionSocialIcono from "../../assets/iconos-animados/validacion-social-icono.gif"
-import atractivoIcono from "../../assets/iconos-animados/atractivo-icono.gif"
-import reciprocidadIcono from "../../assets/iconos-animados/reciprocidad-icono.gif"
-import autoridadIcono from "../../assets/iconos-animados/autoridad-icono.gif"
-import autenticidadIcono from "../../assets/iconos-animados/autenticidad-icono.gif"
-import consistenciaIcono from "../../assets/iconos-animados/compromiso-icono.gif"
+import styles from "./AdminRadarChart.module.css"
+import { FaThumbsUp, FaStar } from "react-icons/fa"
+import { PiSunFill } from "react-icons/pi"
+import { GiConfirmed } from "react-icons/gi"
+import { AiFillBank } from "react-icons/ai"
+import { RxUpdate } from "react-icons/rx"
 
-const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases = [] }) => {
+const AdminRadarChart = ({ data, theme = "dark", completedPhases = [] }) => {
   const [animatedData, setAnimatedData] = useState({
     ATRACTIVO: 0,
     "VALIDACIÓN SOCIAL": 0,
@@ -34,14 +32,13 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     "VALIDACIÓN SOCIAL",
   ]
 
-  // Iconos GIF
   const icons = [
-    atractivoIcono,
-    reciprocidadIcono,
-    autoridadIcono,
-    autenticidadIcono,
-    consistenciaIcono,
-    validacionSocialIcono,
+    <PiSunFill key="0" size={28} />,
+    <RxUpdate key="1" size={28} />,
+    <AiFillBank key="2" size={28} />,
+    <FaStar key="3" size={28} />,
+    <GiConfirmed key="4" size={28} />,
+    <FaThumbsUp key="5" size={28} />,
   ]
 
   // Efecto para animar los datos cuando cambian
@@ -110,10 +107,9 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   const calculatePoints = () => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150 // Usar el mismo maxRadius que se usa para el hexágono
+    const maxRadius = 150
 
     for (let i = 0; i < labels.length; i++) {
-      // Asegúrate de usar el mismo cálculo de ángulo que se usa para dibujar las líneas punteadas
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       const value = animatedData[labels[i]] || 0
       const radius = (value / 10) * maxRadius
@@ -137,51 +133,39 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           dataStroke: "#00ffff",
           labelText: "#ffffff",
           iconColor: "#5991bc",
-          completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema oscuro)
-          startedColor: "#3FFFF3", // Color para fases iniciadas
+          completedColor: "#3FFFF3",// Color más fuerte para fases completadas (tema oscuro)
         }
       : {
-          hexFill: "white",
-          hexStroke: "#0a2ff1",
-          dotLine: "#0a2ff1",
-          dataFill: "#3FFFF3",
-          dataStroke: "#00ffff",
-          labelText: "#0a2ff1",
-          iconColor: "#0a2ff1",
-          completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema claro)
-          startedColor: "#3FFFF3", // Color para fases iniciadas
+        hexFill: "white",
+        hexStroke: "#0a2ff1",
+        dotLine: "#0a2ff1",
+        dataFill: "#3FFFF3",
+        dataStroke: "#00ffff",
+        labelText: "#0a2ff1",
+        iconColor: "#0a2ff1",
+        completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema claro)
         }
-
-  // Generamos los puntos del hexágono con precisión matemática
-  const generateHexPoints = (center, radius) => {
-    const points = []
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-      const x = center.x + radius * Math.cos(angle)
-      const y = center.y + radius * Math.sin(angle)
-      points.push(`${x},${y}`)
-    }
-    return points.join(" ")
-  }
 
   return (
     <div className={styles.radarContainer}>
       <svg viewBox="0 0 400 400" className={styles.radar}>
-        {/* Círculos de fondo - usar la función para generar los puntos del hexágono */}
+        {/* Círculos de fondo */}
         {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
           <polygon
             key={`hex-${index}`}
-            points={generateHexPoints({ x: 200, y: 200 }, 150 * scale)}
+            points="200,50 350,125 350,275 200,350 50,275 50,125"
             style={{
               fill: colors.hexFill,
               stroke: colors.hexStroke,
               strokeWidth: 10,
               opacity: theme === "dark" ? 0.9 : 0.9,
+              transform: `scale(${scale})`,
+              transformOrigin: "center",
             }}
           />
         ))}
 
-        {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
+        {/* Líneas punteadas */}
         {Array.from({ length: 6 }).map((_, i) => {
           const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
           const x2 = 200 + 150 * Math.cos(angle)
@@ -211,7 +195,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
             fill: colors.dataFill,
             fillOpacity: theme === "dark" ? 0.8 : 0.3,
             stroke: colors.dataStroke,
-            strokeWidth: 2,
+            strokeWidth: 0.5,
           }}
         />
 
@@ -222,7 +206,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
 
           // Ajusta dinámicamente el radio para evitar colisiones
           if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
-            radius = 204 // Aumenta el radio para estas etiquetas
+            radius = 224 // Aumenta el radio para estas etiquetas
           }
           if(label === "AUTENTICIDAD") {
             radius = 182
@@ -234,10 +218,9 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           const x = 200 + radius * Math.cos(angle)
           const y = 213 + radius * Math.sin(angle)
 
-          // Verificar si esta fase está completada o iniciada
+          // Verificar si esta fase está completada
           const isCompleted = completedPhases.includes(label)
-          const isStarted = startedPhases.includes(label)
-          const shouldHighlight = isCompleted || isStarted
+          const iconColor = isCompleted ? colors.completedColor : colors.iconColor
 
           return (
             <g key={label} style={{ transformOrigin: "center" }}>
@@ -256,9 +239,9 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                 x={x}
                 y={y}
                 style={{
-                  fill: shouldHighlight ? colors.completedColor : colors.labelText,
+                  fill: isCompleted ? colors.completedColor : colors.labelText,
                   fontSize: "11px",
-                  fontWeight: shouldHighlight ? 700 : 500,
+                  fontWeight: isCompleted ? 700 : 500,
                   dominantBaseline: "middle",
                   textAnchor: "middle",
                 }}
@@ -285,18 +268,10 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                   label
                 )}
               </text>
-              {/* Iconos GIF */}
-              <image 
-                href={icons[index]} 
-                x={x - 18} 
-                y={y - 38} 
-                width="32" 
-                height="32" 
-                style={{
-                  opacity: shouldHighlight ? 1 : 0.85,
-                  filter: shouldHighlight ? "brightness(10.2) hue-rotate(50deg)" : "brightness(2.2)",
-                }}
-              />
+              {/* Agregar el icono encima de la etiqueta con tamaño aumentado */}
+              <foreignObject x={x - 18} y={y - 38} width="36" height="36" style={{ color: iconColor }}>
+                {icons[index]}
+              </foreignObject>
             </g>
           )
         })}
@@ -305,4 +280,5 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   )
 }
 
-export default RadarChart
+export default AdminRadarChart
+

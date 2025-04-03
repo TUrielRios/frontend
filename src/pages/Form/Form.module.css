@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 .container {
-  min-height: 100vh;
-  background-color: #0041ff;
+  background-color: #0a2ff1;
   color: white;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .main {
@@ -14,10 +12,12 @@
   gap: 60px;
   max-width: 90%;
   margin: 0 auto;
-  padding: 40px;
-}
+  }
 
 .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding-right: 40px;
 }
 
@@ -44,6 +44,55 @@
 .privacy {
   font-size: 14px;
   opacity: 0.8;
+  margin-bottom: 40px;
+}
+
+/* Estilos para los botones de selección */
+.formTypeOptions {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.formTypeButton {
+  background-color: white;
+  color: #0041ff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.formTypeButton:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para la columna derecha */
+.rightColumn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilos para el contenedor del GIF */
+.gifContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.diamanteGif {
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: contain;
 }
 
 /* Estilos para el contenedor del formulario */
@@ -53,21 +102,10 @@
   padding: 40px;
   color: #000;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-height: 500px;
   display: flex;
   flex-direction: column;
-}
-
-/* Nuevo contenedor con fondo azul claro para el primer slide */
-.formContainerBlue {
-  background-color: #0041ff;
-  border-radius: 20px;
-  padding: 40px;
-  color: #000;
+  width: 100%;
   max-height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .form {
@@ -78,7 +116,7 @@
   overflow-x: hidden;
   padding-right: 10px;
   flex: 1;
-  max-height: 400px;
+  width: 100%;
 }
 
 .form::-webkit-scrollbar {
@@ -112,7 +150,7 @@
 }
 
 .inputlarge {
-  width: 90%;
+  width: 94%;
   padding: 12px 16px;
   border: 1px solid #0041ff;
   border-radius: 30px;
@@ -211,8 +249,8 @@
 
 .submitButton:disabled {
   background-color: #cccccc;
-  color: #666666; /* Cambia el color del texto */
-  border: 1px solid #999999; /* Agrega un borde */
+  color: #666666;
+  border: 1px solid #999999;
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -222,108 +260,6 @@
   font-size: 14px;
   color: #0041ff;
   margin-top: 12px;
-}
-
-/* Estilos mejorados para la selección de tipo de formulario */
-.formTypeSelection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 40px;
-  padding: 20px 0;
-}
-
-.formTypeTitle {
-  color: #0041ff;
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-  position: relative;
-  padding-bottom: 15px;
-}
-
-.formTypeTitle:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #0041ff, #00f0ff);
-  border-radius: 3px;
-}
-
-.formTypeOptions {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-  width: 100%;
-}
-
-.formTypeCard {
-  background: white;
-  border: 2px solid rgba(0, 65, 255, 0.1);
-  border-radius: 20px;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 180px;
-  height: 180px;
-  box-shadow: 0 10px 25px -5px rgba(0, 65, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.formTypeCard:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(0, 65, 255, 0.05) 0%, rgba(0, 240, 255, 0.05) 100%);
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.formTypeCard:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 30px -10px rgba(0, 65, 255, 0.2);
-  border-color: rgba(0, 65, 255, 0.3);
-}
-
-.formTypeCard:hover:before {
-  opacity: 1;
-}
-
-.formTypeIcon {
-  color: #0041ff;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
-  transition: transform 0.3s ease;
-}
-
-.formTypeCard:hover .formTypeIcon {
-  transform: scale(1.1);
-}
-
-.formTypeCardTitle {
-  color: #0041ff;
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-  position: relative;
-  z-index: 1;
-  letter-spacing: 1px;
 }
 
 .backButton {
@@ -338,23 +274,11 @@
   padding: 8px 0;
   display: flex;
   align-items: center;
-  position: relative;
   transition: all 0.2s ease;
 }
 
-.backButton:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #0041ff, transparent);
-  transition: width 0.3s ease;
-}
-
-.backButton:hover:after {
-  width: 100%;
+.backButton:hover {
+  opacity: 0.8;
 }
 
 /* Título del formulario */
@@ -363,13 +287,13 @@
   font-size: 24px;
   font-weight: 600;
   text-align: left;
-  position: relative;
+  margin-bottom: 10px;
 }
 
 .nameFields {
   display: flex;
   gap: 10px;
-  width: 90%;
+  width: 100%;
 }
 
 .inputMedium {
@@ -405,6 +329,11 @@
 
   .content {
     padding-right: 0;
+    text-align: center;
+  }
+
+  .formTypeOptions {
+    justify-content: center;
   }
 }
 
@@ -424,16 +353,7 @@
   .formTypeOptions {
     flex-direction: column;
     align-items: center;
-  }
-
-  .formTypeCard {
-    width: 80%;
-    max-width: 220px;
-    height: 160px;
-  }
-
-  .formTypeButtons {
-    flex-direction: column;
+    gap: 15px;
   }
 }
 

@@ -1,8 +1,6 @@
 import React from "react"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // <-- Cambiado aquí
-import AdminDashboard from "./adminComponents/AdminDashboard/AdminDashboard"
 import "./App.css"
-import Landing from "./pages/Landing/Landing"
 import Form from "./pages/Form/Form";
 import Questionnaire from "./pages/Questionnaire/Questionnaire";
 import Users from "./pages/Users/Users";
@@ -14,8 +12,7 @@ function App() {
       <Router> {/* Cambiado de Routes a Router */}
         <main>
           <Routes> {/* Este es el contenedor correcto para Route */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/form" element={<Form />} />
+            <Route path="/" element={<Form />} />
             <Route path="/questionnaire" element={<Questionnaire />} />
             <Route path="/admin" element={<Admin/>} />
             <Route path="/admin/users" element={<Users/>} />

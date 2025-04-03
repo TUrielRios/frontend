@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
 import logo from "../../assets/logo.png"
+import gif from "../../assets/diamante-animacion-dos.gif"
 import Header from "../../components/Header/Header"
 import { ChevronDown } from "lucide-react"
 import textos from "../../constants/constants"
@@ -25,6 +26,44 @@ const Form = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
+  const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
+  const [loading, setLoading] = useState(false)
+
+  // Función para cargar el texto según el tipo de formulario
+  const cargarTexto = async (tipo) => {
+    if (!tipo) return
+
+    setLoading(true)
+    try {
+      const endpoint = tipo === "taller" 
+        ? "https://lacocina-backend-deploy.vercel.app/textos/texto_taller"
+        : "https://lacocina-backend-deploy.vercel.app/textos/texto_curso"
+        
+      const response = await fetch(endpoint)
+      
+      if (!response.ok) {
+        throw new Error(`Error al cargar el texto: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      setDescripcionTexto(data.value)
+    } catch (err) {
+      console.error("Error al cargar el texto:", err)
+      // Mantener el texto predeterminado en caso de error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Efecto para cargar el texto cuando cambia el tipo de formulario
+  useEffect(() => {
+    if (formType) {
+      cargarTexto(formType)
+    } else {
+      // Restaurar el texto original cuando no hay selección
+      setDescripcionTexto(textos.parrafo_formulario)
+    }
+  }, [formType])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -127,46 +166,7 @@ const Form = () => {
     setFormType(null)
   }
 
-  // Update the renderFormTypeSelection function to remove the title and add blue background
-  const renderFormTypeSelection = () => {
-    return (
-      <div className={styles.formTypeSelection}>
-        <div className={styles.formTypeOptions}>
-          <div className={styles.formTypeCard} onClick={() => handleFormTypeSelect("taller")}>
-            <div className={styles.formTypeIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M2 17L12 22L22 17M2 12L12 17L22 12M12 2L2 7L12 12L22 7L12 2Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 className={styles.formTypeCardTitle}>TALLER</h3>
-          </div>
-          <div className={styles.formTypeCard} onClick={() => handleFormTypeSelect("curso")}>
-            <div className={styles.formTypeIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20M4 19.5C4 20.163 4.26339 20.7989 4.73223 21.2678C5.20107 21.7366 5.83696 22 6.5 22H20V2H6.5C5.83696 2 5.20107 2.26339 4.73223 2.73223C4.26339 3.20107 4 3.83696 4 4.5V19.5Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 className={styles.formTypeCardTitle}>CURSO</h3>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Update the renderTallerForm and renderCursoForm functions to add the title
-  // First, update the renderTallerForm function
+  // Formulario para TALLER
   const renderTallerForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
@@ -274,7 +274,7 @@ const Form = () => {
     )
   }
 
-  // Now update the renderCursoForm function
+  // Formulario para CURSO
   const renderCursoForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
@@ -314,7 +314,7 @@ const Form = () => {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Ingrese su email"
-            className={styles.inputlarge}
+            className={styles.inputMedium}
             required
           />
         </div>
@@ -329,7 +329,9 @@ const Form = () => {
               className={styles.select}
               required
             >
-              <option value="Curso IAE Comunicación Institucional 250311">Curso IAE Comunicación Institucional 250311</option>
+              <option value="Curso IAE Comunicación Institucional 250311">
+                Curso IAE Comunicación Institucional 250311
+              </option>
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
@@ -464,12 +466,12 @@ const Form = () => {
     )
   }
 
-  // Update the return statement to have different container classes for the first and second slides
   return (
     <div className={styles.container}>
       <Header logo={logo} />
 
       <main className={styles.main}>
+        {/* Columna izquierda con el contenido y botones */}
         <div className={styles.content}>
           <h1 className={styles.title}>
             El diamante de
@@ -477,22 +479,41 @@ const Form = () => {
             la influencia
           </h1>
           <p className={styles.subtitle}>Conocé el poder de influencia de tu marca.</p>
-          <p className={styles.description}>{textos.parrafo_formulario}</p>
+          <p className={styles.description}>
+            {loading ? "Cargando..." : descripcionTexto}
+          </p>
           <p className={styles.privacy}>
             Recordá que la información que proporciones es confidencial y solo se utilizará para fines estadísticos.
           </p>
+
+          {/* Botones de selección debajo del texto */}
+          {formType === null && (
+            <div className={styles.formTypeOptions}>
+              <button className={styles.formTypeButton} onClick={() => handleFormTypeSelect("taller")}>
+                TALLER
+              </button>
+              <button className={styles.formTypeButton} onClick={() => handleFormTypeSelect("curso")}>
+                CURSO
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className={formType === null ? styles.formContainerBlue : styles.formContainer}>
+        {/* Columna derecha con el GIF o el formulario */}
+        <div className={styles.rightColumn}>
           {formType === null ? (
-            renderFormTypeSelection()
+            // Mostrar el GIF cuando no se ha seleccionado un tipo de formulario
+            <div className={styles.gifContainer}>
+              <img src={gif || "/placeholder.svg"} alt="Diamante de la influencia" className={styles.diamanteGif} />
+            </div>
           ) : (
-            <>
+            // Mostrar el formulario correspondiente cuando se ha seleccionado un tipo
+            <div className={styles.formContainer}>
               <button onClick={handleBackToSelection} className={styles.backButton}>
                 ← Volver
               </button>
               {formType === "taller" ? renderTallerForm() : renderCursoForm()}
-            </>
+            </div>
           )}
         </div>
       </main>
@@ -501,4 +522,3 @@ const Form = () => {
 }
 
 export default Form
-
