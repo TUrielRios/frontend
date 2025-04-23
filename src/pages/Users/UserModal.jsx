@@ -1,6 +1,6 @@
 import { X, Mail, Building2, Briefcase, Calendar, Award, User } from "lucide-react"
 import styles from "./UserModal.module.css"
-import UserChart from "../../adminComponents/UserChart/UserChart" // Importamos UserChart, no RadarChart directamente
+import AdminChart from "../../adminComponents/AdminChart/AdminChart"
 
 const UserModal = ({ user, onClose }) => {
   // Preparar datos en el formato que UserChart espera
@@ -127,7 +127,7 @@ const UserModal = ({ user, onClose }) => {
               <div className={styles.chartCard}>
                 <h3>Análisis de Factores</h3>
                 <div className={styles.chartContainer}>
-                  <UserChart 
+                  <AdminChart 
                     data={chartData} 
                     type="radar" 
                     theme="light" 

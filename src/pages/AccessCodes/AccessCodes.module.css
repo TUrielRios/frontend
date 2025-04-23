@@ -1,0 +1,400 @@
+.codesPage {
+    padding: 2rem;
+  }
+  
+  .content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .header {
+    margin-bottom: 2rem;
+  }
+  
+  .titleSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .header h1 {
+    color: #0000ff;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  
+  .createButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #0000ff;
+    border: none;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+  }
+  
+  .createButton:hover {
+    background: #0000cc;
+  }
+  
+  .newCodeFormContainer {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 255, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .newCodeForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .formGroup label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .formGroup input,
+  .formGroup select {
+    padding: 0.75rem;
+    border: 1px solid #e0e0ff;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  
+  .formGroup input:focus,
+  .formGroup select:focus {
+    outline: none;
+    border-color: #0000ff;
+  }
+  
+  .codeInputGroup {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .codeInputGroup input {
+    flex: 1;
+  }
+  
+  .generateBtn {
+    background: #f0f0ff;
+    color: #0000ff;
+    border: none;
+    border-radius: 4px;
+    padding: 0 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .generateBtn:hover {
+    background: #e0e0ff;
+  }
+  
+  .formActions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+  
+  .submitBtn {
+    background: #0000ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .submitBtn:hover {
+    background: #0000cc;
+  }
+  
+  .submitBtn:disabled {
+    background: #b0b0ff;
+    cursor: not-allowed;
+  }
+  
+  .message {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .success {
+    background: #e8fff3;
+    color: #00a069;
+  }
+  
+  .error {
+    background: #fff0f0;
+    color: #d32f2f;
+  }
+  
+  .clearFiltersBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f0f0ff;
+    border: none;
+    color: #0000ff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .clearFiltersBtn:hover {
+    background: #e0e0ff;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .searchBar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+    flex: 1;
+    max-width: 300px;
+    position: relative;
+  }
+  
+  .searchBar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.875rem;
+  }
+  
+  .clearSearchBtn {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .filterGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  }
+  
+  .filterGroup select {
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    color: #333;
+    background: none;
+  }
+  
+  .codesList {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+    overflow: hidden;
+  }
+  
+  .resultsCount {
+    padding: 1rem;
+    color: #666;
+    font-size: 0.875rem;
+    border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+  }
+  
+  .noResults {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+  }
+  
+  .noResults p {
+    margin-bottom: 1rem;
+  }
+  
+  .codesTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .codesTable th,
+  .codesTable td {
+    padding: 1rem;
+    text-align: left;
+  }
+  
+  .codesTable th {
+    background: #f8f8ff;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .codeRow {
+    transition: background-color 0.2s;
+  }
+  
+  .codeRow:hover {
+    background: #f0f0ff;
+  }
+  
+  .codeCell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .codeText {
+    font-family: monospace;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  
+  .codeType {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .admin {
+    background: #ffedf0;
+    color: #d32f2f;
+  }
+  
+  .general {
+    background: #e8fff3;
+    color: #00a069;
+  }
+  
+  .codeStatus {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .available {
+    background: #e8fff3;
+    color: #00a069;
+  }
+  
+  .used {
+    background: #f0f0ff;
+    color: #666;
+  }
+  
+  .deleteBtn {
+    background: none;
+    border: none;
+    color: #d32f2f;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  
+  .deleteBtn:hover {
+    background: #ffedf0;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 1rem;
+    color: #0000ff;
+  }
+  
+  .error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 1rem;
+    color: #d32f2f;
+  }
+  
+  @media (max-width: 1024px) {
+    .filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .searchBar {
+      max-width: none;
+    }
+    
+    .newCodeForm {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .codesPage {
+      padding: 1rem;
+    }
+    
+    .content {
+      padding: 1rem;
+    }
+    
+    .codesTable {
+      font-size: 0.75rem;
+    }
+    
+    .codesTable th,
+    .codesTable td {
+      padding: 0.75rem 0.5rem;
+    }
+  }

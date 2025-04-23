@@ -18,7 +18,7 @@ const QuestionPhase = ({
       <div className={styles.questionContent}>
         <div className={styles.questionHeader}>
           <img src={PhaseIcon} alt="" className={styles.questionIcon} />
-          <span>{phase}</span>
+          <span className={styles.questionPhaseName}>{phase}</span>
         </div>
         <div className={styles.questionBody}>
           <h2 className={styles.questionTitle}>

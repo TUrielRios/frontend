@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import styles from "./AdminRadarChart.module.css"
+import styles from "./AdminChart.module.css"
 // Importar los iconos GIF
 import validacionSocialIcono from "../../assets/iconos-animados/validacion-social-icono.gif"
 import atractivoIcono from "../../assets/iconos-animados/atractivo-icono.gif"
@@ -10,7 +10,7 @@ import autoridadIcono from "../../assets/iconos-animados/autoridad-icono.gif"
 import autenticidadIcono from "../../assets/iconos-animados/autenticidad-icono.gif"
 import consistenciaIcono from "../../assets/iconos-animados/compromiso-icono.gif"
 
-const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases = [] }) => {
+const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases = [] }) => {
   const [animatedData, setAnimatedData] = useState({
     ATRACTIVO: 0,
     "VALIDACIÓN SOCIAL": 0,
@@ -288,7 +288,7 @@ const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPh
               {/* Iconos GIF */}
               <image 
                 href={icons[index]} 
-                x={x - 18} 
+                x={x - 15} 
                 y={y - 38} 
                 width="32" 
                 height="32" 
@@ -302,4 +302,4 @@ const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPh
   )
 }
 
-export default AdminRadarChart
+export default AdminChart

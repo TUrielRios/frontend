@@ -14,10 +14,11 @@
   }
   
   .resultsTitle {
-    font-size: 2rem;
-    font-weight: 400;
+    font-size: 58px;
+    font-weight: 600;
+    line-height: 1.2;
     color: white;
-    margin-bottom: 1.5rem;
+    margin-bottom: 30px;
   }
   
   .resultsText {
@@ -27,8 +28,10 @@
   }
   
   .resultsText p {
-    margin-bottom: 1.5rem;
-  }
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 500;
+    margin-bottom: 54px;  }
   
   .contactLink {
     color: #00ffff;

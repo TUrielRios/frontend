@@ -1,13 +1,12 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
-import logo from "../../assets/logo.png"
 import gif from "../../assets/diamante-animacion-dos.gif"
 import Header from "../../components/Header/Header"
 import { ChevronDown } from "lucide-react"
 import textos from "../../constants/constants"
+import logoLight from "../../assets/logo.png"
+import logoDark from "../../assets/logo-black.png"
 
 const Form = () => {
   const navigate = useNavigate()
@@ -17,17 +16,71 @@ const Form = () => {
     // Campos comunes
     compania: "",
     industriaSector: "",
+    industriaSectorOtro: "",
     areaDesempeno: "",
+    areaDesempenoOtro: "",
     // Campos específicos de curso
     nombre: "",
     apellido: "",
     email: "",
     cargo: "",
+    cargoOtro: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
   const [loading, setLoading] = useState(false)
+  
+  // Estado para almacenar las opciones de los dropdowns
+  const [dropdownOptions, setDropdownOptions] = useState({
+    industriaSector: [],
+    areaDesempeno: [],
+    cargo: []
+  })
+  
+  // Estado para controlar la carga de los desplegables
+  const [loadingDropdowns, setLoadingDropdowns] = useState({
+    industriaSector: false,
+    areaDesempeno: false,
+    cargo: false
+  })
+
+  // Función para cargar las opciones de los dropdowns desde la API
+  const cargarOpcionesDropdown = async () => {
+    const endpoints = {
+      industriaSector: "https://lacocina-backend-deploy.vercel.app/desplegables/industriaSector",
+      areaDesempeno: "https://lacocina-backend-deploy.vercel.app/desplegables/areaDesempeno",
+      cargo: "https://lacocina-backend-deploy.vercel.app/desplegables/cargo"
+    }
+    
+    // Para cada categoría, inicializamos la carga y hacemos la petición
+    for (const [category, url] of Object.entries(endpoints)) {
+      setLoadingDropdowns(prev => ({ ...prev, [category]: true }))
+      
+      try {
+        const response = await fetch(url)
+        
+        if (!response.ok) {
+          throw new Error(`Error al cargar opciones de ${category}: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        
+        // Ordenamos las opciones según el campo "orden"
+        const sortedOptions = data.sort((a, b) => a.orden - b.orden)
+          .map(item => item.valor)
+        
+        setDropdownOptions(prev => ({
+          ...prev,
+          [category]: sortedOptions
+        }))
+      } catch (err) {
+        console.error(`Error al cargar opciones de ${category}:`, err)
+      } finally {
+        setLoadingDropdowns(prev => ({ ...prev, [category]: false }))
+      }
+    }
+  }
 
   // Función para cargar el texto según el tipo de formulario
   const cargarTexto = async (tipo) => {
@@ -54,6 +107,11 @@ const Form = () => {
       setLoading(false)
     }
   }
+
+  // Cargar las opciones de los dropdowns al montar el componente
+  useEffect(() => {
+    cargarOpcionesDropdown()
+  }, [])
 
   // Efecto para cargar el texto cuando cambia el tipo de formulario
   useEffect(() => {
@@ -96,8 +154,12 @@ const Form = () => {
       const userData = {
         modalidad: formType === "taller" ? "Taller" : "Curso",
         compania: formData.compania,
-        industriaSector: formData.industriaSector || "",
-        areaDesempeno: formData.areaDesempeno || "",
+        industriaSector: formData.industriaSector === "Otro" && formData.industriaSectorOtro 
+          ? `Otro: ${formData.industriaSectorOtro}` 
+          : formData.industriaSector || "",
+        areaDesempeno: formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro 
+          ? `Otro: ${formData.areaDesempenoOtro}` 
+          : formData.areaDesempeno || "",
         validacionSocial: null,
         atractivo: null,
         reciprocidad: null,
@@ -113,9 +175,9 @@ const Form = () => {
         userData.email = formData.email
         userData.curso = "Curso IAE Comunicación Institucional 250311" // Valor por defecto
         userData.compania = formData.compania
-        userData.industriaSector = formData.industriaSector || ""
-        userData.areaDesempeno = formData.areaDesempeno || ""
-        userData.cargo = formData.cargo || ""
+        userData.cargo = formData.cargo === "Otro" && formData.cargoOtro 
+          ? `Otro: ${formData.cargoOtro}` 
+          : formData.cargo || ""
       }
 
       console.log("Enviando datos al backend:", userData)
@@ -166,6 +228,76 @@ const Form = () => {
     setFormType(null)
   }
 
+  // Función para renderizar opciones dinámicas de un dropdown
+  const renderDropdownOptions = (categoryId) => {
+    const options = dropdownOptions[categoryId] || []
+    const isLoading = loadingDropdowns[categoryId]
+    
+    if (isLoading) {
+      return <option value="">Cargando opciones...</option>
+    }
+    
+    if (options.length > 0) {
+      return options.map((option, index) => (
+        <option key={index} value={option}>{option}</option>
+      ))
+    }
+    
+    // Opciones de fallback por si falla la carga de la API
+    return categoryId === "industriaSector" ? (
+      <>
+        <option value="Tecnología / Software">Tecnología / Software</option>
+        <option value="Servicios Financieros">Servicios Financieros</option>
+        <option value="Educación / Academia">Educación / Academia</option>
+        <option value="Salud / Farmacia">Salud / Farmacia</option>
+        <option value="Cosmética">Cosmética</option>
+        <option value="Turismo">Turismo</option>
+        <option value="Alimentación y Bebidas">Alimentación y Bebidas</option>
+        <option value="Moda / Indumentaria">Moda / Indumentaria</option>
+        <option value="Energía">Energía</option>
+        <option value="Consultoría">Consultoría</option>
+        <option value="Gobierno / ONGs">Gobierno / ONGs</option>
+        <option value="Entretenimiento / Medios">Entretenimiento / Medios</option>
+        <option value="Transporte / Logística">Transporte / Logística</option>
+        <option value="Automotriz">Automotriz</option>
+        <option value="Construcción / Infraestructura">Construcción / Infraestructura</option>
+        <option value="Agricultura">Agricultura</option>
+        <option value="Decoración / Hogar">Decoración / Hogar</option>
+        <option value="Higiene / Bienestar">Higiene / Bienestar</option>
+        <option value="Otro">Otro</option>
+      </>
+    ) : categoryId === "areaDesempeno" ? (
+      <>
+        <option value="Directorio">Directorio</option>
+        <option value="Administración/Finanzas">Administración/Finanzas</option>
+        <option value="Comercial/Ventas">Comercial/Ventas</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Diseño/Comunicación">Diseño/Comunicación</option>
+        <option value="Recursos Humanos">Recursos Humanos</option>
+        <option value="Legales">Legales</option>
+        <option value="Investigación y desarrollo">Investigación y desarrollo</option>
+        <option value="Ingeniería de planta">Ingeniería de planta</option>
+        <option value="Otro">Otro</option>
+      </>
+    ) : categoryId === "cargo" ? (
+      <>
+        <option value="CEO / Fundador">CEO / Fundador</option>
+        <option value="Director(a) de marketing">Director(a) de marketing</option>
+        <option value="Director(a) de comunicación">Director(a) de comunicación</option>
+        <option value="Gerente de producto">Gerente de producto</option>
+        <option value="Gerente de marca">Gerente de marca</option>
+        <option value="Consultor(a)">Consultor(a)</option>
+        <option value="Emprendedor(a)">Emprendedor(a)</option>
+        <option value="Diseñador(a)">Diseñador(a)</option>
+        <option value="Community manager">Community manager</option>
+        <option value="Freelancer">Freelancer</option>
+        <option value="Académico / Docente">Académico / Docente</option>
+        <option value="Estudiante">Estudiante</option>
+        <option value="Otro">Otro</option>
+      </>
+    ) : null
+  }
+
   // Formulario para TALLER
   const renderTallerForm = () => {
     return (
@@ -198,28 +330,22 @@ const Form = () => {
               required
             >
               <option value="">Seleccione una opción</option>
-              <option value="Tecnología / Software">Tecnología / Software</option>
-              <option value="Servicios Financieros">Servicios Financieros</option>
-              <option value="Educación / Academia">Educación / Academia</option>
-              <option value="Salud / Farmacia">Salud / Farmacia</option>
-              <option value="Cosmética">Cosmética</option>
-              <option value="Turismo">Turismo</option>
-              <option value="Alimentación y Bebidas">Alimentación y Bebidas</option>
-              <option value="Moda / Indumentaria">Moda / Indumentaria</option>
-              <option value="Energía">Energía</option>
-              <option value="Consultoría">Consultoría</option>
-              <option value="Gobierno / ONGs">Gobierno / ONGs</option>
-              <option value="Entretenimiento / Medios">Entretenimiento / Medios</option>
-              <option value="Transporte / Logística">Transporte / Logística</option>
-              <option value="Automotriz">Automotriz</option>
-              <option value="Construcción / Infraestructura">Construcción / Infraestructura</option>
-              <option value="Agricultura">Agricultura</option>
-              <option value="Decoración / Hogar">Decoración / Hogar</option>
-              <option value="Higiene / Bienestar">Higiene / Bienestar</option>
-              <option value="Otro">Otro</option>
+              {renderDropdownOptions("industriaSector")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
+          {formData.industriaSector === "Otro" && (
+            <input
+              type="text"
+              name="industriaSectorOtro"
+              value={formData.industriaSectorOtro}
+              onChange={handleInputChange}
+              placeholder="Especifique la industria/sector"
+              className={styles.inputlarge}
+              style={{ marginTop: "10px" }}
+              required
+            />
+          )}
         </div>
 
         <div className={styles.formGroup}>
@@ -233,19 +359,22 @@ const Form = () => {
               required
             >
               <option value="">Seleccione una opción</option>
-              <option value="Directorio">Directorio</option>
-              <option value="Administración/Finanzas">Administración/Finanzas</option>
-              <option value="Comercial/Ventas">Comercial/Ventas</option>
-              <option value="Marketing"> Marketing</option>
-              <option value="Diseño/Comunicación">Diseño/Comunicación</option>
-              <option value="Recursos Humanos">Recursos Humanos</option>
-              <option value="Legales">Legales</option>
-              <option value="Investigación y desarrollo">Investigación y desarrollo</option>
-              <option value="Ingeniería de planta">Ingeniería de planta</option>
-              <option value="Otro">Otro</option>
+              {renderDropdownOptions("areaDesempeno")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
+          {formData.areaDesempeno === "Otro" && (
+            <input
+              type="text"
+              name="areaDesempenoOtro"
+              value={formData.areaDesempenoOtro}
+              onChange={handleInputChange}
+              placeholder="Especifique el área de desempeño"
+              className={styles.inputlarge}
+              style={{ marginTop: "10px" }}
+              required
+            />
+          )}
         </div>
 
         <div className={styles.checkboxGroup}>
@@ -361,28 +490,22 @@ const Form = () => {
               required
             >
               <option value="">Seleccione una opción</option>
-              <option value="Tecnología / Software">Tecnología / Software</option>
-              <option value="Servicios Financieros">Servicios Financieros</option>
-              <option value="Educación / Academia">Educación / Academia</option>
-              <option value="Salud / Farmacia">Salud / Farmacia</option>
-              <option value="Cosmética">Cosmética</option>
-              <option value="Turismo">Turismo</option>
-              <option value="Alimentación y Bebidas">Alimentación y Bebidas</option>
-              <option value="Moda / Indumentaria">Moda / Indumentaria</option>
-              <option value="Energía">Energía</option>
-              <option value="Consultoría">Consultoría</option>
-              <option value="Gobierno / ONGs">Gobierno / ONGs</option>
-              <option value="Entretenimiento / Medios">Entretenimiento / Medios</option>
-              <option value="Transporte / Logística">Transporte / Logística</option>
-              <option value="Automotriz">Automotriz</option>
-              <option value="Construcción / Infraestructura">Construcción / Infraestructura</option>
-              <option value="Agricultura">Agricultura</option>
-              <option value="Decoración / Hogar">Decoración / Hogar</option>
-              <option value="Higiene / Bienestar">Higiene / Bienestar</option>
-              <option value="Otro">Otro</option>
+              {renderDropdownOptions("industriaSector")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
+          {formData.industriaSector === "Otro" && (
+            <input
+              type="text"
+              name="industriaSectorOtro"
+              value={formData.industriaSectorOtro}
+              onChange={handleInputChange}
+              placeholder="Especifique la industria/sector"
+              className={styles.inputlarge}
+              style={{ marginTop: "10px" }}
+              required
+            />
+          )}
         </div>
 
         <div className={styles.formGroup}>
@@ -396,19 +519,22 @@ const Form = () => {
               required
             >
               <option value="">Seleccione una opción</option>
-              <option value="Directorio">Directorio</option>
-              <option value="Administración/Finanzas">Administración/Finanzas</option>
-              <option value="Comercial/Ventas">Comercial/Ventas</option>
-              <option value="Marketing"> Marketing</option>
-              <option value="Diseño/Comunicación">Diseño/Comunicación</option>
-              <option value="Recursos Humanos">Recursos Humanos</option>
-              <option value="Legales">Legales</option>
-              <option value="Investigación y desarrollo">Investigación y desarrollo</option>
-              <option value="Ingeniería de planta">Ingeniería de planta</option>
-              <option value="Otro">Otro</option>
+              {renderDropdownOptions("areaDesempeno")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
+          {formData.areaDesempeno === "Otro" && (
+            <input
+              type="text"
+              name="areaDesempenoOtro"
+              value={formData.areaDesempenoOtro}
+              onChange={handleInputChange}
+              placeholder="Especifique el área de desempeño"
+              className={styles.inputlarge}
+              style={{ marginTop: "10px" }}
+              required
+            />
+          )}
         </div>
 
         <div className={styles.formGroup}>
@@ -422,22 +548,22 @@ const Form = () => {
               required
             >
               <option value="">Seleccione una opción</option>
-              <option value="CEO / Fundador">CEO / Fundador</option>
-              <option value="Director(a) de marketing">Director(a) de marketing</option>
-              <option value="Director(a) de comunicación">Director(a) de comunicación</option>
-              <option value="Gerente de producto">Gerente de producto</option>
-              <option value="Gerente de marca">Gerente de marca</option>
-              <option value="Consultor(a)">Consultor(a)</option>
-              <option value="Emprendedor(a)">Emprendedor(a)</option>
-              <option value="Diseñador(a)">Diseñador(a)</option>
-              <option value="Community manager">Community manager</option>
-              <option value="Freelancer">Freelancer</option>
-              <option value="Académico / Docente">Académico / Docente</option>
-              <option value="Estudiante">Estudiante</option>
-              <option value="Otro">Otro</option>
+              {renderDropdownOptions("cargo")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
+          {formData.cargo === "Otro" && (
+            <input
+              type="text"
+              name="cargoOtro"
+              value={formData.cargoOtro}
+              onChange={handleInputChange}
+              placeholder="Especifique el cargo/posición"
+              className={styles.inputlarge}
+              style={{ marginTop: "10px" }}
+              required
+            />
+          )}
         </div>
 
         <div className={styles.checkboxGroup}>
@@ -468,7 +594,7 @@ const Form = () => {
 
   return (
     <div className={styles.container}>
-      <Header logo={logo} />
+      <Header logoDark={logoDark} logoLight={logoLight} />
 
       <main className={styles.main}>
         {/* Columna izquierda con el contenido y botones */}

@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import styles from "./Questionnaire.module.css"
 import { ThumbsUp } from "lucide-react"
-import logo from "../../assets/logo.png"
+import logoLight from "../../assets/logo.png" // Import as logoLight
+import logoDark from "../../assets/logo-black.png" // You'll need to add this dark version of the logo
 // Componentes
 import Header from "../../components/Header/Header"
 import IntroPhase from "../../components/IntroPhase/IntroPhase"
@@ -26,6 +27,7 @@ const Questionnaire = () => {
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
   const [startedPhases, setStartedPhases] = useState([])
+  const [theme, setTheme] = useState("dark")
 
   const [userId, setUserId] = useState(null)
   const [selectedModalidad, setSelectedModalidad] = useState(() => {
@@ -33,6 +35,11 @@ const Questionnaire = () => {
     return localStorage.getItem("selectedModalidad") || "Curso"
   })
 
+  // Set theme based on showIntro state
+  useEffect(() => {
+    setTheme(showIntro ? "light" : "dark")
+  }, [showIntro])
+  
   // Cargar el ID del usuario desde localStorage
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId")
@@ -251,8 +258,8 @@ const Questionnaire = () => {
   // Renderizar la pantalla de resultados finales
   if (isCompleted) {
     return (
-      <div className={styles.wrapper}>
-        <Header logo={logo} />
+      <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
+        <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
         <ResultsPhase
           phaseScores={phaseScores}
           onDownloadBook={handleDownloadBook}
@@ -263,8 +270,8 @@ const Questionnaire = () => {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <Header logo={logo} />
+    <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
+      <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
       <main className={styles.container}>
         {showIntro ? (
           <IntroPhase
@@ -296,9 +303,8 @@ const Questionnaire = () => {
                   AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
                   "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
                 }}
-                theme="dark"
-                startedPhases={startedPhases
-                }
+                theme={theme}
+                startedPhases={startedPhases}
               />
             </aside>
           </div>
@@ -309,4 +315,3 @@ const Questionnaire = () => {
 }
 
 export default Questionnaire
-

@@ -1,16 +1,14 @@
-import { User } from "lucide-react"
 import styles from "./Header.module.css"
 
-const Header = ({ logo }) => {
+const Header = ({ logoLight, logoDark, theme="dark" }) => {
+  // Use the appropriate logo based on the current theme
+  const logoSrc = theme === "light" ? logoDark : logoLight;
+  
   return (
     <header className={styles.header}>
-      <img src={logo || "/placeholder.svg"} alt="La Cocina" className={styles.logo} />
-      <button className={styles.userButton}>
-        <User size={24} />
-      </button>
+      <img src={logoSrc || "/placeholder.svg"} alt="La Cocina" className={styles.logo} />
     </header>
   )
 }
 
 export default Header
-

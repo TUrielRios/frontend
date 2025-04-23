@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { Search, Filter, X } from "lucide-react"
+import { useState, useEffect, React } from "react"
+import { Search, Filter, X, RefreshCw } from "lucide-react"
 import styles from "./Users.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 import UserModal from "./UserModal"
@@ -13,56 +13,70 @@ const Users = () => {
   })
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState(null)
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const usersPerPage = 10
+
+  // Fetch users function extracted for reusability
+  const fetchUsers = async () => {
+    try {
+      setLoading(true)
+      
+      // Obtener usuarios de Taller y Curso en paralelo
+      const [tallerResponse, cursoResponse] = await Promise.all([
+        fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller"),
+        fetch("https://lacocina-backend-deploy.vercel.app/usuarios/curso")
+      ])
+
+      if (!tallerResponse.ok || !cursoResponse.ok) {
+        throw new Error("Error al cargar usuarios")
+      }
+
+      const tallerUsers = await tallerResponse.json()
+      const cursoUsers = await cursoResponse.json()
+
+      // Mapear a formato común
+      const formattedTallerUsers = tallerUsers.map(user => ({
+        ...user,
+        modalidad: 'Taller',
+        name: `Usuario ${user.codigoTaller}`,
+        email: '',
+        role: 'Participante Taller',
+        completionDate: user.createdAt
+      }))
+
+      const formattedCursoUsers = cursoUsers.map(user => ({
+        ...user,
+        modalidad: 'Curso',
+        name: `${user.nombre} ${user.apellido}`,
+        email: user.email,
+        role: user.cargo || 'Participante Curso',
+        completionDate: user.createdAt
+      }))
+
+      setUsers([...formattedTallerUsers, ...formattedCursoUsers])
+      setLoading(false)
+      setIsRefreshing(false)
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+      setIsRefreshing(false)
+    }
+  }
 
   // Obtener usuarios reales del backend
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true)
-        
-        // Obtener usuarios de Taller y Curso en paralelo
-        const [tallerResponse, cursoResponse] = await Promise.all([
-          fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller"),
-          fetch("https://lacocina-backend-deploy.vercel.app/usuarios/curso")
-        ])
-
-        if (!tallerResponse.ok || !cursoResponse.ok) {
-          throw new Error("Error al cargar usuarios")
-        }
-
-        const tallerUsers = await tallerResponse.json()
-        const cursoUsers = await cursoResponse.json()
-
-        // Mapear a formato común
-        const formattedTallerUsers = tallerUsers.map(user => ({
-          ...user,
-          modalidad: 'Taller',
-          name: `Usuario ${user.codigoTaller}`,
-          email: '',
-          role: 'Participante Taller',
-          completionDate: user.createdAt
-        }))
-
-        const formattedCursoUsers = cursoUsers.map(user => ({
-          ...user,
-          modalidad: 'Curso',
-          name: `${user.nombre} ${user.apellido}`,
-          email: user.email,
-          role: user.cargo || 'Participante Curso',
-          completionDate: user.createdAt
-        }))
-
-        setUsers([...formattedTallerUsers, ...formattedCursoUsers])
-        setLoading(false)
-      } catch (err) {
-        setError(err.message)
-        setLoading(false)
-      }
-    }
-
     fetchUsers()
   }, [])
+
+  // Handle reload button click
+  const handleReload = () => {
+    setIsRefreshing(true)
+    fetchUsers()
+  }
 
   // Calcular score promedio para cada usuario
   const usersWithScore = users.map(user => {
@@ -105,6 +119,15 @@ const Users = () => {
     return matchesSearch && matchesModalidad && matchesIndustry
   })
 
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage
+  const indexOfFirstUser = indexOfLastUser - usersPerPage
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser)
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage)
+
+  // Function to change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+
   // Limpiar todos los filtros
   const clearFilters = () => {
     setSearchTerm("")
@@ -112,12 +135,13 @@ const Users = () => {
       modalidad: "",
       industry: "",
     })
+    setCurrentPage(1) // Reset to first page when clearing filters
   }
 
   // Verificar si hay filtros activos
   const hasActiveFilters = searchTerm || filters.modalidad || filters.industry
 
-  if (loading) return <div className={styles.loading}>Cargando usuarios...</div>
+  if (loading && !isRefreshing) return <div className={styles.loading}>Cargando usuarios...</div>
   if (error) return <div className={styles.error}>Error: {error}</div>
 
   return (
@@ -153,7 +177,10 @@ const Users = () => {
               <Filter size={20} />
               <select 
                 value={filters.modalidad}
-                onChange={(e) => setFilters(prev => ({ ...prev, modalidad: e.target.value }))}
+                onChange={(e) => {
+                  setFilters(prev => ({ ...prev, modalidad: e.target.value }))
+                  setCurrentPage(1) // Reset to first page when changing filter
+                }}
               >
                 <option value="">Todas las modalidades</option>
                 <option value="Taller">Taller</option>
@@ -163,7 +190,10 @@ const Users = () => {
             <div className={styles.filterGroup}>
               <select
                 value={filters.industry}
-                onChange={(e) => setFilters(prev => ({ ...prev, industry: e.target.value }))}
+                onChange={(e) => {
+                  setFilters(prev => ({ ...prev, industry: e.target.value }))
+                  setCurrentPage(1) // Reset to first page when changing filter
+                }}
               >
                 <option value="">Todas las industrias</option>
                 {industries.map((industry) => (
@@ -173,6 +203,14 @@ const Users = () => {
                 ))}
               </select>
             </div>
+            <button 
+              className={`${styles.reloadBtn} ${isRefreshing ? styles.spinning : ''}`}
+              onClick={handleReload}
+              disabled={isRefreshing}
+            >
+              <RefreshCw size={20} />
+              {isRefreshing ? 'Actualizando...' : 'Actualizar'}
+            </button>
           </div>
         </div>
 
@@ -187,7 +225,7 @@ const Users = () => {
           ) : (
             <>
               <div className={styles.resultsCount}>
-                Mostrando {filteredUsers.length} de {users.length} usuarios
+                Mostrando {Math.min(indexOfFirstUser + 1, filteredUsers.length)}-{Math.min(indexOfLastUser, filteredUsers.length)} de {filteredUsers.length} usuarios
               </div>
               <table className={styles.usersTable}>
                 <thead>
@@ -201,53 +239,108 @@ const Users = () => {
                   </tr>
                 </thead>
                 <tbody>
-                {filteredUsers.map((user) => (
-  <tr key={user.id} onClick={() => setSelectedUser(user)} className={styles.userRow}>
-    <td>
-      <div className={styles.userName}>
-        <span className={styles.nameInitial}>
-          {user.modalidad === 'Taller' ? 'T' : user.name.charAt(0)}
-        </span>
-        <div>
-          <p>
-            {user.modalidad === 'Taller' 
-              ? `Usuario Taller del ${new Date(user.createdAt).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric'
-                })}`
-              : user.name}
-          </p>
-          {user.email && <small>{user.email}</small>}
-          {user.modalidad === 'Taller' && (
-            <small className={styles.tallerCode}>{user.codigoTaller}</small>
-          )}
-        </div>
-      </div>
-    </td>
-    <td>{user.compania}</td>
-    <td>
-      <span className={`${styles.userType} ${user.modalidad === 'Taller' ? styles.taller : styles.curso}`}>
-        {user.modalidad}
-      </span>
-    </td>
-    <td>{user.industriaSector}</td>
-    <td>
-      {new Date(user.createdAt).toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      })}
-    </td>
-    <td>
-      <span className={styles.score}>
-        {user.score ? user.score.toFixed(1) : 'N/A'}
-      </span>
-    </td>
-  </tr>
-))}
+                  {currentUsers.map((user) => (
+                    <tr key={user.id || user._id} onClick={() => setSelectedUser(user)} className={styles.userRow}>
+                      <td>
+                        <div className={styles.userName}>
+                          <span className={styles.nameInitial}>
+                            {user.modalidad === 'Taller' ? 'T' : user.name.charAt(0)}
+                          </span>
+                          <div>
+                            <p>
+                              {user.modalidad === 'Taller' 
+                                ? `Usuario Taller del ${new Date(user.createdAt).toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                  })}`
+                                : user.name}
+                            </p>
+                            {user.email && <small>{user.email}</small>}
+                            {user.modalidad === 'Taller' && (
+                              <small className={styles.tallerCode}>{user.codigoTaller}</small>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td>{user.compania}</td>
+                      <td>
+                        <span className={`${styles.userType} ${user.modalidad === 'Taller' ? styles.taller : styles.curso}`}>
+                          {user.modalidad}
+                        </span>
+                      </td>
+                      <td>{user.industriaSector}</td>
+                      <td>
+                        {new Date(user.createdAt).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        })}
+                      </td>
+                      <td>
+                        <span className={styles.score}>
+                          {user.score ? user.score.toFixed(1) : 'N/A'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
+              
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <button 
+                    onClick={() => paginate(currentPage - 1)} 
+                    disabled={currentPage === 1}
+                    className={styles.paginationBtn}
+                  >
+                    Anterior
+                  </button>
+                  
+                  <div className={styles.pageNumbers}>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(number => 
+                        number === 1 || 
+                        number === totalPages || 
+                        Math.abs(number - currentPage) <= 1
+                      )
+                      .map((number, index, array) => {
+                        // Add ellipsis if there are gaps
+                        if (index > 0 && array[index - 1] !== number - 1) {
+                          return (
+                            <React.Fragment key={`ellipsis-${number}`}>
+                              <span className={styles.ellipsis}>...</span>
+                              <button
+                                onClick={() => paginate(number)}
+                                className={`${styles.pageNumber} ${currentPage === number ? styles.activePage : ''}`}
+                              >
+                                {number}
+                              </button>
+                            </React.Fragment>
+                          )
+                        }
+                        return (
+                          <button
+                            key={number}
+                            onClick={() => paginate(number)}
+                            className={`${styles.pageNumber} ${currentPage === number ? styles.activePage : ''}`}
+                          >
+                            {number}
+                          </button>
+                        )
+                      })}
+                  </div>
+                  
+                  <button 
+                    onClick={() => paginate(currentPage + 1)} 
+                    disabled={currentPage === totalPages}
+                    className={styles.paginationBtn}
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>

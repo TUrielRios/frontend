@@ -1,14 +1,19 @@
 .radarContainer {
   width: 650px;
-  height: 450px;
+  height: 500px;
   position: relative;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 .radar {
+  display: block; /* Cambiado de flex a block */
   width: 100%;
   height: 100%;
+  z-index: 1;
+  margin: 0 auto;
+  overflow: visible; /* Asegura que nada se corte */
 }
-
 .hexBackground {
   fill: blue;
   stroke: #00ffff;

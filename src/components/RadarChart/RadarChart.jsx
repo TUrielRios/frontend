@@ -166,7 +166,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
 
   return (
     <div className={styles.radarContainer}>
-      <svg viewBox="0 0 400 400" className={styles.radar}>
+      <svg viewBox="0 0 450 450" className={styles.radar}>
         {/* Círculos de fondo - usar la función para generar los puntos del hexágono */}
         {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
           <polygon
@@ -220,15 +220,17 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
           let radius = 175
 
+
           // Ajusta dinámicamente el radio para evitar colisiones
           if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
-            radius = 204 // Aumenta el radio para estas etiquetas
+            radius = 214 // Aumenta el radio para estas etiquetas
+
           }
           if(label === "AUTENTICIDAD") {
-            radius = 182
+            radius = 204
           }
           if(label === "ATRACTIVO") {
-            radius = 176
+            radius = 190
           }
 
           const x = 200 + radius * Math.cos(angle)
@@ -247,7 +249,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                 width="90"
                 height="24"
                 style={{
-                  fill: theme === "dark" ? "none" : "rgba(255, 255, 255, 0.7)",
+                  fill: theme === "dark" ? "none" : "none",
                   rx: 4,
                   ry: 4,
                 }}
@@ -257,7 +259,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                 y={y}
                 style={{
                   fill: shouldHighlight ? colors.completedColor : colors.labelText,
-                  fontSize: "11px",
+                  fontSize: "14px",
                   fontWeight: shouldHighlight ? 700 : 500,
                   dominantBaseline: "middle",
                   textAnchor: "middle",
@@ -289,14 +291,14 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
               <image 
                 href={icons[index]} 
                 x={x - 18} 
-                y={y - 38} 
+                y={y -45} // Usamos el offset calculado
                 width="32" 
                 height="32" 
                 style={{
                   opacity: shouldHighlight ? 1 : 0.85,
-                  filter: shouldHighlight ? "brightness(10.2) hue-rotate(50deg)" : "brightness(2.2)",
-                }}
-              />
+                  filter: shouldHighlight ? "brightness(8) hue-rotate(14deg)" : "brightness(2.2)",
+overflow: "visible",               }}
+              />  
             </g>
           )
         })}

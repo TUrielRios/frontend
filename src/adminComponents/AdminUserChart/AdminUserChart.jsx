@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useRef } from "react"
 import Chart from "chart.js/auto"
 import styles from "./AdminUserChart.module.css"
@@ -10,12 +8,12 @@ import AdminGapRadarChart from "../AdminGapRadarChart/AdminGapRadarChart"
 const getChartColors = (type, dataLength) => {
   const colorSets = {
     doughnut: [
-      "rgba(10, 47, 241, 0.8)", // Azul
-      "rgba(255, 99, 132, 0.8)", // Rojo
-      "rgba(75, 192, 192, 0.8)", // Verde
-      "rgba(153, 102, 255, 0.8)", // Morado
-      "rgba(255, 159, 64, 0.8)", // Naranja
-      "rgba(54, 162, 235, 0.8)", // Azul claro
+      "#E93C2F", // 
+      "#F27011", // 
+      "#FABD05", // 
+      "#98C51D", // 
+      "#34A852", 
+      "#0A7AF2", "#0A2FF1","#7E11F2", "#C711F2", "#BEBEBE",
     ],
     polarArea: [
       "rgba(255, 99, 132, 0.8)", // Rojo

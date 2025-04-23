@@ -1,11 +1,11 @@
-import { Home, BarChart2, Users, Settings, HelpCircle } from "lucide-react"
+import { Home, BarChart2, Users, Settings, HelpCircle,Key } from "lucide-react"
 import styles from "./Sidebar.module.css"
 import logo from "../../assets/logo.png"
 
 const menuItems = [
   { id: "dashboard", icon: Home, label: "Dashboard" },
-  { id: "stats", icon: BarChart2, label: "Estadísticas" },
   { id: "users", icon: Users, label: "Usuarios" },
+  { id: "accessCodes", icon: Key, label: "Códigos de Acceso" },
   { id: "settings", icon: Settings, label: "Configuración" },
   { id: "help", icon: HelpCircle, label: "Ayuda" },
 ]

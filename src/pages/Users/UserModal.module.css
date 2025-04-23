@@ -239,6 +239,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     height: 500px;
+    
   }
   
   .chartCard h3 {
@@ -247,8 +248,8 @@
   }
   
   .chartContainer {
-    height: auto;
-    border: 1px solid white;
+    width: 100%;
+    height: 450px;
   }
 
   /* Estilos personalizados para los scrollbars */

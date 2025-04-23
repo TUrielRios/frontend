@@ -6,7 +6,10 @@ const OptionsList = ({ selectedOption, onSelect }) => {
   return (
     <div className={styles.options}>
       {OPTIONS.map((option) => (
-        <label key={option} className={styles.optionLabel}>
+        <label 
+          key={option} 
+          className={`${styles.optionLabel} ${selectedOption === option ? styles.selected : ''}`}
+        >
           <input
             type="radio"
             name="question"
@@ -15,6 +18,7 @@ const OptionsList = ({ selectedOption, onSelect }) => {
             onChange={(e) => onSelect(e.target.value)}
             className={styles.optionInput}
           />
+          <span className={styles.customRadio}></span>
           <span className={styles.optionText}>{option}</span>
         </label>
       ))}
@@ -23,4 +27,3 @@ const OptionsList = ({ selectedOption, onSelect }) => {
 }
 
 export default OptionsList
-

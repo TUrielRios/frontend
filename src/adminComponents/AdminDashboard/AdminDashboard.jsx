@@ -1,111 +1,23 @@
-"use client"
-
-import { useState, useRef } from "react"
-import { Download, Users, UserCheck, TrendingUp } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Download, Users, UserCheck, TrendingUp, X, Maximize, ChevronDown, ChevronUp } from "lucide-react"
 import AdminUserChart from "../AdminUserChart/AdminUserChart"
 import styles from "./AdminDashboard.module.css"
 import html2canvas from "html2canvas"
 import AdminHeader from "../AdminHeader/AdminHeader"
+import axios from "axios"
 
-// Datos de ejemplo para los gráficos de radar (escala 1-10)
-const directoryData = {
-  ATRACTIVO: 8,
-  RECIPROCIDAD: 7,
-  AUTORIDAD: 9,
-  AUTENTICIDAD: 7,
-  "CONSISTENCIA Y COMPROMISO": 6,
-  "VALIDACIÓN SOCIAL": 8,
-}
-
-const adminData = {
-  ATRACTIVO: 7,
-  RECIPROCIDAD: 6,
-  AUTORIDAD: 8,
-  AUTENTICIDAD: 9,
-  "CONSISTENCIA Y COMPROMISO": 8,
-  "VALIDACIÓN SOCIAL": 7,
-}
-
-const commercialData = {
-  ATRACTIVO: 6,
-  RECIPROCIDAD: 9,
-  AUTORIDAD: 7,
-  AUTENTICIDAD: 8,
-  "CONSISTENCIA Y COMPROMISO": 7,
-  "VALIDACIÓN SOCIAL": 9,
-}
-
-const marketingData = {
-  ATRACTIVO: 9,
-  RECIPROCIDAD: 7,
-  AUTORIDAD: 6,
-  AUTENTICIDAD: 7,
-  "CONSISTENCIA Y COMPROMISO": 8,
-  "VALIDACIÓN SOCIAL": 7,
-}
-
-const designData = {
-  ATRACTIVO: 8,
-  RECIPROCIDAD: 6,
-  AUTORIDAD: 8,
-  AUTENTICIDAD: 9,
-  "CONSISTENCIA Y COMPROMISO": 7,
-  "VALIDACIÓN SOCIAL": 6,
-}
-
-const hrData = {
-  ATRACTIVO: 7,
-  RECIPROCIDAD: 8,
-  AUTORIDAD: 7,
-  AUTENTICIDAD: 6,
-  "CONSISTENCIA Y COMPROMISO": 9,
-  "VALIDACIÓN SOCIAL": 8,
-}
-
-// Datos para el gráfico de resultado promedio
-const averageData = {
-  ATRACTIVO: 7.5,
-  RECIPROCIDAD: 7.2,
-  AUTORIDAD: 7.5,
-  AUTENTICIDAD: 7.7,
-  "CONSISTENCIA Y COMPROMISO": 7.5,
-  "VALIDACIÓN SOCIAL": 7.5,
-}
-
-// Datos para el gráfico de gap entre áreas
-const gapData = {
-  Directorio: directoryData,
-  Administración: adminData,
-  Comercial: commercialData,
-  Marketing: marketingData,
-  Diseño: designData,
-  RRHH: hrData,
-}
-
-// Áreas de desempeño con sus datos correspondientes
-const performanceAreas = [
-  { name: "Directorio", data: directoryData },
-  { name: "Administración / Finanzas", data: adminData },
-  { name: "Comercial / ventas", data: commercialData },
-  { name: "Marketing", data: marketingData },
-  { name: "Diseño / Comunicación", data: designData },
-  { name: "Recursos Humanos", data: hrData },
-]
-
-// Función para descargar un gráfico como PNG usando html2canvas
+// Función para descargar un gráfico como PNG
 const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
   if (!chartRef.current) return
 
   try {
-    // Usar html2canvas para capturar el elemento completo
     const canvas = await html2canvas(chartRef.current, {
       backgroundColor: null,
       useCORS: true,
       allowTaint: false,
-      scale: 2, // Mayor calidad
+      scale: 2,
     })
 
-    // Convertir a PNG y descargar
     const pngUrl = canvas.toDataURL("image/png")
     const downloadLink = document.createElement("a")
     downloadLink.href = pngUrl
@@ -117,6 +29,27 @@ const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
     console.error("Error al descargar el gráfico:", error)
     alert("Hubo un error al descargar el gráfico. Por favor, intente nuevamente.")
   }
+}
+
+// Componente para el modal de vista previa
+const ChartPreviewModal = ({ isOpen, onClose, title, chartData, chartType = "radar" }) => {
+  if (!isOpen) return null
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Vista previa: {title}</h2>
+          <button className={styles.closeButton} onClick={onClose}>
+            <X size={24} />
+          </button>
+        </div>
+        <div className={styles.modalBody}>
+          <AdminUserChart data={chartData} type={chartType} theme="light" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // Componente para las tarjetas de métricas
@@ -148,154 +81,398 @@ const MetricCard = ({ title, value, percentage, icon }) => {
 // Componente para los gráficos de radar por área
 const AreaRadarChart = ({ title, data }) => {
   const chartRef = useRef(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   const handleDownload = () => {
     downloadChartAsPNG(chartRef, `${title.replace(/\s+/g, "-").toLowerCase()}-radar.png`)
   }
 
+  const openPreview = () => {
+    setIsPreviewOpen(true)
+  }
+
+  const closePreview = () => {
+    setIsPreviewOpen(false)
+  }
+
   return (
-    <div className={styles.chartCard} ref={chartRef}>
-      <div className={styles.chartHeader}>
-        <div className={styles.chartTitle}>
-          <h3>{title}</h3>
+    <>
+      <div className={styles.chartCard} ref={chartRef}>
+        <div className={styles.chartHeader}>
+          <div className={styles.chartTitle}>
+            <h3>{title}</h3>
+          </div>
+        </div>
+        <div className={styles.chartBody}>
+          <AdminUserChart data={data} type="radar" theme="light" />
+        </div>
+        <div className={styles.chartFooter}>
+          <button className={styles.previewButton} onClick={openPreview}>
+            <span>Vista previa</span>
+            <Maximize size={16} />
+          </button>
+          <button className={styles.downloadButton} onClick={handleDownload}>
+            <span>Descargar resultado</span>
+            <Download size={16} />
+          </button>
         </div>
       </div>
-      <div className={styles.chartBody}>
-        <AdminUserChart data={data} type="radar" theme="light" />
-      </div>
-      <div className={styles.chartFooter}>
-        <button className={styles.downloadButton} onClick={handleDownload}>
-          <span>Descargar resultado</span>
-          <Download size={16} />
-        </button>
-      </div>
-    </div>
+      
+      <ChartPreviewModal 
+        isOpen={isPreviewOpen} 
+        onClose={closePreview} 
+        title={title} 
+        chartData={data} 
+      />
+    </>
   )
 }
 
 // Componente para el gráfico de resultado promedio
-const AverageRadarChart = () => {
+const AverageRadarChart = ({ data }) => {
   const chartRef = useRef(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   const handleDownload = () => {
     downloadChartAsPNG(chartRef, "resultado-promedio.png")
   }
 
+  const openPreview = () => {
+    setIsPreviewOpen(true)
+  }
+
+  const closePreview = () => {
+    setIsPreviewOpen(false)
+  }
+
   return (
-    <div className={styles.chartCard} ref={chartRef}>
-      <div className={styles.chartHeader}>
-        <div className={styles.chartTitle}>
-          <h3>Resultado Promedio</h3>
+    <>
+      <div className={styles.chartCard} ref={chartRef}>
+        <div className={styles.chartHeader}>
+          <div className={styles.chartTitle}>
+            <h3>Resultado Promedio</h3>
+          </div>
+        </div>
+        <div className={styles.chartBody}>
+          <AdminUserChart data={data} type="radar" theme="light" />
+        </div>
+        <div className={styles.chartFooter}>
+          <button className={styles.previewButton} onClick={openPreview}>
+            <span>Vista previa</span>
+            <Maximize size={16} />
+          </button>
+          <button className={styles.downloadButton} onClick={handleDownload}>
+            <span>Descargar resultado</span>
+            <Download size={16} />
+          </button>
         </div>
       </div>
-      <div className={styles.chartBody}>
-        <AdminUserChart data={averageData} type="radar" theme="light" />
-      </div>
-      <div className={styles.chartFooter}>
-        <button className={styles.downloadButton} onClick={handleDownload}>
-          <span>Descargar resultado</span>
-          <Download size={16} />
-        </button>
-      </div>
-    </div>
+      
+      <ChartPreviewModal 
+        isOpen={isPreviewOpen} 
+        onClose={closePreview} 
+        title="Resultado Promedio" 
+        chartData={data} 
+      />
+    </>
   )
 }
 
 // Componente para el gráfico de gap entre áreas
-const GapRadarChart = () => {
+const GapRadarChart = ({ data }) => {
   const chartRef = useRef(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   const handleDownload = () => {
     downloadChartAsPNG(chartRef, "gap-areas.png")
   }
 
+  const openPreview = () => {
+    setIsPreviewOpen(true)
+  }
+
+  const closePreview = () => {
+    setIsPreviewOpen(false)
+  }
+
   return (
-    <div className={styles.chartCard} ref={chartRef}>
-      <div className={styles.chartHeader}>
-        <div className={styles.chartTitle}>
-          <h3>Gap entre áreas</h3>
+    <>
+      <div className={styles.chartCard} ref={chartRef}>
+        <div className={styles.chartHeader}>
+          <div className={styles.chartTitle}>
+            <h3>Gap entre áreas</h3>
+          </div>
+        </div>
+        <div className={styles.chartBody}>
+          <AdminUserChart data={data} type="gaap" theme="light" />
+        </div>
+        <div className={styles.chartFooter}>
+          <button className={styles.previewButton} onClick={openPreview}>
+            <span>Vista previa</span>
+            <Maximize size={16} />
+          </button>
+          <button className={styles.downloadButton} onClick={handleDownload}>
+            <span>Descargar resultado</span>
+            <Download size={16} />
+          </button>
         </div>
       </div>
-      <div className={styles.chartBody}>
-        <AdminUserChart data={gapData} type="gaap" theme="light" />
-      </div>
-      <div className={styles.chartFooter}>
-        <button className={styles.downloadButton} onClick={handleDownload}>
-          <span>Descargar resultado</span>
-          <Download size={16} />
-        </button>
-      </div>
-    </div>
+      
+      <ChartPreviewModal 
+        isOpen={isPreviewOpen} 
+        onClose={closePreview} 
+        title="Gap entre áreas" 
+        chartData={data}
+        chartType="gaap" 
+      />
+    </>
   )
 }
 
+// Componente de acordeón para mostrar talleres anteriores
+const WorkshopAccordion = ({ workshop, index, isOpen, toggleAccordion }) => {
+  return (
+    <div className={styles.accordionItem}>
+      <div 
+        className={`${styles.accordionHeader} ${isOpen ? styles.active : ''}`}
+        onClick={() => toggleAccordion(index)}
+      >
+        <h3 className={styles.accordionTitle}>{workshop.nombre || `Taller ${index + 1}`}</h3>
+        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </div>
+      
+      {isOpen && (
+        <div className={styles.accordionContent}>
+          <div className={styles.chartsGrid}>
+            {workshop.areaResults && Object.keys(workshop.areaResults).map((area, idx) => (
+              <AreaRadarChart key={idx} title={area} data={workshop.areaResults[area]} />
+            ))}
+          </div>
+          
+          <div className={styles.chartsGrid}>
+            <AverageRadarChart data={workshop.averageResult} />
+            <GapRadarChart data={workshop.gapResult} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const [activePeriod, setActivePeriod] = useState("month")
+  const [workshops, setWorkshops] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [openAccordion, setOpenAccordion] = useState(null)
+  const [metrics, setMetrics] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    completionRate: 0
+  })
+
+  // Función para agrupar talleres por compañía y fecha
+  const groupWorkshops = (data) => {
+    const grouped = {};
+    
+    data.forEach(workshop => {
+      const key = `${workshop.compania}_${workshop.fecha}`;
+      if (!grouped[key]) {
+        grouped[key] = {
+          compania: workshop.compania,
+          fecha: workshop.createdAt,
+          industriaSector: workshop.industriaSector,
+          participantes: [],
+          data: []
+        };
+      }
+      grouped[key].data.push(workshop);
+    });
+    
+    return Object.values(grouped);
+  };
+
+  // Función para calcular promedios por área
+  const calculateAverages = (groupedWorkshops) => {
+    return groupedWorkshops.map(group => {
+      const areas = {};
+      
+      // Agrupar por área de desempeño
+      const areaGroups = {};
+      group.data.forEach(workshop => {
+        if (!areaGroups[workshop.areaDesempeno]) {
+          areaGroups[workshop.areaDesempeno] = [];
+        }
+        areaGroups[workshop.areaDesempeno].push(workshop);
+      });
+      
+      // Calcular promedio para cada área
+      Object.keys(areaGroups).forEach(area => {
+        const workshopsInArea = areaGroups[area];
+        const count = workshopsInArea.length;
+        
+        areas[area] = {
+          ATRACTIVO: workshopsInArea.reduce((sum, w) => sum + (w.atractivo || 0), 0) / count,
+          RECIPROCIDAD: workshopsInArea.reduce((sum, w) => sum + (w.reciprocidad || 0), 0) / count,
+          AUTORIDAD: workshopsInArea.reduce((sum, w) => sum + (w.autoridad || 0), 0) / count,
+          AUTENTICIDAD: workshopsInArea.reduce((sum, w) => sum + (w.autenticidad || 0), 0) / count,
+          "CONSISTENCIA Y COMPROMISO": workshopsInArea.reduce((sum, w) => sum + (w.consistenciaCompromiso || 0), 0) / count,
+          "VALIDACIÓN SOCIAL": workshopsInArea.reduce((sum, w) => sum + (w.validacionSocial || 0), 0) / count
+        };
+      });
+      
+      // Calcular promedio general
+      const allValues = [];
+      Object.values(areas).forEach(area => {
+        Object.values(area).forEach(value => allValues.push(value));
+      });
+      
+      const averageResult = {
+        ATRACTIVO: allValues.filter((_, i) => i % 6 === 0).reduce((a, b) => a + b, 0) / (allValues.length / 6),
+        RECIPROCIDAD: allValues.filter((_, i) => i % 6 === 1).reduce((a, b) => a + b, 0) / (allValues.length / 6),
+        AUTORIDAD: allValues.filter((_, i) => i % 6 === 2).reduce((a, b) => a + b, 0) / (allValues.length / 6),
+        AUTENTICIDAD: allValues.filter((_, i) => i % 6 === 3).reduce((a, b) => a + b, 0) / (allValues.length / 6),
+        "CONSISTENCIA Y COMPROMISO": allValues.filter((_, i) => i % 6 === 4).reduce((a, b) => a + b, 0) / (allValues.length / 6),
+        "VALIDACIÓN SOCIAL": allValues.filter((_, i) => i % 6 === 5).reduce((a, b) => a + b, 0) / (allValues.length / 6)
+      };
+      
+      return {
+        ...group,
+        nombre: `${group.compania} - ${new Date(group.fecha).toLocaleDateString()}`,
+        areaResults: areas,
+        averageResult,
+        gapResult: areas
+      };
+    });
+  };
+
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        setLoading(true)
+        const response = await axios.get('https://lacocina-backend-deploy.vercel.app/usuarios/taller')
+        
+        if (response.data && Array.isArray(response.data)) {
+          // Agrupar talleres por compañía y fecha
+          const grouped = groupWorkshops(response.data);
+          
+          // Calcular promedios
+          const processedWorkshops = calculateAverages(grouped);
+          
+          // Ordenar por fecha (más reciente primero)
+          const sortedWorkshops = processedWorkshops.sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+          );
+          
+          setWorkshops(sortedWorkshops);
+
+          //Obtener usuarios activos
+          const now = new Date();
+          const currentMonth = now.getMonth(); // Mes actual (0-11)
+          const currentYear = now.getFullYear(); // Año actual
+          const usersThisMonth = response.data.filter(user => {
+            const createdAt = new Date(user.createdAt); // Convertir a objeto Date
+            return (
+              createdAt.getMonth() === currentMonth &&
+              createdAt.getFullYear() === currentYear
+            );
+          });
+          
+          // Calcular métricas
+          setMetrics({
+            totalUsers: response.data.length,
+            activeUsers: usersThisMonth.length,
+            completionRate: `${Math.round((response.data.filter(w => w.consistenciaCompromiso > 0).length / response.data.length) * 100)}%`
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching workshops:", err)
+        setError("Error al cargar los datos de talleres. Por favor, intente nuevamente.")
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchWorkshops()
+  }, [])
+
+  const toggleAccordion = (index) => {
+    setOpenAccordion(openAccordion === index ? null : index)
+  }
+
+  if (loading) {
+    return <div className={styles.loading}>Cargando datos de talleres...</div>
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>
+  }
+
+  const latestWorkshop = workshops.length > 0 ? workshops[0] : null
 
   return (
     <div className={styles.dashboard}>
       <AdminHeader username="Administrador" />
       <div className={styles.content}>
-        {/* Selector de período */}
-        <div className={styles.periodSelector}>
-          <span>Período:</span>
-          <div className={styles.periodOptions}>
-            <button
-              className={`${styles.periodButton} ${activePeriod === "week" ? styles.active : ""}`}
-              onClick={() => setActivePeriod("week")}
-            >
-              Semana
-            </button>
-            <button
-              className={`${styles.periodButton} ${activePeriod === "month" ? styles.active : ""}`}
-              onClick={() => setActivePeriod("month")}
-            >
-              Mes
-            </button>
-            <button
-              className={`${styles.periodButton} ${activePeriod === "quarter" ? styles.active : ""}`}
-              onClick={() => setActivePeriod("quarter")}
-            >
-              Trimestre
-            </button>
-            <button
-              className={`${styles.periodButton} ${activePeriod === "year" ? styles.active : ""}`}
-              onClick={() => setActivePeriod("year")}
-            >
-              Año
-            </button>
-          </div>
-        </div>
-
-        {/* Sección de métricas */}
         <div className={styles.metricsSection}>
-          <MetricCard title="Total Usuarios" value="98" percentage="+12%" icon={Users} />
-          <MetricCard title="Usuarios Activos" value="45" percentage="+5%" icon={UserCheck} />
-          <MetricCard title="Tasa de Finalización" value="85%" percentage="+2%" icon={TrendingUp} />
+          <MetricCard title="Total Usuarios" value={metrics.totalUsers.toString()} percentage="+12%" icon={Users} />
+          <MetricCard title="Usuarios Activos" value={metrics.activeUsers.toString()} percentage="+5%" icon={UserCheck} />
+          <MetricCard title="Tasa de Finalización" value={metrics.completionRate} percentage="+2%" icon={TrendingUp} />
         </div>
 
-        {/* Sección de resultados por área de desempeño */}
-        <div className={styles.dashboardSection}>
-          <h2 className={styles.sectionTitle}>Resultados según Área de Desempeño: Taller TGS</h2>
-          <div className={styles.chartsGrid}>
-            {performanceAreas.map((area, index) => (
-              <AreaRadarChart key={index} title={area.name} data={area.data} />
-            ))}
-          </div>
-        </div>
+        {latestWorkshop && (
+          <>
+            <div className={styles.dashboardSection}>
+              <h2 className={styles.sectionTitle}>
+                Taller más reciente: {latestWorkshop.nombre} 
 
-        {/* Sección de resultados por industria */}
-        <div className={styles.dashboardSection}>
-          <h2 className={styles.sectionTitle}>Resultado por Industria: Taller TGS</h2>
-          <div className={styles.chartsGrid}>
-            <AverageRadarChart />
-            <GapRadarChart />
+              </h2>
+              
+              <div className={styles.resultsSection}>
+                <h3 className={styles.subsectionTitle}>Resultados según Área de Desempeño</h3>
+                <div className={styles.chartsGrid}>
+                  {latestWorkshop.areaResults && Object.keys(latestWorkshop.areaResults).map((area, index) => (
+                    <AreaRadarChart key={index} title={area} data={latestWorkshop.areaResults[area]} />
+                  ))}
+                </div>
+              </div>
+              
+              <div className={styles.resultsSection}>
+                <h3 className={styles.subsectionTitle}>Resultado por Industria</h3>
+                <div className={styles.chartsGrid}>
+                  <AverageRadarChart data={latestWorkshop.averageResult} />
+                  <GapRadarChart data={latestWorkshop.gapResult} />
+                </div>
+              </div>
+            </div>
+            
+            {workshops.length > 1 && (
+              <div className={styles.dashboardSection}>
+                <h2 className={styles.sectionTitle}>Talleres Anteriores</h2>
+                <div className={styles.accordionContainer}>
+                  {workshops.slice(1).map((workshop, index) => (
+                    <WorkshopAccordion 
+                      key={index}
+                      workshop={workshop}
+                      index={index}
+                      isOpen={openAccordion === index}
+                      toggleAccordion={toggleAccordion}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+        
+        {!latestWorkshop && (
+          <div className={styles.noData}>
+            No se encontraron talleres disponibles.
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
 }
 
 export default AdminDashboard
-

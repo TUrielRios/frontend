@@ -1,0 +1,254 @@
+.editorContainer {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+  }
+  
+  .editorTitle {
+    color: #0a2ff1;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .editorDescription {
+    color: #666;
+    font-size: 1rem;
+    margin: 0 0 2rem 0;
+  }
+  
+  .content {
+    display: flex;
+    gap: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 255, 0.1);
+    overflow: hidden;
+    min-height: 500px;
+  }
+  
+  .categoriesList {
+    width: 250px;
+    padding: 1.5rem;
+    border-right: 1px solid rgba(0, 0, 255, 0.1);
+  }
+  
+  .categoriesList h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .categoryItem {
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .categoryItem:hover {
+    background: #f8f8ff;
+  }
+  
+  .categoryItem.selected {
+    background: #f0f0ff;
+    border-left: 3px solid #0a2ff1;
+    padding-left: calc(1rem - 3px);
+  }
+  
+  .optionsCount {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+  
+  .optionsEditor {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .editorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .editorHeader h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .saveButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #e0ffe0;
+    color: #00cc00;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .saveButton:hover:not(:disabled) {
+    background: #d0ffd0;
+  }
+  
+  .saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .savingIcon {
+    animation: spin 1.5s linear infinite;
+  }
+  
+  .optionsList {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .optionItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid #e0e0ff;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    background: white;
+    transition: all 0.2s;
+  }
+  
+  .optionItem:hover {
+    border-color: #c0c0ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 255, 0.05);
+  }
+  
+  .dragHandle {
+    cursor: grab;
+    color: #aaa;
+    padding: 0.25rem;
+  }
+  
+  .optionInput {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #e0e0ff;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+  
+  .optionInput:focus {
+    outline: none;
+    border-color: #0a2ff1;
+    box-shadow: 0 0 0 2px rgba(10, 47, 241, 0.1);
+  }
+  
+  .deleteButton {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffe0e0;
+    color: #ff4d4d;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .deleteButton:hover {
+    background: #ffd0d0;
+  }
+  
+  .addButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #f0f0ff;
+    color: #0a2ff1;
+    border: 1px dashed #c0c0ff;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+  }
+  
+  .addButton:hover {
+    background: #e0e0ff;
+  }
+  
+  .infoBox {
+    padding: 1rem;
+    background: #f8f8ff;
+    border-left: 3px solid #0a2ff1;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .infoBox p {
+    margin: 0;
+  }
+  
+  .errorMessage {
+    background: #ffe0e0;
+    color: #cc0000;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .successMessage {
+    background: #e0ffe0;
+    color: #00cc00;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .noSelection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    font-style: italic;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .content {
+      flex-direction: column;
+    }
+    
+    .categoriesList {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+    }
+  }

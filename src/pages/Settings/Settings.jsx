@@ -3,6 +3,7 @@ import { Save, Edit, X, RefreshCw, Search, FileText, Eye, EyeOff } from "lucide-
 import styles from "./Settings.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 import QuestionsSettings from "../../adminComponents/QuestionsSettings/QuestionsSettings"
+import DropdownEditor from "../../adminComponents/DropdownEditor/DropdownEditor"
 
 const Settings = () => {
   const [texts, setTexts] = useState([])
@@ -268,6 +269,9 @@ const Settings = () => {
             )}
           </div>
         </div>
+      </div>
+      <div>
+        <DropdownEditor />
       </div>
     </div>
   )

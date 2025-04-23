@@ -1,10 +1,10 @@
 import { useState } from "react"
 import styles from "./Admin.module.css"
 import AdminDashboard from "../AdminDashboard/AdminDashboard"
-import Stats from "../../pages/Stats/Stats"
 import Users from "../../pages/Users/Users"
 import Sidebar from "../Sidebar/Sidebar"
 import Settings from "../../pages/Settings/Settings"
+import AccessCodes from "../../pages/AccessCodes/AccessCodes"
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -14,8 +14,8 @@ const Admin = () => {
     switch (activeSection) {
       case "dashboard":
         return <AdminDashboard />
-      case "stats":
-        return <Stats />
+      case "accessCodes":
+        return <AccessCodes />
       case "users":
         return <Users />
       case "settings":
