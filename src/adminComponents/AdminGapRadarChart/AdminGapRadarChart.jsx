@@ -129,7 +129,6 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
             <polygon
               key={`hex-${index}`}
               points={generateHexPoints({ x: 200, y: 200 }, 150 * scale)}
-              className={styles.hexBackground}
               style={{
                 fill: colors.hexFill,
                 stroke: colors.hexStroke,
@@ -170,7 +169,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
               points={calculatePoints(data[area])}
               className={styles.dataArea}
               style={{
-                fill: hiddenAreas[area] ? "none" : `${areaColors[area]}20`, // Añadimos un fondo semi-transparente
+                fill: "none", // Añadimos un fondo transparente
                 stroke: areaColors[area] || `hsl(${index * 60}, 70%, 50%)`,
                 strokeWidth: hiddenAreas[area] ? 0 : 2, // Ocultar el borde si está oculta
                 opacity: hiddenAreas[area] ? 0 : 0.8,
