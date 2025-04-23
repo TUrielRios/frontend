@@ -1,4 +1,4 @@
-import { useState, useEffect, React } from "react"
+import React,{ useState, useEffect } from "react"
 import { Search, Filter, X, RefreshCw } from "lucide-react"
 import styles from "./Users.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"

@@ -33,6 +33,7 @@ const Form = () => {
   
   // Estado para almacenar las opciones de los dropdowns
   const [dropdownOptions, setDropdownOptions] = useState({
+    compania: [],
     industriaSector: [],
     areaDesempeno: [],
     cargo: []
@@ -40,6 +41,7 @@ const Form = () => {
   
   // Estado para controlar la carga de los desplegables
   const [loadingDropdowns, setLoadingDropdowns] = useState({
+    compania: false,
     industriaSector: false,
     areaDesempeno: false,
     cargo: false
@@ -48,6 +50,7 @@ const Form = () => {
   // Función para cargar las opciones de los dropdowns desde la API
   const cargarOpcionesDropdown = async () => {
     const endpoints = {
+      compania: "https://lacocina-backend-deploy.vercel.app/desplegables/compania",
       industriaSector: "https://lacocina-backend-deploy.vercel.app/desplegables/industriaSector",
       areaDesempeno: "https://lacocina-backend-deploy.vercel.app/desplegables/areaDesempeno",
       cargo: "https://lacocina-backend-deploy.vercel.app/desplegables/cargo"
@@ -307,16 +310,20 @@ const Form = () => {
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <div className={styles.formGroup}>
-          <label>Compañía*</label>
-          <input
-            type="text"
-            name="compania"
-            value={formData.compania}
-            onChange={handleInputChange}
-            placeholder="Nombre de la compañía"
-            className={styles.inputlarge}
-            required
-          />
+        <label>Compañía*</label>
+          <div className={styles.selectWrapper}>
+            <select
+              name="compania"
+              value={formData.compania}
+              onChange={handleSelectChange}
+              className={styles.select}
+              required
+            >
+              <option value="">Seleccione una opción</option>
+              {renderDropdownOptions("compania")}
+            </select>
+            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+          </div>
         </div>
 
         <div className={styles.formGroup}>
