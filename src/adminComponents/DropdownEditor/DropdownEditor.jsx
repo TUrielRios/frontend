@@ -6,6 +6,8 @@ const API_URL = "https://lacocina-backend-deploy.vercel.app";
 
 const DropdownEditor = () => {
   const [dropdownCategories, setDropdownCategories] = useState([
+    //CURSO
+    { id: "curso", name: "Curso", options: [] },
     //COMPAÑIA
     { id: "compania", name: "Compañía", options: [] },
     { id: "industriaSector", name: "Industria/Sector", options: [] },

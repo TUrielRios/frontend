@@ -139,6 +139,7 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           iconColor: "#5991bc",
           completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema oscuro)
           startedColor: "#3FFFF3", // Color para fases iniciadas
+          numberColor: "#ffffff", // Color para los números
         }
       : {
           hexFill: "white",
@@ -150,6 +151,7 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           iconColor: "#0a2ff1",
           completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema claro)
           startedColor: "#3FFFF3", // Color para fases iniciadas
+          numberColor: "#0a2ff1", // Color para los números
         }
 
   // Generamos los puntos del hexágono con precisión matemática
@@ -176,32 +178,44 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
               fill: colors.hexFill,
               stroke: colors.hexStroke,
               strokeWidth: 10,
-              opacity: theme === "dark" ? 0.9 : 0.9,
+              transform: `scale(${scale})`,
+              transformOrigin: "center",
             }}
           />
         ))}
 
-        {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
-        {Array.from({ length: 6 }).map((_, i) => {
-          const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-          const x2 = 200 + 150 * Math.cos(angle)
-          const y2 = 200 + 150 * Math.sin(angle)
-          return (
-            <line
-              key={`line-${i}`}
-              x1="200"
-              y1="200"
-              x2={x2}
-              y2={y2}
-              style={{
-                stroke: colors.dotLine,
-                strokeWidth: 1,
-                strokeDasharray: "4 4",
-                opacity: 0.7,
-              }}
-            />
-          )
+        {/* Números del 1 al 10 en lugar de puntitos en todas las líneas radiales */}
+        {Array.from({ length: 6 }).map((_, lineIndex) => {
+          // Calculamos el ángulo para cada línea radial (igual que para las líneas punteadas)
+          const angle = (Math.PI * 2 * lineIndex) / 6 - Math.PI / 2;
+          
+          // Para cada línea radial, colocamos los 5 números (2,4,6,8,10)
+          return [0.1,0.2,0.3, 0.4,0.5, 0.6,0.7, 0.8,0.9].map((scale, numIndex) => {
+            const value = numIndex + 1; // Valores 2, 4, 6, 8, 10
+            const x = 200 + (150 * scale) * Math.cos(angle);
+            const y = 200 + (150 * scale) * Math.sin(angle);
+            
+            return (
+              <text
+                key={`number-${lineIndex}-${numIndex}`}
+                x={x}
+                y={y}
+                style={{
+                  fill: colors.numberColor,
+                  fontSize: "7px",
+                  fontWeight: "bold",
+                  dominantBaseline: "middle",
+                  textAnchor: "middle",
+                }}
+              >
+                {value}
+              </text>
+            );
+          });
         })}
+
+        {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
+
 
         {/* Área de datos con animación */}
         <polygon
@@ -292,7 +306,6 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                 y={y - 38} 
                 width="32" 
                 height="32" 
-
               />
             </g>
           )

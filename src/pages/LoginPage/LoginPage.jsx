@@ -90,19 +90,11 @@ const LoginPage = ({ title, onSuccess, tipo, redirectPath }) => {
         {/* Left column with content */}
         <div className={styles.content}>
           <h1 className={styles.title}>
-            El diamante de
+            ¡Bienvenidos <br />al diamante de
             <br />
-            la influencia
+            la influencia!
           </h1>
-          <p className={styles.subtitle}>Conocé el poder de influencia de tu marca.</p>
-          <p className={styles.description}>
-            Para acceder a esta plataforma necesitas un código de acceso.
-            Si no tienes un código, por favor contacta con el administrador.
-          </p>
-          <p className={styles.privacy}>
-            Toda la información proporcionada es confidencial y solo se utilizará
-            para los fines previstos en nuestra política de privacidad.
-          </p>
+
         </div>
         
         {/* Right column with login form */}

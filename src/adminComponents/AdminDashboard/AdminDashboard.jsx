@@ -31,26 +31,141 @@ const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
   }
 }
 
-// Componente para el modal de vista previa
-const ChartPreviewModal = ({ isOpen, onClose, title, chartData, chartType = "radar" }) => {
-  if (!isOpen) return null
 
+const ChartPreviewModal = ({ isOpen, onClose, title, chartData, chartType = "radar" }) => {
+  const chartRef = useRef(null)  
+  const handleDownload = () => {
+    downloadChartAsPNG(chartRef, `${title.replace(/\s+/g, "-").toLowerCase()}-${chartType}.png`)
+  }
+  if (!isOpen) return null
+  
+  // Calcular el máximo valor para las barras de progreso (normalmente es 5)
+  const maxValue = 5
+  
+  // Calcular promedio general
+  const validScores = Object.values(chartData).filter(score => score > 0)
+  const averageScore = validScores.length > 0 
+    ? (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1)
+    : null
+    
+  // Calcular rango
+  const minScore = Math.min(...Object.values(chartData)).toFixed(1)
+  const maxScore = Math.max(...Object.values(chartData)).toFixed(1)
+
+  // Determinar si es un gráfico de gap y procesar los datos apropiadamente
+  const isGapChart = chartType === "gaap"
+  
   return (
     <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Vista previa: {title}</h2>
-          <button className={styles.closeButton} onClick={onClose}>
-            <X size={24} />
-          </button>
-        </div>
-        <div className={styles.modalBody}>
-          <AdminUserChart data={chartData} type={chartType} theme="light" />
+      <div className={styles.modal}>
+        <button className={styles.closeButton} onClick={onClose}>
+          <X size={24} />
+        </button>
+
+        <div className={styles.modalContent}>
+          {/* Sidebar */}
+          <div className={styles.sidebar}>
+            <div className={styles.previewHeader}>
+              <div className={styles.titleIcon}>
+                <span className={styles.chartIcon}>📊</span>
+                <div className={styles.titleInfo}>
+                  <h2>Vista previa: {title}</h2>
+                  <span className={styles.subtitle}>
+                    {isGapChart ? "Gap entre áreas" : "Análisis de factores"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.factorsList}>
+              <h3>{isGapChart ? "Valores por Área" : "Factores de Influencia"}</h3>
+              
+              {isGapChart ? (
+                // Visualización para gráfico Gap
+                Object.entries(chartData).map(([area, areaData], areaIndex) => (
+                  <div key={`area-${areaIndex}`} className={styles.gapAreaContainer}>
+                    <h4 className={styles.areaTitle}>{area}</h4>
+                    {Object.entries(areaData).map(([factor, score], factorIndex) => (
+                      <div key={`${area}-${factor}`} className={styles.factorItem}>
+                        <div className={styles.factorInfo}>
+                          <span className={styles.factorName}>{factor}</span>
+                          <span className={styles.factorScore}>
+                            {score > 0 ? score.toFixed(1) : 'N/A'}
+                          </span>
+                        </div>
+                        <div className={styles.factorBar}>
+                          <div 
+                            className={styles.factorProgress} 
+                            style={{ 
+                              width: `${(score / maxValue) * 45}%`,
+                            }} 
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))
+              ) : (
+                // Visualización para gráfico Radar normal
+                Object.entries(chartData).map(([factor, score], index) => (
+                  <div key={factor} className={styles.factorItem}>
+                    <div className={styles.factorInfo}>
+                      <span className={styles.factorName}>{factor}</span>
+                      <span className={styles.factorScore}>
+                        {score > 0 ? score.toFixed(1) : 'N/A'}
+                      </span>
+                    </div>
+                    <div className={styles.factorBar}>
+                      <div 
+                        className={styles.factorProgress} 
+                        style={{ 
+                          width: `${(score / maxValue) * 45}%`,
+                        }} 
+                      />
+                    </div>
+                  </div>
+                ))
+              )}
+
+              {!isGapChart && averageScore && (
+                <div className={styles.averageScore}>
+                  <div className={styles.factorInfo}>
+                    <span className={styles.factorName}>Promedio General</span>
+                    <span className={styles.factorScore}>{averageScore}</span>
+                  </div>
+                  <div className={styles.factorBar}>
+                    <div 
+                      className={styles.averageProgress} 
+                      style={{ width: `${(averageScore / maxValue) * 100}%` }} 
+                    />
+                  </div>
+                </div>
+              )}
+            
+            </div>
+          
+          </div>
+
+          {/* Main Content */}
+          <div className={styles.mainContent}>
+            <div className={styles.chartsSection}>
+              <div className={styles.chartCard}>
+                <div className={styles.chartContainer}>
+                  <AdminUserChart 
+                    data={chartData} 
+                    type={chartType} 
+                    theme="light" 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  )
-}
+  )}
+
+
 
 // Componente para las tarjetas de métricas
 const MetricCard = ({ title, value, percentage, icon }) => {
@@ -260,7 +375,6 @@ const WorkshopAccordion = ({ workshop, index, isOpen, toggleAccordion }) => {
 };
 
 const AdminDashboard = () => {
-  const [activePeriod, setActivePeriod] = useState("month")
   const [workshops, setWorkshops] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -415,9 +529,9 @@ const AdminDashboard = () => {
       <AdminHeader username="Administrador" />
       <div className={styles.content}>
         <div className={styles.metricsSection}>
-          <MetricCard title="Total Usuarios" value={metrics.totalUsers.toString()} percentage="+12%" icon={Users} />
-          <MetricCard title="Usuarios Activos" value={metrics.activeUsers.toString()} percentage="+5%" icon={UserCheck} />
-          <MetricCard title="Tasa de Finalización" value={metrics.completionRate} percentage="+2%" icon={TrendingUp} />
+          <MetricCard title="Total Usuarios" value={metrics.totalUsers.toString()}  icon={Users} />
+          <MetricCard title="Usuarios Activos" value={metrics.activeUsers.toString()} icon={UserCheck} />
+          <MetricCard title="Tasa de Finalización" value={metrics.completionRate} icon={TrendingUp} />
         </div>
 
         {latestWorkshop && (

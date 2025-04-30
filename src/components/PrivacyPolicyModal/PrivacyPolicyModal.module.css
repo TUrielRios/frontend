@@ -1,0 +1,108 @@
+/* Estilos para el modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: #0a2ff1;
+    position: relative;
+    font-family: 'Red Hat Display', sans-serif;
+  }
+  
+  .modalText {
+    margin: 20px 0;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  
+  .modalCloseButton {
+    color: #0a2ff1;
+    background-color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 20px;
+    align-self: center;
+    text-decoration: underline;
+    padding-top: 10px;
+    text-underline-offset: 2px;
+  }
+
+  
+  .modalContent h2 {
+    color: #0a2ff1;
+    margin-bottom: 15px;
+    font-size: 38px;
+  }
+  /* Estilos adicionales para el modal */
+.modalText h3 {
+    color: #0a2ff1;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  
+  .modalText ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .modalText li {
+    margin-bottom: 5px;
+  }
+  
+  .modalText a {
+    color: #0a2ff1;
+    text-decoration: underline;
+  }
+  
+  .modalText a:hover {
+    text-decoration: none;
+  }
+  
+  .modalContent {
+    line-height: 1.6;
+  }
+
+  /* Estilos para el scrollbar del modal */
+.modalContent::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .modalContent::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .modalContent::-webkit-scrollbar-thumb {
+    background: #0a2ff1;
+    border-radius: 10px;
+  }
+  
+  .modalContent::-webkit-scrollbar-thumb:hover {
+    background: #0a2ff1;
+  }
+  
+  /* Para Firefox */
+  .modalContent {
+    scrollbar-width: thin;
+    scrollbar-color: #0a2ff1 #f1f1f1;
+  }

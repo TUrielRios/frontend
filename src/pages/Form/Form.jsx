@@ -7,10 +7,13 @@ import { ChevronDown } from "lucide-react"
 import textos from "../../constants/constants"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
+import PrivacyPolicyModal from "../../components/PrivacyPolicyModal/PrivacyPolicyModal"
 
 const Form = () => {
   const navigate = useNavigate()
   const [termsAccepted, setTermsAccepted] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+
   const [formType, setFormType] = useState(null) // null, 'taller', or 'curso'
   const [formData, setFormData] = useState({
     // Campos comunes
@@ -33,6 +36,7 @@ const Form = () => {
   
   // Estado para almacenar las opciones de los dropdowns
   const [dropdownOptions, setDropdownOptions] = useState({
+    curso:[],
     compania: [],
     industriaSector: [],
     areaDesempeno: [],
@@ -41,6 +45,7 @@ const Form = () => {
   
   // Estado para controlar la carga de los desplegables
   const [loadingDropdowns, setLoadingDropdowns] = useState({
+    curso:false,
     compania: false,
     industriaSector: false,
     areaDesempeno: false,
@@ -50,6 +55,7 @@ const Form = () => {
   // Función para cargar las opciones de los dropdowns desde la API
   const cargarOpcionesDropdown = async () => {
     const endpoints = {
+      curso: "https://lacocina-backend-deploy.vercel.app/desplegables/curso",
       compania: "https://lacocina-backend-deploy.vercel.app/desplegables/compania",
       industriaSector: "https://lacocina-backend-deploy.vercel.app/desplegables/industriaSector",
       areaDesempeno: "https://lacocina-backend-deploy.vercel.app/desplegables/areaDesempeno",
@@ -176,7 +182,7 @@ const Form = () => {
         userData.nombre = formData.nombre
         userData.apellido = formData.apellido
         userData.email = formData.email
-        userData.curso = "Curso IAE Comunicación Institucional 250311" // Valor por defecto
+        userData.curso = formData.curso // Valor por defecto
         userData.compania = formData.compania
         userData.cargo = formData.cargo === "Otro" && formData.cargoOtro 
           ? `Otro: ${formData.cargoOtro}` 
@@ -215,6 +221,12 @@ const Form = () => {
       setIsSubmitting(false)
     }
   }
+
+    // Agrega esta función para manejar el click en el enlace
+    const handlePrivacyClick = (e) => {
+      e.preventDefault()
+      setShowPrivacyModal(true)
+    }
 
   const handleTermsChange = (e) => {
     setTermsAccepted(e.target.checked)
@@ -385,21 +397,22 @@ const Form = () => {
         </div>
 
         <div className={styles.checkboxGroup}>
-          <label className={styles.checkbox}>
-            <input type="checkbox" />
-            <span>Acepto recibir comunicaciones de La cocina.</span>
-          </label>
+ 
           <label className={styles.checkbox}>
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>
               Acepto la{" "}
-              <a href="#" className={styles.link}>
+              <a href="#" className={styles.link} onClick={handlePrivacyClick}>
                 política de privacidad
               </a>
               .
             </span>
           </label>
         </div>
+
+        {showPrivacyModal && (
+        <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />
+      )}
 
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
@@ -465,9 +478,9 @@ const Form = () => {
               className={styles.select}
               required
             >
-              <option value="Curso IAE Comunicación Institucional 250311">
-                Curso IAE Comunicación Institucional 250311
-              </option>
+            
+              <option value="">Seleccione una opción</option>
+              {renderDropdownOptions("curso")}
             </select>
             <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
@@ -475,15 +488,20 @@ const Form = () => {
 
         <div className={styles.formGroup}>
           <label>Compañía*</label>
-          <input
-            type="text"
-            name="compania"
-            value={formData.compania}
-            onChange={handleInputChange}
-            placeholder="Nombre de la compañía"
-            className={styles.inputlarge}
-            required
-          />
+          <div className={styles.selectWrapper}>
+            <select
+              name="compania"
+              value={formData.compania}
+              onChange={handleSelectChange}
+              className={styles.select}
+              required
+            >
+            
+              <option value="">Seleccione una opción</option>
+              {renderDropdownOptions("compania")}
+            </select>
+            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+          </div>
         </div>
 
         <div className={styles.formGroup}>
@@ -582,13 +600,17 @@ const Form = () => {
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>
               Acepto la{" "}
-              <a href="#" className={styles.link}>
+              <a href="#" className={styles.link} onClick={handlePrivacyClick}>
                 política de privacidad
               </a>
               .
             </span>
           </label>
         </div>
+
+        {showPrivacyModal && (
+        <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />
+      )}
 
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
@@ -607,16 +629,12 @@ const Form = () => {
         {/* Columna izquierda con el contenido y botones */}
         <div className={styles.content}>
           <h1 className={styles.title}>
-            El diamante de
+            El Diamante de
             <br />
-            la influencia
+            la Influencia
           </h1>
-          <p className={styles.subtitle}>Conocé el poder de influencia de tu marca.</p>
           <p className={styles.description}>
             {loading ? "Cargando..." : descripcionTexto}
-          </p>
-          <p className={styles.privacy}>
-            Recordá que la información que proporciones es confidencial y solo se utilizará para fines estadísticos.
           </p>
 
           {/* Botones de selección debajo del texto */}

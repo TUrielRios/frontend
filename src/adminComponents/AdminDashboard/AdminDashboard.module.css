@@ -1,3 +1,5 @@
+/* Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap');
 .dashboard {
   padding: 2rem;
   font-family: 'Red Hat Display', sans-serif;
@@ -12,6 +14,21 @@
   padding: 2rem;
 }
 
+/* Estados de carga y error */
+.loading, .error, .noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.125rem;
+  color: #666;
+}
+
+.error {
+  color: #f44336;
+}
+
+/* Period Selector */
 .periodSelector {
   display: flex;
   align-items: center;
@@ -41,6 +58,7 @@
   border-color: #0a2ff1;
 }
 
+/* Metrics Section */
 .metricsSection {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -98,6 +116,7 @@
   justify-content: center;
 }
 
+/* Dashboard Sections */
 .dashboardSection {
   display: flex;
   flex-direction: column;
@@ -113,6 +132,24 @@
   border-bottom: 1px solid rgba(10, 47, 241, 0.1);
 }
 
+.workshopDate {
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: #666;
+  margin-left: 1rem;
+}
+
+.resultsSection {
+  margin-bottom: 2rem;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Chart Grid & Cards */
 .chartsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -162,6 +199,17 @@
   border-top: 1px solid rgba(10, 47, 241, 0.1);
 }
 
+.chartContainer {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 550px;
+  scale: 1.3;
+}
+
+/* Button Styles */
 .downloadButton {
   background: #0a2ff1;
   color: white;
@@ -174,6 +222,12 @@
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.downloadButton:hover {
+  background: #0926c9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
 }
 
 .previewButton {
@@ -196,92 +250,23 @@
   box-shadow: 0 4px 8px rgba(10, 47, 241, 0.1);
 }
 
-.downloadButton:hover {
-  background: #0926c9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
-}
-
-.usersSection {
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
-}
-
-/* Modal styles */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 2rem;
-}
-
-.modalContent {
-  background: white;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 1200px;
-  height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  animation: modalFadeIn 0.3s ease-out;
-}
-
-@keyframes modalFadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.modalHeader {
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modalTitle {
-  margin: 0;
-  color: #0a2ff1;
-  font-size: 1.25rem;
-  font-weight: 500;
-}
-
-.closeButton {
-  background: none;
-  border: none;
-  cursor: pointer;
+.closeModalButton {
+  background: transparent;
   color: #666;
-  padding: 0.5rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid #e0e0ff;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
-.closeButton:hover {
-  background: rgba(10, 47, 241, 0.1);
+.closeModalButton:hover {
+  background: #f0f0ff;
   color: #0a2ff1;
 }
 
-.modalBody {
-  flex: 1;
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
-}
+/* Accordion Styles */
 .accordionContainer {
   margin-top: 1rem;
   border-radius: 8px;
@@ -333,65 +318,219 @@
   background-color: #fff;
 }
 
-/* Estilos para la sección del taller más reciente */
-.workshopDate {
-  font-size: 0.875rem;
-  font-weight: normal;
-  color: #666;
-  margin-left: 1rem;
-}
-
-.resultsSection {
-  margin-bottom: 2rem;
-}
-
-.subsectionTitle {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-/* Estilos para estados de carga y error */
-.loading, .error, .noData {
+/* Modal Preview Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 200px;
-  font-size: 1.125rem;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: #f0f0ff;
+  color: #0a2ff1;
+}
+
+.modalContent {
+  display: flex;
+  height: 80vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 320px;
+  background: #f8f8ff;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.previewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.titleIcon {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chartIcon {
+  width: 64px;
+  height: 64px;
+  background: #0a2ff1;
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.titleInfo h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0a2ff1;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Factor List Styles */
+.factorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.factorsList h3 {
+  color: #0a2ff1;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.factorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.factorInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.factorName {
+  font-size: 0.875rem;
   color: #666;
 }
 
-.error {
-  color: #f44336;
+.factorScore {
+  font-weight: 600;
+  color: #0a2ff1;
 }
 
+.factorBar {
+  height: 4px;
+  background: #e0e0ff;
+  border-radius: 2px;
+  overflow: hidden;
+}
 
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 1rem;
-  }
+.factorProgress {
+  height: 100%;
+  background: #0a2ff1;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
 
-  .chartsGrid {
-    grid-template-columns: 1fr;
-  }
+.averageProgress {
+  height: 100%;
+  background: #0a2ff1;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
 
-  .periodSelector {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .chartFooter {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .previewButton, .downloadButton {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .modalContent {
-    width: 95%;
-    height: 80vh;
-  }
+.averageScore {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0ff;
+}
+
+.scoreRange {
+  margin-top: 0.5rem;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+/* Main Content Styles */
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chartsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Scrollbar Styles */
+.sidebar::-webkit-scrollbar,
+.mainContent::-webkit-scrollbar {
+  width: 2px; /* Ancho del scrollbar */
+}
+
+.sidebar::-webkit-scrollbar-track,
+.mainContent::-webkit-scrollbar-track {
+  background: #f0f0ff; /* Color de fondo del track */
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.mainContent::-webkit-scrollbar-thumb {
+  background: #0a2ff1; /* Color del thumb */
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover,
+.mainContent::-webkit-scrollbar-thumb:hover {
+  background: #0830c7; /* Color del thumb al pasar el mouse */
+}
+
+/* Animation */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalContent {
+  animation: modalFadeIn 0.3s ease-out;
 }

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { ArrowRight } from "lucide-react"
 import OptionsList from "../OptionsList/OptionsList"
 import ProgressBar from "../ProgressBar/ProgressBar"
@@ -13,6 +14,17 @@ const QuestionPhase = ({
   onSelect,
   onNext,
 }) => {
+  const [showValidation, setShowValidation] = useState(false)
+
+  const handleNextClick = () => {
+    if (selectedOption) {
+      setShowValidation(false)
+      onNext()
+    } else {
+      setShowValidation(true)
+    }
+  }
+
   return (
     <div className={styles.questionBox}>
       <div className={styles.questionContent}>
@@ -30,13 +42,20 @@ const QuestionPhase = ({
           <OptionsList selectedOption={selectedOption} onSelect={onSelect} />
         </div>
       </div>
-      <button className={styles.nextButton} onClick={onNext}>
-        <ArrowRight size={24} />
-      </button>
+      <div className={styles.buttonContainer}>
+        <button 
+          className={`${styles.nextButton} ${!selectedOption ? styles.disabledButton : ''}`} 
+          onClick={handleNextClick}
+        >
+          <ArrowRight size={24} />
+        </button>
+        {showValidation && !selectedOption && (
+          <p className={styles.validationMessage}>Por favor selecciona una respuesta para continuar</p>
+        )}
+      </div>
       <ProgressBar current={currentStep + 1} total={totalSteps} />
     </div>
   )
 }
 
 export default QuestionPhase
-

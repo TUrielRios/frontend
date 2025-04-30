@@ -64,5 +64,32 @@
     justify-content: center;
     cursor: pointer;
   }
+
+  /* Estilos para el botón deshabilitado */
+.disabledButton {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #cccccc !important;
+}
+
+.nextButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Opcional: mensaje de validación */
+.validationMessage {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 8px;
+}
   
   

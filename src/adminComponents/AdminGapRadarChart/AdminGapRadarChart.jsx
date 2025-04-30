@@ -42,11 +42,11 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
   // Colors for different areas
   const areaColors = {
     Directorio: "#E93C2F", //  // Red
-    Administración: "#F27011", // Green
-    Comercial: "#FABD05", // 
-    Marketing: "#34A852", 
-    Diseño: "#98C51D", // 
-    RRHH: "#0A7AF2",
+    Administración: "#34A852", // Green
+    Comercial: "#0A2FF1", // 
+    Marketing: "#C711F2", 
+    Diseño: "#7E11F2", // 
+    RRHH: "#FABD05",
     
     // "#0A7AF2", "#0A2FF1","#7E11F2", "#C711F2", "#BEBEBE",
   }
@@ -124,7 +124,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
     <div className={styles.radarContainer}>
       <div className={styles.chartWrapper}>
         <svg viewBox="0 0 400 400" className={styles.radar}>
-          {/* Background hexagons */}
+          {/* Background hexagons s */}
           {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
             <polygon
               key={`hex-${index}`}

@@ -3,14 +3,19 @@
   background-color: #0a2ff1;
   color: white;
   font-family: 'Red Hat Display', sans-serif;
+  height: 100vh;
 }
 
 .main {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
+  align-items: center;
+  justify-content: center;
   max-width: 90%;
   margin: 0 auto;
+  height: 80%;
+
   }
 
 .content {
@@ -35,8 +40,9 @@
 }
 
 .description {
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.6;
+  font-weight: 500;
   margin-bottom: 40px;
 }
 
