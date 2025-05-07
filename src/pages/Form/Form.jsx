@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
@@ -34,23 +36,23 @@ const Form = () => {
   const [error, setError] = useState(null)
   const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
   const [loading, setLoading] = useState(false)
-  
+
   // Estado para almacenar las opciones de los dropdowns
   const [dropdownOptions, setDropdownOptions] = useState({
-    curso:[],
+    curso: [],
     compania: [],
     industriaSector: [],
     areaDesempeno: [],
-    cargo: []
+    cargo: [],
   })
-  
+
   // Estado para controlar la carga de los desplegables
   const [loadingDropdowns, setLoadingDropdowns] = useState({
-    curso:false,
+    curso: false,
     compania: false,
     industriaSector: false,
     areaDesempeno: false,
-    cargo: false
+    cargo: false,
   })
 
   // Función para cargar las opciones de los dropdowns desde la API
@@ -60,34 +62,33 @@ const Form = () => {
       compania: "https://lacocina-backend-deploy.vercel.app/desplegables/compania",
       industriaSector: "https://lacocina-backend-deploy.vercel.app/desplegables/industriaSector",
       areaDesempeno: "https://lacocina-backend-deploy.vercel.app/desplegables/areaDesempeno",
-      cargo: "https://lacocina-backend-deploy.vercel.app/desplegables/cargo"
+      cargo: "https://lacocina-backend-deploy.vercel.app/desplegables/cargo",
     }
-    
+
     // Para cada categoría, inicializamos la carga y hacemos la petición
     for (const [category, url] of Object.entries(endpoints)) {
-      setLoadingDropdowns(prev => ({ ...prev, [category]: true }))
-      
+      setLoadingDropdowns((prev) => ({ ...prev, [category]: true }))
+
       try {
         const response = await fetch(url)
-        
+
         if (!response.ok) {
           throw new Error(`Error al cargar opciones de ${category}: ${response.status}`)
         }
-        
+
         const data = await response.json()
-        
+
         // Ordenamos las opciones según el campo "orden"
-        const sortedOptions = data.sort((a, b) => a.orden - b.orden)
-          .map(item => item.valor)
-        
-        setDropdownOptions(prev => ({
+        const sortedOptions = data.sort((a, b) => a.orden - b.orden).map((item) => item.valor)
+
+        setDropdownOptions((prev) => ({
           ...prev,
-          [category]: sortedOptions
+          [category]: sortedOptions,
         }))
       } catch (err) {
         console.error(`Error al cargar opciones de ${category}:`, err)
       } finally {
-        setLoadingDropdowns(prev => ({ ...prev, [category]: false }))
+        setLoadingDropdowns((prev) => ({ ...prev, [category]: false }))
       }
     }
   }
@@ -98,16 +99,17 @@ const Form = () => {
 
     setLoading(true)
     try {
-      const endpoint = tipo === "taller" 
-        ? "https://lacocina-backend-deploy.vercel.app/textos/texto_taller"
-        : "https://lacocina-backend-deploy.vercel.app/textos/texto_curso"
-        
+      const endpoint =
+        tipo === "taller"
+          ? "https://lacocina-backend-deploy.vercel.app/textos/texto_taller"
+          : "https://lacocina-backend-deploy.vercel.app/textos/texto_curso"
+
       const response = await fetch(endpoint)
-      
+
       if (!response.ok) {
         throw new Error(`Error al cargar el texto: ${response.status}`)
       }
-      
+
       const data = await response.json()
       setDescripcionTexto(data.value)
     } catch (err) {
@@ -164,12 +166,14 @@ const Form = () => {
       const userData = {
         modalidad: formType === "taller" ? "Taller" : "Curso",
         compania: formData.compania,
-        industriaSector: formData.industriaSector === "Otro" && formData.industriaSectorOtro 
-          ? `Otro: ${formData.industriaSectorOtro}` 
-          : formData.industriaSector || "",
-        areaDesempeno: formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro 
-          ? `Otro: ${formData.areaDesempenoOtro}` 
-          : formData.areaDesempeno || "",
+        industriaSector:
+          formData.industriaSector === "Otro" && formData.industriaSectorOtro
+            ? `Otro: ${formData.industriaSectorOtro}`
+            : formData.industriaSector || "",
+        areaDesempeno:
+          formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro
+            ? `Otro: ${formData.areaDesempenoOtro}`
+            : formData.areaDesempeno || "",
         validacionSocial: null,
         atractivo: null,
         reciprocidad: null,
@@ -184,11 +188,9 @@ const Form = () => {
         userData.apellido = formData.apellido
         userData.email = formData.email
         userData.curso = formData.curso
-        userData.cargo = formData.cargo === "Otro" && formData.cargoOtro 
-          ? `Otro: ${formData.cargoOtro}` 
-          : formData.cargo || ""
-          userData.compania = formData.compania // Asegúrate de incluir este campo también
-
+        userData.cargo =
+          formData.cargo === "Otro" && formData.cargoOtro ? `Otro: ${formData.cargoOtro}` : formData.cargo || ""
+        userData.compania = formData.compania // Asegúrate de incluir este campo también
       }
 
       console.log("Enviando datos al backend:", userData)
@@ -224,11 +226,11 @@ const Form = () => {
     }
   }
 
-    // Agrega esta función para manejar el click en el enlace
-    const handlePrivacyClick = (e) => {
-      e.preventDefault()
-      setShowPrivacyModal(true)
-    }
+  // Agrega esta función para manejar el click en el enlace
+  const handlePrivacyClick = (e) => {
+    e.preventDefault()
+    setShowPrivacyModal(true)
+  }
 
   const handleTermsChange = (e) => {
     setTermsAccepted(e.target.checked)
@@ -249,17 +251,19 @@ const Form = () => {
   const renderDropdownOptions = (categoryId) => {
     const options = dropdownOptions[categoryId] || []
     const isLoading = loadingDropdowns[categoryId]
-    
+
     if (isLoading) {
       return <option value="">Cargando opciones...</option>
     }
-    
+
     if (options.length > 0) {
       return options.map((option, index) => (
-        <option key={index} value={option}>{option}</option>
+        <option key={index} value={option}>
+          {option}
+        </option>
       ))
     }
-    
+
     // Opciones de fallback por si falla la carga de la API
     return categoryId === "industriaSector" ? (
       <>
@@ -330,7 +334,7 @@ const Form = () => {
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <div className={styles.formGroup}>
-        <label>Compañía*</label>
+          <label>Compañía*</label>
           <div className={styles.selectWrapper}>
             <select
               name="compania"
@@ -405,7 +409,6 @@ const Form = () => {
         </div>
 
         <div className={styles.checkboxGroup}>
- 
           <label className={styles.checkbox}>
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>
@@ -418,9 +421,7 @@ const Form = () => {
           </label>
         </div>
 
-        {showPrivacyModal && (
-        <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />
-      )}
+        {showPrivacyModal && <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />}
 
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
@@ -432,6 +433,7 @@ const Form = () => {
   }
 
   // Formulario para CURSO
+
   const renderCursoForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
@@ -610,9 +612,7 @@ const Form = () => {
           </label>
         </div>
 
-        {showPrivacyModal && (
-        <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />
-      )}
+        {showPrivacyModal && <PrivacyPolicyModal onClose={() => setShowPrivacyModal(false)} />}
 
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
@@ -635,9 +635,7 @@ const Form = () => {
             <br />
             la Influencia
           </h1>
-          <p className={styles.description}>
-            {loading ? "Cargando..." : descripcionTexto}
-          </p>
+          <p className={styles.description}>{loading ? "Cargando..." : descripcionTexto}</p>
 
           {/* Botones de selección debajo del texto */}
           {formType === null && (

@@ -326,10 +326,13 @@
   border-left: 4px solid #d32f2f;
 }
 
+/* Modificar los estilos responsivos existentes */
 @media (max-width: 1024px) {
   .main {
     grid-template-columns: 1fr;
     gap: 40px;
+    height: auto;
+    padding: 40px 0;
   }
 
   .content {
@@ -339,6 +342,19 @@
 
   .formTypeOptions {
     justify-content: center;
+  }
+
+  .formContainer {
+    max-height: none;
+    width: 100%;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+
+  .diamanteGif {
+    max-height: 300px;
   }
 }
 
@@ -360,5 +376,63 @@
     align-items: center;
     gap: 15px;
   }
+
+  .container {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .formContainer {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .nameFields {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form {
+    max-height: none;
+  }
 }
 
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+
+  .formTitle {
+    font-size: 20px;
+  }
+
+  .inputlarge,
+  .inputMedium,
+  .select {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .formContainer {
+    padding: 15px;
+  }
+
+  .checkbox {
+    font-size: 12px;
+  }
+
+  .submitButton {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .timeEstimate {
+    font-size: 12px;
+  }
+}
