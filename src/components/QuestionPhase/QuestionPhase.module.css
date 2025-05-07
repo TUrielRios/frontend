@@ -1,71 +1,71 @@
 .questionBox {
-    background: white;
-    border-radius: 24px;
-    width: 550px;
-    position: relative;
-    padding: 2rem;
-  }
-  
-  .questionContent {
-    position: relative;
-  }
-  
-  .questionHeader {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #0000ff;
-    margin-bottom: 1.5rem;
-    font-family: 'Red Hat Display', sans-serif;
+  background: white;
+  border-radius: 24px;
+  width: 550px;
+  position: relative;
+  padding: 2rem;
+}
 
-  }
-  
-  .questionIcon {
-    width: 22px;
-    height: 22px;
-  }
-  .questionPhaseName{
-    font-weight: 900;
-    font-size: 16px;
-    font-family: 'Red Hat Display', sans-serif;
-  }
-  .questionTitle {
-    margin-bottom: 2rem;
-    color: #0000ff;
-    font-weight: 500;
-    font-size: 1.5rem;
-    font-family: 'Red Hat Display', sans-serif;
+.questionContent {
+  position: relative;
+}
 
-  }
-  
-  .questionNumber {
-    display: inline-block;
-    color: #0000ff;
-    margin-right: 0.5rem;
-  }
-  
-  .questionText {
-    font-weight: 500;
-    font-family: 'Red Hat Display', sans-serif;
+.questionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0000ff;
+  margin-bottom: 1.5rem;
+  font-family: "Red Hat Display", sans-serif;
+}
 
-  }
-  
-  .nextButton {
-    position: relative;
-    margin: 10px;
-    width: 50px;
-    height: 50px;
-    border-radius: 20px;
-    background: #0000ff;
-    color: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
+.questionIcon {
+  width: 22px;
+  height: 22px;
+}
 
-  /* Estilos para el botón deshabilitado */
+.questionPhaseName {
+  font-weight: 900;
+  font-size: 16px;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.questionTitle {
+  margin-bottom: 2rem;
+  color: #0000ff;
+  font-weight: 500;
+  font-size: 1.5rem;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.questionNumber {
+  display: inline-block;
+  color: #0000ff;
+  margin-right: 0.5rem;
+}
+
+.questionText {
+  font-weight: 500;
+  color: #0000ff;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.nextButton {
+  position: relative;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  background: #0000ff;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Estilos para el botón deshabilitado */
 .disabledButton {
   opacity: 0.5;
   cursor: not-allowed;
@@ -91,5 +91,58 @@
   align-items: left;
   gap: 8px;
 }
-  
-  
+
+/* Tablet Styles */
+@media (max-width: 1024px) {
+  .questionBox {
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .questionBox {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .questionTitle {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .questionBox {
+    padding: 1rem;
+    border-radius: 16px;
+    width: 90%;
+  }
+
+  .questionTitle {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .questionHeader {
+    margin-bottom: 1rem;
+  }
+
+  .questionIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .questionPhaseName {
+    font-size: 14px;
+  }
+
+  .nextButton {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+  }
+}

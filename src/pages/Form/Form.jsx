@@ -28,6 +28,7 @@ const Form = () => {
     email: "",
     cargo: "",
     cargoOtro: "",
+    curso: "", // Añadido campo curso
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -182,11 +183,12 @@ const Form = () => {
         userData.nombre = formData.nombre
         userData.apellido = formData.apellido
         userData.email = formData.email
-        userData.curso = formData.curso // Valor por defecto
-        userData.compania = formData.compania
+        userData.curso = formData.curso
         userData.cargo = formData.cargo === "Otro" && formData.cargoOtro 
           ? `Otro: ${formData.cargoOtro}` 
           : formData.cargo || ""
+          userData.compania = formData.compania // Asegúrate de incluir este campo también
+
       }
 
       console.log("Enviando datos al backend:", userData)
@@ -309,6 +311,12 @@ const Form = () => {
         <option value="Académico / Docente">Académico / Docente</option>
         <option value="Estudiante">Estudiante</option>
         <option value="Otro">Otro</option>
+      </>
+    ) : categoryId === "curso" ? (
+      <>
+        <option value="Curso 1">Curso 1</option>
+        <option value="Curso 2">Curso 2</option>
+        <option value="Curso 3">Curso 3</option>
       </>
     ) : null
   }
@@ -478,7 +486,6 @@ const Form = () => {
               className={styles.select}
               required
             >
-            
               <option value="">Seleccione una opción</option>
               {renderDropdownOptions("curso")}
             </select>
@@ -488,20 +495,15 @@ const Form = () => {
 
         <div className={styles.formGroup}>
           <label>Compañía*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="compania"
-              value={formData.compania}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-            
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("compania")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-          </div>
+          <input
+            type="text"
+            name="compania"
+            value={formData.compania}
+            onChange={handleInputChange}
+            placeholder="Nombre de la compañía"
+            className={styles.inputlarge}
+            required
+          />
         </div>
 
         <div className={styles.formGroup}>
@@ -673,3 +675,4 @@ const Form = () => {
 }
 
 export default Form
+//Form

@@ -1,4 +1,3 @@
-
 .container {
   background-color: #0a2ff1;
   color: white;
@@ -11,8 +10,9 @@
 .main {
   display: flex;
   width: 90%;
+  max-width: 1400px;
   justify-content: space-between;
-  height: 70vh;
+  min-height: 70vh;
   gap: 60px;
   margin: 0 auto;
   padding: 40px 0;
@@ -22,6 +22,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex: 1;
   padding-right: 40px;
 }
 
@@ -57,6 +58,7 @@
   justify-content: center;
   align-items: center;
   width: 40%;
+  max-width: 500px;
 }
 
 .formContainer {
@@ -95,7 +97,7 @@
 }
 
 .inputlarge {
-  width: 90%;
+  width: 80%;
   padding: 16px 20px;
   border: 1px solid #0041ff;
   border-radius: 30px;
@@ -151,36 +153,189 @@
   border-left: 4px solid #d32f2f;
 }
 
+/* Large screens */
+@media (max-width: 1200px) {
+  .main {
+    width: 95%;
+    gap: 40px;
+  }
+
+  .title {
+    font-size: 42px;
+  }
+
+  .formContainer {
+    padding: 35px;
+  }
+}
+
+/* Tablet */
 @media (max-width: 1024px) {
   .main {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    width: 90%;
     gap: 40px;
+    padding: 30px 0;
+    min-height: auto;
   }
 
   .content {
     padding-right: 0;
     text-align: center;
+    align-items: center;
+    width: 100%;
   }
-  
+
   .rightColumn {
-    padding: 0 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .formTitle {
+    text-align: center;
   }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
+  .main {
+    width: 95%;
+    padding: 20px 0;
+  }
+
   .title {
     font-size: 36px;
+    margin-bottom: 20px;
   }
 
   .subtitle {
     font-size: 20px;
+    margin-bottom: 20px;
   }
 
   .description {
     font-size: 16px;
+    margin-bottom: 30px;
   }
-  
+
+  .privacy {
+    font-size: 13px;
+    margin-bottom: 30px;
+  }
+
   .formContainer {
-    padding: 30px 20px;
+    padding: 25px 20px;
+    border-radius: 15px;
+  }
+
+  .formTitle {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .formGroup label {
+    font-size: 13px;
+  }
+
+  .inputlarge {
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+
+  .submitButton {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .main {
+    width: 92%;
+    padding: 15px 0;
+  }
+
+  .title {
+    font-size: 34px;
+    margin-bottom: 15px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .description {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .privacy {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .formContainer {
+    padding: 20px 15px;
+    border-radius: 12px;
+  }
+
+  .formTitle {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .formGroup {
+    gap: 6px;
+  }
+
+  .inputlarge {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .submitButton {
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 15px;
+  }
+
+  .errorMessage {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+/* Very Small Mobile */
+@media (max-width: 360px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .formTitle {
+    font-size: 22px;
+  }
+
+  .inputlarge {
+    padding: 10px 15px;
+  }
+}
+
+/* Height-based adjustments for shorter screens */
+@media (max-height: 700px) {
+  .main {
+    min-height: auto;
+    padding: 20px 0;
+  }
+
+  .title {
+    margin-bottom: 15px;
   }
 }

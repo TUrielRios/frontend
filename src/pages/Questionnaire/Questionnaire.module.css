@@ -312,6 +312,99 @@
   color: #ff4d4f;
 }
 
+/* Botón para mostrar el gráfico en móvil */
+.toggleChartButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #00ffff;
+  color: #0000ff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.toggleChartButton:hover,
+.toggleChartButton:active {
+  transform: scale(1.05);
+}
+
+/* Modal para el gráfico en dispositivos móviles */
+.chartModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.chartModal {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a2ff1;
+  border-radius: 24px;
+  width: 80vw;
+  height: 50vh;
+  padding: 2rem;
+  position: relative;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+.closeChartButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 5;
+}
+
+.chartModalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-left: 30px;
+}
+
+.chartModalTitle {
+  color: #0000ff;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Estilos responsivos */
 @media (max-width: 1024px) {
   .resultsContainer {
@@ -323,6 +416,12 @@
   .resultsChartContainer {
     max-width: 100%;
   }
+  
+  .introCard {
+    flex-direction: column;
+    height: auto;
+    padding: 2rem 1.5rem;
+  }
 }
 
 @media (max-width: 768px) {
@@ -333,5 +432,54 @@
   .downloadButtons {
     flex-direction: column;
   }
+  
+  .wholeContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .questionBox {
+    width: 90%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .resultsTitle {
+    font-size: 2.5rem;
+  }
+  
+  .container {
+    padding: 1rem;
+  }
+  
+  .introCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
 }
 
+@media (max-width: 480px) {
+  .questionBox {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .nextButton {
+    right: -15px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .thumbIcon svg {
+    padding: 1.5rem;
+  }
+  
+  .downloadBookBtn,
+  .downloadResultsBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

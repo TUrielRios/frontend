@@ -1,10 +1,8 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import styles from "./Questionnaire.module.css"
-import { ThumbsUp } from "lucide-react"
-import logoLight from "../../assets/logo.png" // Import as logoLight
-import logoDark from "../../assets/logo-black.png" // You'll need to add this dark version of the logo
+import { ThumbsUp, ChevronRight, BarChart2, X } from "lucide-react"
+import logoLight from "../../assets/logo.png"
+import logoDark from "../../assets/logo-black.png"
 // Componentes
 import Header from "../../components/Header/Header"
 import IntroPhase from "../../components/IntroPhase/IntroPhase"
@@ -28,12 +26,30 @@ const Questionnaire = () => {
   const [completedPhases, setCompletedPhases] = useState([])
   const [startedPhases, setStartedPhases] = useState([])
   const [theme, setTheme] = useState("dark")
+  const [showChartMobile, setShowChartMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const [userId, setUserId] = useState(null)
   const [selectedModalidad, setSelectedModalidad] = useState(() => {
     // Obtener la modalidad seleccionada del localStorage
     return localStorage.getItem("selectedModalidad") || "Curso"
   })
+
+  // Detectar si es dispositivo móvil
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    // Verificar al cargar
+    checkIfMobile()
+    
+    // Agregar listener para cambios de tamaño
+    window.addEventListener('resize', checkIfMobile)
+    
+    // Limpiar listener
+    return () => window.removeEventListener('resize', checkIfMobile)
+  }, [])
 
   // Set theme based on showIntro state
   useEffect(() => {
@@ -196,7 +212,6 @@ const Questionnaire = () => {
 
     if (showIntro) {
       setShowIntro(false)
-      setShowIntro(false)
       // Registrar que la fase ha sido iniciada
       if (!startedPhases.includes(currentPhase)) {
         setStartedPhases(prev => [...prev, currentPhase])
@@ -233,6 +248,10 @@ const Questionnaire = () => {
         setIsCompleted(true)
       }
     }
+  }
+
+  const handleToggleChart = () => {
+    setShowChartMobile(!showChartMobile)
   }
 
   const handleDownloadBook = () => {
@@ -282,32 +301,78 @@ const Questionnaire = () => {
             onNext={handleNext}
           />
         ) : (
-          <div className={styles.wholeContainer}>
-            <QuestionPhase
-              phase={currentPhase}
-              phaseIcon={PhaseIcon}
-              question={currentQuestion}
-              currentStep={currentStep}
-              totalSteps={phaseQuestions.length}
-              selectedOption={selectedOption}
-              onSelect={handleAnswer}
-              onNext={handleNext}
-            />
-            <aside className={styles.sidebar}>
-              <RadarChart
-                data={{
-                  ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
-                  "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
-                  RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
-                  AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
-                  AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
-                  "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
-                }}
-                theme={theme}
-                startedPhases={startedPhases}
+          <>
+            <div className={styles.wholeContainer}>
+              <QuestionPhase
+                phase={currentPhase}
+                phaseIcon={PhaseIcon}
+                question={currentQuestion}
+                currentStep={currentStep}
+                totalSteps={phaseQuestions.length}
+                selectedOption={selectedOption}
+                onSelect={handleAnswer}
+                onNext={handleNext}
               />
-            </aside>
-          </div>
+              
+              {/* Para tamaños desktop, mostrar el sidebar normalmente */}
+              {!isMobile && (
+                <aside className={styles.sidebar}>
+                  <RadarChart
+                    data={{
+                      ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
+                      "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
+                      RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
+                      AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
+                      AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
+                      "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
+                    }}
+                    theme={theme}
+                    startedPhases={startedPhases}
+                  />
+                </aside>
+              )}
+            </div>
+            
+            {/* Botón para mostrar/ocultar el gráfico en móvil */}
+            {isMobile && (
+              <button 
+                className={styles.toggleChartButton} 
+                onClick={handleToggleChart}
+                aria-label="Ver gráfico"
+              >
+                <BarChart2 size={24} />
+              </button>
+            )}
+            
+            {/* Modal para el gráfico en dispositivos móviles */}
+            {isMobile && showChartMobile && (
+              <div className={styles.chartModalOverlay}>
+                <div className={styles.chartModal}>
+                  <button 
+                    className={styles.closeChartButton} 
+                    onClick={handleToggleChart}
+                    aria-label="Cerrar gráfico"
+                  >
+                    <X size={24} />
+                  </button>
+                  <div className={styles.chartModalContent}>
+                    <RadarChart
+                      data={{
+                        ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
+                        "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
+                        RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
+                        AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
+                        AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
+                        "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
+                      }}
+                      theme={theme}
+                      startedPhases={startedPhases}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>

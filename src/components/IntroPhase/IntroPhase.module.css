@@ -41,7 +41,7 @@
   display: block;
   position: relative;
   z-index: 2;
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
 }
 
 .title {
@@ -51,8 +51,7 @@
   line-height: 1.2;
   position: relative;
   z-index: 2;
-  font-family: 'Red Hat Display', sans-serif;
-
+  font-family: "Red Hat Display", sans-serif;
 }
 
 .description {
@@ -60,8 +59,7 @@
   font-size: 20px;
   line-height: 26px;
   font-weight: 500;
-  font-family: 'Red Hat Display', sans-serif;
-
+  font-family: "Red Hat Display", sans-serif;
 }
 
 .description p {
@@ -84,7 +82,6 @@
   height: 100%;
   object-fit: contain; /* Cambia a "contain" para asegurar que la imagen se ajuste sin recortarse */
   z-index: 1;
-
 }
 
 .iconWrapper {
@@ -117,14 +114,22 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.5s ease-out;}
+  transition: 0.5s ease-out;
+}
 
 .nextButton:hover {
   transform: translateX(4px);
-  background-color: #0027B6;
+  background-color: #0027b6;
 }
 
+/* Tablet Styles */
 @media (max-width: 1024px) {
+  .introCard {
+    padding: 2rem 3rem;
+    height: auto;
+    min-height: 70vh;
+  }
+
   .content {
     flex-direction: column;
     gap: 2rem;
@@ -134,22 +139,95 @@
     max-width: 100%;
   }
 
+  .titleContainer {
+    height: auto;
+    min-height: 200px;
+  }
+
   .title {
-    font-size: 3rem;
+    font-size: 48px;
+  }
+
+  .factor {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .iconSection {
+    height: 350px;
+    align-items: center;
+  }
+
+  .icon {
+    width: 160px;
   }
 }
 
+/* Mobile Styles */
 @media (max-width: 768px) {
   .introCard {
-    padding: 2rem;
+    padding: 1.5rem;
+    min-height: 60vh;
   }
 
   .title {
-    font-size: 2.5rem;
+    font-size: 36px;
+  }
+
+  .factor {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   .description {
-    font-size: 1.125rem;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .iconSection {
+    height: 280px;
+  }
+
+  .icon {
+    width: 140px;
   }
 }
 
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .introCard {
+    padding: 1rem;
+    min-height: 50vh;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .factor {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .description p {
+    margin-bottom: 1rem;
+  }
+
+  .iconSection {
+    height: 220px;
+  }
+
+  .icon {
+    width: 120px;
+  }
+
+  .nextButton {
+    width: 3rem;
+    height: 3rem;
+  }
+}
