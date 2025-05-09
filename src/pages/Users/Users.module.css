@@ -337,3 +337,126 @@
     height: 28px;
   }
 }
+/* New styles for delete functionality */
+.actionsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f8f8ff;
+  border-bottom: 1px solid rgba(0, 0, 255, 0.1);
+}
+
+.deleteSelectedBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ff0000;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteSelectedBtn:hover {
+  background: #cc0000;
+}
+
+.deleteBtn {
+  background: none;
+  border: none;
+  color: #ff0000;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.deleteBtn:hover {
+  opacity: 1;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmationModal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.confirmationModal h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.confirmationModal p {
+  margin-bottom: 2rem;
+  color: #666;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancelBtn {
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #e0e0e0;
+}
+
+.confirmDeleteBtn {
+  background: #ff0000;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirmDeleteBtn:hover:not(:disabled) {
+  background: #cc0000;
+}
+
+.confirmDeleteBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}

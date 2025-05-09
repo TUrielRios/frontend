@@ -1,0 +1,192 @@
+.helpPage {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .titleSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .titleSection h1 {
+    font-size: 2rem;
+    color: #0a2ff1;
+    margin: 0;
+  }
+  
+  .helpIcon {
+    color: #0a2ff1;
+  }
+  
+  .subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  
+  .introSection {
+    margin-bottom: 3rem;
+    text-align: center;
+    padding: 0 2rem;
+  }
+  
+  .introSection h2 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .introSection p {
+    color: #666;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .sectionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .sectionCard {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #eee;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .sectionCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .sectionIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0a2ff1;
+  }
+  
+  .sectionCard h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2rem;
+  }
+  
+  .sectionDescription {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  
+  .featuresList, .tipsList {
+    margin-bottom: 1.5rem;
+  }
+  
+  .featuresList h4, .tipsList h4 {
+    color: #444;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .featuresList ul, .tipsList ul {
+    padding-left: 1.2rem;
+    margin: 0;
+  }
+  
+  .featuresList li, .tipsList li {
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .tipsList {
+    background-color: #f9f9ff;
+    padding: 1rem;
+    border-radius: 6px;
+    border-left: 3px solid #0a2ff1;
+  }
+  
+  .additionalHelp {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f9f9ff;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+  
+  .additionalHelp h2 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .additionalHelp p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .contactInfo {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .contactInfo p {
+    margin: 0;
+    color: #444;
+    font-size: 0.95rem;
+  }
+  
+  @media (max-width: 768px) {
+    .content {
+      padding: 1.5rem;
+    }
+    
+    .sectionsGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .contactInfo {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }

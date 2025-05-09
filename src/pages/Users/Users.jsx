@@ -1,5 +1,5 @@
-import React,{ useState, useEffect } from "react"
-import { Search, Filter, X, RefreshCw } from "lucide-react"
+import React, { useState, useEffect } from "react"
+import { Search, Filter, X, RefreshCw, Trash2 } from "lucide-react"
 import styles from "./Users.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 import UserModal from "./UserModal"
@@ -15,6 +15,8 @@ const Users = () => {
   const [loading, setLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState(null)
+  const [selectedUsers, setSelectedUsers] = useState([])
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1)
@@ -60,6 +62,7 @@ const Users = () => {
       setUsers([...formattedTallerUsers, ...formattedCursoUsers])
       setLoading(false)
       setIsRefreshing(false)
+      setSelectedUsers([]) // Reset selected users on refresh
     } catch (err) {
       setError(err.message)
       setLoading(false)
@@ -76,6 +79,106 @@ const Users = () => {
   const handleReload = () => {
     setIsRefreshing(true)
     fetchUsers()
+  }
+
+  // Toggle user selection
+  const toggleUserSelection = (userId) => {
+    setSelectedUsers(prev => 
+      prev.includes(userId) 
+        ? prev.filter(id => id !== userId) 
+        : [...prev, userId]
+    )
+  }
+
+  // Select all users on current page
+  const toggleSelectAll = () => {
+    if (selectedUsers.length === currentUsers.length) {
+      setSelectedUsers([])
+    } else {
+      setSelectedUsers(currentUsers.map(user => user.id || user._id))
+    }
+  }
+
+  // Delete selected users
+  const deleteSelectedUsers = async () => {
+    try {
+      setLoading(true)
+      
+      // Determinar el endpoint correcto basado en el tipo de usuario
+      const isTallerUser = users.some(user => 
+        selectedUsers.includes(user.id || user._id) && user.modalidad === 'Taller'
+      )
+      
+      const isCursoUser = users.some(user => 
+        selectedUsers.includes(user.id || user._id) && user.modalidad === 'Curso'
+      )
+
+      let deletePromises = []
+
+      if (isTallerUser) {
+        deletePromises.push(
+          fetch(`https://lacocina-backend-deploy.vercel.app/usuarios`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ids: selectedUsers })
+          })
+        )
+      }
+
+      if (isCursoUser) {
+        deletePromises.push(
+          fetch(`https://lacocina-backend-deploy.vercel.app/usuarios`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ids: selectedUsers })
+          })
+        )
+      }
+
+      const responses = await Promise.all(deletePromises)
+      const allOk = responses.every(response => response.ok)
+
+      if (!allOk) {
+        throw new Error('Error al eliminar algunos usuarios')
+      }
+
+      await fetchUsers() // Refresh the list
+      setShowDeleteConfirmation(false)
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+    }
+  }
+
+  // Delete single user
+  const deleteUser = async (userId) => {
+    try {
+      setLoading(true)
+      
+      const userToDelete = users.find(user => (user.id || user._id) === userId)
+      if (!userToDelete) return
+
+      const endpoint = userToDelete.modalidad === 'Taller' 
+        ? `https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`
+        : `https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`
+
+      const response = await fetch(endpoint, {
+        method: 'DELETE'
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el usuario')
+      }
+
+      await fetchUsers() // Refresh the list
+    } catch (err) {
+      setError(err.message)
+      setLoading(false)
+    }
   }
 
   // Calcular score promedio para cada usuario
@@ -224,24 +327,54 @@ const Users = () => {
             </div>
           ) : (
             <>
+              <div className={styles.actionsBar}>
+                {selectedUsers.length > 0 && (
+                  <>
+                    <span>{selectedUsers.length} usuario(s) seleccionado(s)</span>
+                    <button 
+                      className={styles.deleteSelectedBtn}
+                      onClick={() => setShowDeleteConfirmation(true)}
+                    >
+                      <Trash2 size={16} /> Eliminar seleccionados
+                    </button>
+                  </>
+                )}
+              </div>
+              
               <div className={styles.resultsCount}>
                 Mostrando {Math.min(indexOfFirstUser + 1, filteredUsers.length)}-{Math.min(indexOfLastUser, filteredUsers.length)} de {filteredUsers.length} usuarios
               </div>
+              
               <table className={styles.usersTable}>
                 <thead>
                   <tr>
+                    <th>
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.length > 0 && selectedUsers.length === currentUsers.length}
+                        onChange={toggleSelectAll}
+                      />
+                    </th>
                     <th>Usuario</th>
                     <th>Empresa</th>
                     <th>Tipo</th>
                     <th>Industria</th>
                     <th>Fecha</th>
                     <th>Resultado</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentUsers.map((user) => (
-                    <tr key={user.id || user._id} onClick={() => setSelectedUser(user)} className={styles.userRow}>
+                    <tr key={user.id || user._id} className={styles.userRow}>
                       <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.includes(user.id || user._id)}
+                          onChange={() => toggleUserSelection(user.id || user._id)}
+                        />
+                      </td>
+                      <td onClick={() => setSelectedUser(user)}>
                         <div className={styles.userName}>
                           <span className={styles.nameInitial}>
                             {user.modalidad === 'Taller' ? 'T' : user.name.charAt(0)}
@@ -263,24 +396,37 @@ const Users = () => {
                           </div>
                         </div>
                       </td>
-                      <td>{user.compania}</td>
-                      <td>
+                      <td onClick={() => setSelectedUser(user)}>{user.compania}</td>
+                      <td onClick={() => setSelectedUser(user)}>
                         <span className={`${styles.userType} ${user.modalidad === 'Taller' ? styles.taller : styles.curso}`}>
                           {user.modalidad}
                         </span>
                       </td>
-                      <td>{user.industriaSector}</td>
-                      <td>
+                      <td onClick={() => setSelectedUser(user)}>{user.industriaSector}</td>
+                      <td onClick={() => setSelectedUser(user)}>
                         {new Date(user.createdAt).toLocaleDateString('es-ES', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric'
                         })}
                       </td>
-                      <td>
+                      <td onClick={() => setSelectedUser(user)}>
                         <span className={styles.score}>
                           {user.score ? user.score.toFixed(1) : 'N/A'}
                         </span>
+                      </td>
+                      <td>
+                        <button 
+                          className={styles.deleteBtn}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (window.confirm(`¿Estás seguro de que deseas eliminar a ${user.name}?`)) {
+                              deleteUser(user.id || user._id)
+                            }
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -347,6 +493,31 @@ const Users = () => {
       </div>
 
       {selectedUser && <UserModal user={selectedUser} onClose={() => setSelectedUser(null)} />}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirmation && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.confirmationModal}>
+            <h3>Confirmar eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar {selectedUsers.length} usuario(s) seleccionado(s)? Esta acción no se puede deshacer.</p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.cancelBtn}
+                onClick={() => setShowDeleteConfirmation(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className={styles.confirmDeleteBtn}
+                onClick={deleteSelectedUsers}
+                disabled={loading}
+              >
+                {loading ? 'Eliminando...' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

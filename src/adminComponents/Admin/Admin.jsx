@@ -5,6 +5,7 @@ import Users from "../../pages/Users/Users"
 import Sidebar from "../Sidebar/Sidebar"
 import Settings from "../../pages/Settings/Settings"
 import AccessCodes from "../../pages/AccessCodes/AccessCodes"
+import Help from "../../pages/Help/Help"
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -21,7 +22,7 @@ const Admin = () => {
       case "settings":
         return <Settings />
       case "help":
-        return <div className={styles.comingSoon}>Ayuda - Próximamente</div>
+        return <Help />
       default:
         return <AdminDashboard />
     }

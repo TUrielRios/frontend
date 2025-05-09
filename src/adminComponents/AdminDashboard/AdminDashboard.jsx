@@ -529,7 +529,7 @@ const AdminDashboard = () => {
       <AdminHeader username="Administrador" />
       <div className={styles.content}>
         <div className={styles.metricsSection}>
-          <MetricCard title="Total Usuarios" value={metrics.totalUsers.toString()}  icon={Users} />
+          <MetricCard title="Total Usuarios de Talleres" value={metrics.totalUsers.toString()}  icon={Users} />
           <MetricCard title="Usuarios Activos" value={metrics.activeUsers.toString()} icon={UserCheck} />
           <MetricCard title="Tasa de Finalización" value={metrics.completionRate} icon={TrendingUp} />
         </div>
