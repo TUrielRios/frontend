@@ -427,7 +427,7 @@ const Form = () => {
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
         </button>
 
-        <p className={styles.timeEstimate}>Solo tomará 20 minutos</p>
+        <p className={styles.timeEstimate}>Solo tomará 10 minutos</p>
       </form>
     )
   }
@@ -618,7 +618,7 @@ const Form = () => {
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
         </button>
 
-        <p className={styles.timeEstimate}>Solo tomará 20 minutos</p>
+        <p className={styles.timeEstimate}>Solo tomará 10 minutos</p>
       </form>
     )
   }
@@ -636,6 +636,9 @@ const Form = () => {
             la Influencia
           </h1>
           <p className={styles.description}>{loading ? "Cargando..." : descripcionTexto}</p>
+          <p className={styles.footerFormContainer}>Recordá que la información que proporciones es
+confidencial y se utilizará únicamente con fines
+estadísticos.</p>
 
           {/* Botones de selección debajo del texto */}
           {formType === null && (

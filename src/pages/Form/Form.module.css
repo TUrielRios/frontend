@@ -15,7 +15,6 @@
   max-width: 90%;
   margin: 0 auto;
   height: 90%;
-
   }
 
 .content {
@@ -26,7 +25,7 @@
 }
 
 .title {
-  font-size: 48px;
+  font-size: 58px;
   font-weight: 600;
   margin-bottom: 30px;
   line-height: 1.2;
@@ -34,9 +33,11 @@
 
 .subtitle {
   color: #00f0ff;
-  font-size: 24px;
+  font-size: 26px;
   margin-bottom: 30px;
   font-weight: 500;
+  border: 1px solid red;
+  width: 95%;
 }
 
 .description {
@@ -46,6 +47,9 @@
   margin-bottom: 40px;
 }
 
+.footerFormContainer{
+  font-size: 12px;
+}
 .privacy {
   font-size: 14px;
   opacity: 0.8;
@@ -92,6 +96,7 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  max-width: 300px;
 }
 
 .diamanteGif {
@@ -106,7 +111,6 @@
   border-radius: 20px;
   padding: 40px;
   color: #000;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -146,12 +150,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding-right: 30px;
 }
 
 .formGroup label {
   color: #0041ff;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .inputlarge {
@@ -194,6 +199,8 @@
   appearance: none;
   padding-right: 40px;
   background-color: transparent;
+  font-size: 18px;
+  border-radius: 20px;
 }
 
 .selectIcon {
@@ -204,34 +211,60 @@
   pointer-events: none;
 }
 
+/* Estilo para el grupo de checkbox */
 .checkboxGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
+  margin: 10px 0;
 }
 
+/* Contenedor del checkbox */
 .checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #0041ff;
+  position: relative;
+  cursor: pointer;
+    color: #0A2FF1;
+
+}
+
+/* Esconder el checkbox nativo pero mantenerlo accesible */
+.checkbox input[type="checkbox"] {
+  opacity: 0;
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  z-index: 1;
   cursor: pointer;
 }
 
-.checkbox input[type="checkbox"] {
+/* Crear el cuadro exterior */
+.checkbox input[type="checkbox"] + span::before {
+  content: '';
   width: 18px;
   height: 18px;
-  border: 1px solid #0041ff;
-  border-radius: 4px;
-  accent-color: #0041ff;
+  border: 1px solid #0A2FF1;
+  display: inline-block;
+  border-radius: 6px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background-color: white;
+  transition: all 0.2s ease;
 }
 
+/* Estilo cuando está seleccionado */
+.checkbox input[type="checkbox"]:checked + span::before {
+  border-color: #0A2FF1;
+  background-color: white;
+  box-shadow: inset 0 0 0 2px white;
+  background-color: #0A2FF1;
+}
+
+/* Estilo para el enlace */
 .link {
-  color: #0041ff;
+  color: #0A2FF1;
   text-decoration: underline;
 }
+
+
 
 .submitButton {
   background-color: #0041ff;
@@ -335,7 +368,12 @@
     padding: 40px 0;
   }
 
+  .formTitle{
+    text-align: left;
+  }
+
   .content {
+    order: 2;
     padding-right: 0;
     text-align: center;
   }
@@ -350,6 +388,7 @@
   }
 
   .rightColumn {
+    order: 1;
     width: 100%;
   }
 
@@ -361,20 +400,37 @@
 @media (max-width: 768px) {
   .title {
     font-size: 36px;
+    padding-left: 10px;
   }
+  .footerFormContainer{
+  font-size: 12px;
+  padding-left: 10px;
+}
 
   .subtitle {
     font-size: 20px;
+        padding-left: 10px;
+
   }
 
   .description {
     font-size: 16px;
+        padding-left: 10px;
+
   }
 
   .formTypeOptions {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 15px;
+  }
+  .formTypeButton {
+    font-size:12px
+  }
+  .content{
+    text-align: left;
+    margin-top: 0;
+
   }
 
   .container {
@@ -387,6 +443,8 @@
     border-radius: 15px;
   }
 
+
+  
   .nameFields {
     flex-direction: column;
     gap: 15px;

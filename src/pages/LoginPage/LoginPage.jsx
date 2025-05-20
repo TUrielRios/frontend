@@ -133,7 +133,7 @@ const LoginPage = ({ title, onSuccess, tipo, redirectPath }) => {
                   "Verificando..."
                 ) : (
                   <>
-                    Ingresar <ChevronRight size={18} />
+                    Ingresar
                   </>
                 )}
               </button>

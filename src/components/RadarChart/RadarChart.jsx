@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import styles from "./RadarChart.module.css"
-// Importar los iconos GIF
+// Import animated icons
 import validacionSocialIcono from "../../assets/iconos-animados/validacion-social-icono.gif"
 import atractivoIcono from "../../assets/iconos-animados/atractivo-icono.gif"
 import reciprocidadIcono from "../../assets/iconos-animados/reciprocidad-icono.gif"
@@ -24,7 +24,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   const animationRef = useRef(null)
   const prevDataRef = useRef({ ...animatedData })
 
-  // Orden actualizado según el archivo compartido
+  // Updated order according to the shared file
   const labels = [
     "ATRACTIVO",
     "RECIPROCIDAD",
@@ -34,7 +34,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     "VALIDACIÓN SOCIAL",
   ]
 
-  // Iconos GIF
+  // GIF icons
   const icons = [
     atractivoIcono,
     reciprocidadIcono,
@@ -44,18 +44,18 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     validacionSocialIcono,
   ]
 
-  // Efecto para animar los datos cuando cambian
+  // Effect to animate data when it changes
   useEffect(() => {
-    // Guardar los datos actuales como punto de partida
+    // Save current data as starting point
     const startData = { ...prevDataRef.current }
     const targetData = { ...data }
 
-    // Cancelar cualquier animación en curso
+    // Cancel any ongoing animation
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current)
     }
 
-    // Si es la primera renderización y hay datos, establecer directamente sin animación
+    // If it's the first render and there's data, set directly without animation
     if (isInitialRender && Object.values(data).some((value) => value > 0)) {
       setAnimatedData({ ...data })
       setIsInitialRender(false)
@@ -63,20 +63,20 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
       return
     }
 
-    // Tiempo de inicio de la animación
+    // Animation start time
     const startTime = performance.now()
-    const duration = 800 // duración de la animación en ms
+    const duration = 800 // animation duration in ms
 
-    // Función de animación
+    // Animation function
     const animate = (currentTime) => {
       const elapsedTime = currentTime - startTime
       const progress = Math.min(elapsedTime / duration, 1)
 
-      // Función de easing para una animación más suave
+      // Easing function for smoother animation
       const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3)
       const easedProgress = easeOutCubic(progress)
 
-      // Calcular los valores intermedios
+      // Calculate intermediate values
       const newData = {}
       labels.forEach((label) => {
         const start = startData[label] || 0
@@ -84,22 +84,22 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
         newData[label] = start + (target - start) * easedProgress
       })
 
-      // Actualizar el estado con los valores animados
+      // Update state with animated values
       setAnimatedData(newData)
 
-      // Continuar la animación si no ha terminado
+      // Continue animation if not finished
       if (progress < 1) {
         animationRef.current = requestAnimationFrame(animate)
       } else {
-        // Guardar los datos finales como referencia para la próxima animación
+        // Save final data as reference for next animation
         prevDataRef.current = { ...targetData }
       }
     }
 
-    // Iniciar la animación
+    // Start animation
     animationRef.current = requestAnimationFrame(animate)
 
-    // Limpiar la animación cuando el componente se desmonte
+    // Clean up animation when component unmounts
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
@@ -110,10 +110,10 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   const calculatePoints = () => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150 // Usar el mismo maxRadius que se usa para el hexágono
+    const maxRadius = 150 // Use same maxRadius as for hexagon
 
     for (let i = 0; i < labels.length; i++) {
-      // Asegúrate de usar el mismo cálculo de ángulo que se usa para dibujar las líneas punteadas
+      // Make sure to use the same angle calculation used for drawing dotted lines
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       const value = animatedData[labels[i]] || 0
       const radius = (value / 10) * maxRadius
@@ -126,7 +126,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     return points.join(" ")
   }
 
-  // Definir colores según el tema
+  // Define colors based on theme - ensuring consistent colors across screens
   const colors =
     theme === "dark"
       ? {
@@ -137,8 +137,8 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           dataStroke: "#00ffff",
           labelText: "#ffffff",
           iconColor: "#5991bc",
-          completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema oscuro)
-          startedColor: "#3FFFF3", // Color para fases iniciadas
+          completedColor: "#3FFFF3", // Stronger color for completed phases (dark theme)
+          startedColor: "#3FFFF3", // Color for started phases
         }
       : {
           hexFill: "white",
@@ -148,11 +148,11 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           dataStroke: "#00ffff",
           labelText: "#0a2ff1",
           iconColor: "#0a2ff1",
-          completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema claro)
-          startedColor: "#3FFFF3", // Color para fases iniciadas
+          completedColor: "#3FFFF3", // Stronger color for completed phases (light theme)
+          startedColor: "#3FFFF3", // Color for started phases
         }
 
-  // Generamos los puntos del hexágono con precisión matemática
+  // Generate hexagon points with mathematical precision
   const generateHexPoints = (center, radius) => {
     const points = []
     for (let i = 0; i < 6; i++) {
@@ -164,10 +164,27 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     return points.join(" ")
   }
 
+  // Common icon filter style for consistency across all screen sizes
+  const getIconStyle = (isHighlighted) => {
+    if (theme === "dark") {
+      return {
+        opacity: isHighlighted ? 1 : 0.85,
+        filter: isHighlighted ? "brightness(8) hue-rotate(14deg)" : "brightness(2.2)",
+        overflow: "visible",
+      }
+    } else {
+      return {
+        opacity: isHighlighted ? 1 : 0.85,
+        filter: isHighlighted ? "brightness(1.5) hue-rotate(14deg)" : "brightness(1)",
+        overflow: "visible",
+      }
+    }
+  }
+
   return (
     <div className={styles.radarContainer}>
       <svg viewBox="0 0 450 450" className={styles.radar}>
-        {/* Círculos de fondo - usar la función para generar los puntos del hexágono */}
+        {/* Background circles - use function to generate hexagon points */}
         {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
           <polygon
             key={`hex-${index}`}
@@ -181,7 +198,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           />
         ))}
 
-        {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
+        {/* Dotted lines - ensure same angle and distance calculation */}
         {Array.from({ length: 6 }).map((_, i) => {
           const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
           const x2 = 200 + 150 * Math.cos(angle)
@@ -203,7 +220,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           )
         })}
 
-        {/* Área de datos con animación */}
+        {/* Data area with animation */}
         <polygon
           points={calculatePoints()}
           className={styles.dataArea}
@@ -215,16 +232,14 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           }}
         />
 
-        {/* Etiquetas */}
+        {/* Labels */}
         {labels.map((label, index) => {
           const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
           let radius = 175
 
-
-          // Ajusta dinámicamente el radio para evitar colisiones
+          // Dynamically adjust radius to avoid collisions
           if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
-            radius = 214 // Aumenta el radio para estas etiquetas
-
+            radius = 214 // Increase radius for these labels
           }
           if(label === "AUTENTICIDAD") {
             radius = 204
@@ -236,7 +251,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           const x = 200 + radius * Math.cos(angle)
           const y = 213 + radius * Math.sin(angle)
 
-          // Verificar si esta fase está completada o iniciada
+          // Check if this phase is completed or started
           const isCompleted = completedPhases.includes(label)
           const isStarted = startedPhases.includes(label)
           const shouldHighlight = isCompleted || isStarted
@@ -287,17 +302,16 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                   label
                 )}
               </text>
-              {/* Iconos GIF */}
+              {/* GIF Icons with consistent styling */}
               <image 
                 href={icons[index]} 
                 x={x - 18} 
-                y={y -45} // Usamos el offset calculado
+                y={y - 45}
                 width="32" 
                 height="32" 
-                style={{
-                  opacity: shouldHighlight ? 1 : 0.85,
-                  filter: shouldHighlight ? "brightness(8) hue-rotate(14deg)" : "brightness(2.2)",
-overflow: "visible",               }}
+                style={getIconStyle(shouldHighlight)}
+                data-highlighted={shouldHighlight ? "true" : "false"}
+                className={shouldHighlight ? styles.highlightedIcon : styles.normalIcon}
               />  
             </g>
           )

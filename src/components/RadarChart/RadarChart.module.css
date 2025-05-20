@@ -73,6 +73,25 @@
   animation: pulse 2s infinite ease-in-out;
 }
 
+/* Large screen styles */
+@media (min-width: 1920px) {
+  .radarContainer {
+    width: 800px;
+    height: 650px;
+    max-width: 100%;
+  }
+  
+  /* Ensure icons have consistent styling on large screens */
+  .radar image {
+    filter: brightness(2.2) !important;
+  }
+  
+  .radar image[data-highlighted="true"] {
+    filter: brightness(8) hue-rotate(14deg) !important;
+    opacity: 1 !important;
+  }
+}
+
 /* Tablet styles */
 @media (max-width: 1024px) {
   .radarContainer {

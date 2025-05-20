@@ -25,7 +25,7 @@ const ResultsPhase = ({ phaseScores }) => {
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsContent}>
-      <h1 className={styles.resultsTitle}>¡Gracias por responder!</h1>
+      <h1 className={styles.resultsTitle}>¡Gracias por participar!</h1>
         <div className={styles.resultsText}>
         <p dangerouslySetInnerHTML={createMarkup(formatDescription(textos.texto_final))} />
         </div>
