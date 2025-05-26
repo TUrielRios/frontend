@@ -54,6 +54,16 @@
   font-weight: 500;
 }
 
+/* Icon styles for normal and highlighted states */
+.normalIcon {
+  transition: opacity 0.3s ease;
+}
+
+.highlightedIcon {
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -76,19 +86,16 @@
 /* Large screen styles */
 @media (min-width: 1920px) {
   .radarContainer {
-    width: 800px;
-    height: 650px;
     max-width: 100%;
   }
-  
-  /* Ensure icons have consistent styling on large screens */
-  .radar image {
-    filter: brightness(2.2) !important;
+
+  /* Clean icon styling for large screens - no filters needed */
+  .normalIcon {
+    opacity: 1;
   }
-  
-  .radar image[data-highlighted="true"] {
-    filter: brightness(8) hue-rotate(14deg) !important;
-    opacity: 1 !important;
+
+  .highlightedIcon {
+    opacity: 1;
   }
 }
 

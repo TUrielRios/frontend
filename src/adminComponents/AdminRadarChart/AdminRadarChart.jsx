@@ -110,13 +110,18 @@ const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPh
   const calculatePoints = () => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150 // Usar el mismo maxRadius que se usa para el hexágono
+    // Ajustar maxRadius para que el valor 10 no se salga del hexágono
+    // Usar un radio máximo de 140 en lugar de 150 para dejar un margen
+    const maxRadius = 140
 
     for (let i = 0; i < labels.length; i++) {
       // Asegúrate de usar el mismo cálculo de ángulo que se usa para dibujar las líneas punteadas
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       const value = animatedData[labels[i]] || 0
-      const radius = (value / 10) * maxRadius
+      
+      // Asegurar que el valor esté entre 0 y 10, y calcular el radio proporcionalmente
+      const clampedValue = Math.max(0, Math.min(10, value))
+      const radius = (clampedValue / 10) * maxRadius
 
       const x = center.x + radius * Math.cos(angle)
       const y = center.y + radius * Math.sin(angle)
@@ -187,11 +192,12 @@ const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPh
               // Calculamos el ángulo para cada línea radial (igual que para las líneas punteadas)
               const angle = (Math.PI * 2 * lineIndex) / 6 - Math.PI / 2;
               
-              // Para cada línea radial, colocamos los 5 números (2,4,6,8,10)
+              // Para cada línea radial, colocamos los 9 números (1-9)
               return [0.1,0.2,0.3, 0.4,0.5, 0.6,0.7, 0.8,0.9].map((scale, numIndex) => {
-                const value = numIndex + 1; // Valores 2, 4, 6, 8, 10
-                const x = 200 + (150 * scale) * Math.cos(angle);
-                const y = 200 + (150 * scale) * Math.sin(angle);
+                const value = numIndex + 1; // Valores 1, 2, 3, 4, 5, 6, 7, 8, 9
+                // Usar el mismo cálculo de radio que en calculatePoints pero limitado al hexágono
+                const x = 200 + (140 * scale) * Math.cos(angle); // Usar 140 para mantener consistencia
+                const y = 200 + (140 * scale) * Math.sin(angle);
                 
                 return (
                   <text
@@ -212,15 +218,15 @@ const AdminRadarChart = ({ data, theme = "dark", completedPhases = [], startedPh
               });
             })}
     
-            {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
+            {/* Líneas punteadas - mantener el radio de 150 para el hexágono exterior */}
            {Array.from({ length: 6 }).map((_, i) => {
           const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-          const x2 = 90 + 0 * Math.cos(angle)
-          const y2 = 200 + 0 * Math.sin(angle)
+          const x2 = 200 + 150 * Math.cos(angle)
+          const y2 = 200 + 150 * Math.sin(angle)
           return (
             <line
               key={`line-${i}`}
-              x1="300"
+              x1="200"
               y1="200"
               x2={x2}
               y2={y2}

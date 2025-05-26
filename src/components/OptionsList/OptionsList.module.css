@@ -54,3 +54,64 @@
 .optionText {
   color: #0000ff;
 }
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+  .options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-family: 'Red Hat Display', sans-serif;
+
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.optionLabel:hover {
+  background: #f9fafb;
+}
+
+/* Hide the default radio button */
+.optionInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.customRadio {
+  height: 40px;
+  width: 40px;
+  background-color: #fff;
+  border: 3px solid #0A2FF1;
+  border-radius: 10px;
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+/* Style for selected option */
+.selected {
+  border-color: #0000ff;
+}
+
+/* Style for the radio button when selected */
+.selected .customRadio {
+  background-color: #3FFFF3;
+  border: 3px solid #0A2FF1;
+}
+
+.optionText {
+  color: #0000ff;
+  font-size: 2.2rem;
+}
+}

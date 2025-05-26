@@ -15,7 +15,7 @@
     background: white;
     border-radius: 16px;
     width: 90%;
-    max-width: 1200px;
+    max-width: 90%;
     max-height: 90vh;
     overflow: hidden;
     position: relative;
@@ -42,7 +42,7 @@
   
   .modalContent {
     display: flex;
-    height: 80vh;
+    height: 90vh;
   }
   
   /* Sidebar Styles */
@@ -166,7 +166,6 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-
   }
   
   .metricsGrid {
@@ -233,13 +232,12 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-}
+  }
   
   .chartCard {
     border-radius: 12px;
     padding: 1.5rem;
     height: 500px;
-    
   }
   
   .chartCard h3 {
@@ -253,28 +251,71 @@
   }
 
   /* Estilos personalizados para los scrollbars */
-.sidebar::-webkit-scrollbar,
-.mainContent::-webkit-scrollbar {
-  width: 2px; /* Ancho del scrollbar */
-}
+  .sidebar::-webkit-scrollbar,
+  .mainContent::-webkit-scrollbar {
+    width: 2px;
+  }
 
-.sidebar::-webkit-scrollbar-track,
-.mainContent::-webkit-scrollbar-track {
-  background: #f0f0ff; /* Color de fondo del track */
-  border-radius: 4px; /* Bordes redondeados */
-}
+  .sidebar::-webkit-scrollbar-track,
+  .mainContent::-webkit-scrollbar-track {
+    background: #f0f0ff;
+    border-radius: 4px;
+  }
 
-.sidebar::-webkit-scrollbar-thumb,
-.mainContent::-webkit-scrollbar-thumb {
-  background: #0a2ff1; /* Color del thumb */
-  border-radius: 4px; /* Bordes redondeados */
-}
+  .sidebar::-webkit-scrollbar-thumb,
+  .mainContent::-webkit-scrollbar-thumb {
+    background: #0a2ff1;
+    border-radius: 4px;
+  }
 
-.sidebar::-webkit-scrollbar-thumb:hover,
-.mainContent::-webkit-scrollbar-thumb:hover {
-  background: #0830c7; /* Color del thumb al pasar el mouse */
-}
+  .sidebar::-webkit-scrollbar-thumb:hover,
+  .mainContent::-webkit-scrollbar-thumb:hover {
+    background: #0830c7;
+  }
   
+
+  /* Media Queries para Pantallas Grandes */
+  
+  /* Pantallas Extra Grandes (1920px+) */
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+
+.factorName {
+  font-size: 1.875rem;
+  color: #666;
+}
+.factorsList h3 {
+  color: #0a2ff1;
+  font-size: 2.5rem;
+  margin: 0;
+}
+.chartCard h3{
+  color: #0a2ff1;
+  font-size: 3rem;
+}
+.chartsSection{
+  height: 100vh;
+}
+.chartCard{
+  height: 100vh;
+}
+.chartContainer{
+  width: 100%;
+  height: 70vh; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profileInfo h2{
+  font-size: 2rem;
+}
+.detailItem span{
+  font-size: 1.7rem;
+}
+}
+
+  
+  /* Media Queries Existentes */
   @media (max-width: 1024px) {
     .modalContent {
       flex-direction: column;
@@ -295,5 +336,3 @@
       grid-template-columns: 1fr;
     }
   }
-  
-  

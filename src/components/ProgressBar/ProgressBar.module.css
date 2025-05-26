@@ -29,3 +29,38 @@
   position: absolute;
   left: 5px;
 }
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+  .progressBar {
+  position: absolute;
+  bottom: 0;
+  width: 86%;
+  height: 31px;
+  background: rgba(0, 255, 255, 0.4);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #00ffff;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.percentageText {
+  color: #0069f9;
+  font-size: 28px;
+  font-weight: bold;
+  /* Añadir algo de sombra para asegurar que el texto sea legible */
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.7);
+  /* Asegurar que el texto no se corte si la barra es muy pequeña */
+  white-space: nowrap;
+  position: absolute;
+  left: 5px;
+}
+}

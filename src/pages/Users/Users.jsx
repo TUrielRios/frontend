@@ -24,6 +24,7 @@ const Users = () => {
 
   // Fetch users function extracted for reusability
   const fetchUsers = async () => {
+
     try {
       setLoading(true)
       
@@ -390,9 +391,7 @@ const Users = () => {
                                 : user.name}
                             </p>
                             {user.email && <small>{user.email}</small>}
-                            {user.modalidad === 'Taller' && (
-                              <small className={styles.tallerCode}>{user.codigoTaller}</small>
-                            )}
+
                           </div>
                         </div>
                       </td>

@@ -483,3 +483,10 @@
     justify-content: center;
   }
 }
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+  .wholeContainer{
+    margin-top: 60px;
+  }
+}

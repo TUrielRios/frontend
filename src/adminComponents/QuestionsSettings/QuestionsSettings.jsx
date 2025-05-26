@@ -278,7 +278,7 @@ const QuestionsSettings = () => {
     <div className={styles.modalitySelector}>
       <div className={styles.modalityTabs}>
         <button
-          className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Curso' ? styles.activeModality : ''}`}
+          className={`${styles.modalityTab} ${editedQuestion.modalidad === ' ' ? styles.activeModality : ''}`}
           onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Curso' }))}
         >
           Curso

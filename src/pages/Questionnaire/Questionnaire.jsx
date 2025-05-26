@@ -1,6 +1,8 @@
+"use client"
+
 import { useState, useEffect } from "react"
 import styles from "./Questionnaire.module.css"
-import { ThumbsUp, ChevronRight, BarChart2, X } from "lucide-react"
+import { ThumbsUp, BarChart2, X } from "lucide-react"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
 // Componentes
@@ -21,6 +23,7 @@ const Questionnaire = () => {
   const [error, setError] = useState(null)
   const [showIntro, setShowIntro] = useState(true)
   const [phaseScores, setPhaseScores] = useState({})
+  const [displayedPhaseScores, setDisplayedPhaseScores] = useState({}) // New state for displayed scores
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
@@ -28,6 +31,7 @@ const Questionnaire = () => {
   const [theme, setTheme] = useState("dark")
   const [showChartMobile, setShowChartMobile] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [previousAnswers, setPreviousAnswers] = useState({}) // Store previous answers
 
   const [userId, setUserId] = useState(null)
   const [selectedModalidad, setSelectedModalidad] = useState(() => {
@@ -40,22 +44,22 @@ const Questionnaire = () => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-    
+
     // Verificar al cargar
     checkIfMobile()
-    
+
     // Agregar listener para cambios de tamaño
-    window.addEventListener('resize', checkIfMobile)
-    
+    window.addEventListener("resize", checkIfMobile)
+
     // Limpiar listener
-    return () => window.removeEventListener('resize', checkIfMobile)
+    return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
   // Set theme based on showIntro state
   useEffect(() => {
     setTheme(showIntro ? "light" : "dark")
   }, [showIntro])
-  
+
   // Cargar el ID del usuario desde localStorage
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId")
@@ -181,13 +185,19 @@ const Questionnaire = () => {
   const handleAnswer = (value) => {
     setSelectedOption(value)
     const scoreMap = {
-      Nunca: 1,
-      "Casi nunca": 3,
+      Nunca: 0,
+      "Casi nunca": 2.5,
       "A veces": 5,
       "La mayoría de las veces": 7,
-      Siempre: 9,
+      Siempre: 10,
     }
     const score = scoreMap[value]
+
+    // Store the answer for this question
+    setPreviousAnswers((prev) => ({
+      ...prev,
+      [`${currentPhase}_${currentStep}`]: value,
+    }))
 
     setPhaseScores((prevScores) => {
       const currentScores = prevScores[currentPhase] || []
@@ -206,6 +216,18 @@ const Questionnaire = () => {
     })
   }
 
+  // New function to handle going back to the previous question
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      // Go back to the previous question in the same phase
+      setCurrentStep(currentStep - 1)
+
+      // Restore the previous answer if it exists
+      const previousAnswer = previousAnswers[`${currentPhase}_${currentStep - 1}`]
+      setSelectedOption(previousAnswer || null)
+    }
+  }
+
   const handleNext = () => {
     setSelectedOption(null)
     const phaseQuestions = questions[currentPhase] || []
@@ -214,12 +236,18 @@ const Questionnaire = () => {
       setShowIntro(false)
       // Registrar que la fase ha sido iniciada
       if (!startedPhases.includes(currentPhase)) {
-        setStartedPhases(prev => [...prev, currentPhase])
+        setStartedPhases((prev) => [...prev, currentPhase])
       }
     } else if (currentStep < phaseQuestions.length - 1) {
+      // Not the last question of the phase, just move to the next question
       setCurrentStep((prev) => prev + 1)
+
+      // Set the selected option to the previously saved answer if it exists
+      const nextAnswer = previousAnswers[`${currentPhase}_${currentStep + 1}`]
+      setSelectedOption(nextAnswer || null)
     } else {
-      // Calcular el puntaje promedio de la fase actual
+      // This is the last question of the phase
+      // Calculate the average score for the current phase
       const currentScores = phaseScores[currentPhase] || []
       const validScores = currentScores.filter((score) => score !== undefined)
 
@@ -229,13 +257,19 @@ const Questionnaire = () => {
 
         console.log(`Fase ${currentPhase} completada. Puntaje promedio: ${roundedAverage}`)
 
-        // Actualizar el puntaje en el backend
+        // Update the backend score
         updatePhaseScore(currentPhase, roundedAverage)
+
+        // Update the displayed scores only at the end of each phase
+        setDisplayedPhaseScores((prev) => ({
+          ...prev,
+          [`${currentPhase}_avg`]: Math.round(averageScore),
+        }))
       } else {
         console.warn(`No hay puntajes válidos para la fase ${currentPhase}`)
       }
 
-      // Marcar la fase actual como completada
+      // Mark the current phase as completed
       setCompletedPhases((prev) => [...prev, currentPhase])
 
       const nextPhaseIndex = phases.indexOf(currentPhase) + 1
@@ -244,7 +278,7 @@ const Questionnaire = () => {
         setCurrentStep(0)
         setShowIntro(true)
       } else {
-        // Cuestionario completado - mostrar resultados finales
+        // Questionnaire completed - show final results
         setIsCompleted(true)
       }
     }
@@ -280,13 +314,16 @@ const Questionnaire = () => {
       <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
         <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
         <ResultsPhase
-          phaseScores={phaseScores}
+          phaseScores={displayedPhaseScores} // Use displayed scores for final results
           onDownloadBook={handleDownloadBook}
           onDownloadResults={handleDownloadResults}
         />
       </div>
     )
   }
+
+  // Check if we're on the last question of the phase
+  const isLastQuestion = currentStep === phaseQuestions.length - 1
 
   return (
     <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
@@ -312,19 +349,20 @@ const Questionnaire = () => {
                 selectedOption={selectedOption}
                 onSelect={handleAnswer}
                 onNext={handleNext}
+                onPrevious={handlePrevious} // Pass the new handler
               />
-              
+
               {/* Para tamaños desktop, mostrar el sidebar normalmente */}
               {!isMobile && (
                 <aside className={styles.sidebar}>
                   <RadarChart
                     data={{
-                      ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
-                      "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
-                      RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
-                      AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
-                      AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
-                      "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
+                      ATRACTIVO: displayedPhaseScores["ATRACTIVO_avg"] || 0,
+                      "VALIDACIÓN SOCIAL": displayedPhaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
+                      RECIPROCIDAD: displayedPhaseScores["RECIPROCIDAD_avg"] || 0,
+                      AUTORIDAD: displayedPhaseScores["AUTORIDAD_avg"] || 0,
+                      AUTENTICIDAD: displayedPhaseScores["AUTENTICIDAD_avg"] || 0,
+                      "CONSISTENCIA Y COMPROMISO": displayedPhaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
                     }}
                     theme={theme}
                     startedPhases={startedPhases}
@@ -332,38 +370,30 @@ const Questionnaire = () => {
                 </aside>
               )}
             </div>
-            
+
             {/* Botón para mostrar/ocultar el gráfico en móvil */}
             {isMobile && (
-              <button 
-                className={styles.toggleChartButton} 
-                onClick={handleToggleChart}
-                aria-label="Ver gráfico"
-              >
+              <button className={styles.toggleChartButton} onClick={handleToggleChart} aria-label="Ver gráfico">
                 <BarChart2 size={24} />
               </button>
             )}
-            
+
             {/* Modal para el gráfico en dispositivos móviles */}
             {isMobile && showChartMobile && (
               <div className={styles.chartModalOverlay}>
                 <div className={styles.chartModal}>
-                  <button 
-                    className={styles.closeChartButton} 
-                    onClick={handleToggleChart}
-                    aria-label="Cerrar gráfico"
-                  >
+                  <button className={styles.closeChartButton} onClick={handleToggleChart} aria-label="Cerrar gráfico">
                     <X size={24} />
                   </button>
                   <div className={styles.chartModalContent}>
                     <RadarChart
                       data={{
-                        ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
-                        "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
-                        RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
-                        AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
-                        AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
-                        "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
+                        ATRACTIVO: displayedPhaseScores["ATRACTIVO_avg"] || 0,
+                        "VALIDACIÓN SOCIAL": displayedPhaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
+                        RECIPROCIDAD: displayedPhaseScores["RECIPROCIDAD_avg"] || 0,
+                        AUTORIDAD: displayedPhaseScores["AUTORIDAD_avg"] || 0,
+                        AUTENTICIDAD: displayedPhaseScores["AUTENTICIDAD_avg"] || 0,
+                        "CONSISTENCIA Y COMPROMISO": displayedPhaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
                       }}
                       theme={theme}
                       startedPhases={startedPhases}

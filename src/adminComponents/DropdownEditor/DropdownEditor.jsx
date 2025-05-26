@@ -23,6 +23,7 @@ const DropdownEditor = () => {
   const [success, setSuccess] = useState(null);
   const [draggedIndex, setDraggedIndex] = useState(null);
 
+  
   // Cargar datos desde la API al iniciar
   useEffect(() => {
     const fetchDropdowns = async () => {
@@ -53,6 +54,7 @@ const DropdownEditor = () => {
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
     setEditingOptions({}); // Reset editing state when changing categories
+    setDraggedIndex(null); // Reset drag state when changing categories
     setError(null);
     setSuccess(null);
   };
@@ -75,6 +77,10 @@ const DropdownEditor = () => {
       const response = await fetch(`${API_URL}/desplegables/${selectedCategory.id}`);
       if (!response.ok) throw new Error("Error al obtener opciones");
       const opciones = await response.json();
+      
+      if (!opciones[index]) {
+        throw new Error("Opción no encontrada");
+      }
       
       const opcionId = opciones[index].id;
       
@@ -113,8 +119,11 @@ const DropdownEditor = () => {
       setEditingOptions(newEditingOptions);
       
       setSuccess("Opción actualizada correctamente");
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err.message);
+      setTimeout(() => setError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -154,8 +163,10 @@ const DropdownEditor = () => {
       setDropdownCategories(updatedCategories);
       setSelectedCategory(updatedCategories.find(c => c.id === selectedCategory.id));
       setSuccess("Opción agregada correctamente");
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err.message);
+      setTimeout(() => setError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -165,17 +176,32 @@ const DropdownEditor = () => {
   const handleDeleteOption = async (index) => {
     if (!selectedCategory) return;
     
+    // Confirmar eliminación
+    if (!window.confirm('¿Estás seguro de que quieres eliminar esta opción?')) {
+      return;
+    }
+    
     try {
+      setSaving(true);
+      
+      // Reset drag state para evitar conflictos
+      setDraggedIndex(null);
+      
       // Obtener el ID de la opción a eliminar
       const response = await fetch(`${API_URL}/desplegables/${selectedCategory.id}`);
       if (!response.ok) throw new Error("Error al obtener opciones");
       const opciones = await response.json();
+      
+      if (!opciones[index]) {
+        throw new Error("Opción no encontrada");
+      }
       
       const opcionId = opciones[index].id;
       
       // Verificar si es "Otro"
       if (opciones[index].valor.toLowerCase() === "otro") {
         setError("No se puede eliminar la opción 'Otro'");
+        setTimeout(() => setError(null), 5000);
         return;
       }
       
@@ -183,8 +209,12 @@ const DropdownEditor = () => {
         method: 'DELETE'
       });
       
-      if (!deleteResponse.ok) throw new Error("Error al eliminar opción");
+      if (!deleteResponse.ok) {
+        const errorData = await deleteResponse.json().catch(() => ({}));
+        throw new Error(errorData.error || "Error al eliminar opción");
+      }
       
+      // Actualizar el estado local
       const updatedCategories = dropdownCategories.map(category => {
         if (category.id === selectedCategory.id) {
           const newOptions = [...category.options];
@@ -199,9 +229,26 @@ const DropdownEditor = () => {
       
       setDropdownCategories(updatedCategories);
       setSelectedCategory(updatedCategories.find(c => c.id === selectedCategory.id));
+      
+      // Limpiar estados de edición que puedan haber quedado obsoletos
+      const newEditingOptions = {...editingOptions};
+      // Eliminar cualquier estado de edición para índices >= al eliminado
+      Object.keys(newEditingOptions).forEach(key => {
+        const keyIndex = parseInt(key);
+        if (keyIndex >= index) {
+          delete newEditingOptions[key];
+        }
+      });
+      setEditingOptions(newEditingOptions);
+      
       setSuccess("Opción eliminada correctamente");
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
+      console.error('Error al eliminar opción:', err);
       setError(err.message);
+      setTimeout(() => setError(null), 5000);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -214,6 +261,15 @@ const DropdownEditor = () => {
   const handleDragOver = (e, index) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
+    
+    // Validar que los índices sean válidos
+    if (!selectedCategory || 
+        draggedIndex < 0 || 
+        draggedIndex >= selectedCategory.options.length ||
+        index < 0 || 
+        index >= selectedCategory.options.length) {
+      return;
+    }
     
     // Reordenar las opciones localmente (el guardado final se hace en handleDragEnd)
     const updatedCategories = dropdownCategories.map(category => {
@@ -241,7 +297,10 @@ const DropdownEditor = () => {
 
   // Reordenar opciones
   const handleDragEnd = async () => {
-    if (draggedIndex === null || !selectedCategory) return;
+    if (draggedIndex === null || !selectedCategory) {
+      setDraggedIndex(null);
+      return;
+    }
     
     try {
       setSaving(true);
@@ -251,11 +310,11 @@ const DropdownEditor = () => {
       if (!response.ok) throw new Error("Error al obtener opciones");
       const opciones = await response.json();
       
-      // Crear array de IDs en el nuevo orden
-      const opcionIds = opciones.map(opt => opt.id);
-      const draggedId = opcionIds[draggedIndex];
-      opcionIds.splice(draggedIndex, 1);
-      opcionIds.splice(draggedIndex, 0, draggedId);
+      // Crear array de IDs en el nuevo orden basado en el estado actual
+      const opcionIds = selectedCategory.options.map((optionValue, index) => {
+        const opcion = opciones.find(opt => opt.valor === optionValue);
+        return opcion ? opcion.id : null;
+      }).filter(id => id !== null);
       
       // Enviar el nuevo orden al backend
       const reorderResponse = await fetch(
@@ -271,25 +330,11 @@ const DropdownEditor = () => {
       
       if (!reorderResponse.ok) throw new Error("Error al reordenar opciones");
       
-      // Actualizar el estado local con el nuevo orden
-      const reorderedOptions = opcionIds.map(id => 
-        opciones.find(opt => opt.id === id).valor
-      );
-      
-      const updatedCategories = dropdownCategories.map(category => {
-        if (category.id === selectedCategory.id) {
-          return {
-            ...category,
-            options: reorderedOptions
-          };
-        }
-        return category;
-      });
-      
-      setDropdownCategories(updatedCategories);
       setSuccess("Opciones reordenadas correctamente");
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err.message);
+      setTimeout(() => setError(null), 5000);
     } finally {
       setDraggedIndex(null);
       setSaving(false);
@@ -339,7 +384,7 @@ const DropdownEditor = () => {
               <div className={styles.optionsList}>
                 {selectedCategory.options.map((option, index) => (
                   <div 
-                    key={index}
+                    key={`${selectedCategory.id}-${index}-${option}`}
                     className={styles.optionItem}
                     draggable
                     onDragStart={() => handleDragStart(index)}
@@ -397,7 +442,7 @@ const DropdownEditor = () => {
             <div className={styles.noSelection}>
               <p>Selecciona una categoría para editar sus opciones</p>
             </div>
-          )}
+            )}
         </div>
       </div>
     </div>

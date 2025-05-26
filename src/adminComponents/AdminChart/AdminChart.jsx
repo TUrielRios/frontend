@@ -110,13 +110,18 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   const calculatePoints = () => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150 // Usar el mismo maxRadius que se usa para el hexágono
+    // Ajustar maxRadius para que el valor 10 no se salga del hexágono
+    // Usar un radio máximo de 140 en lugar de 150 para dejar un margen
+    const maxRadius = 140
 
     for (let i = 0; i < labels.length; i++) {
       // Asegúrate de usar el mismo cálculo de ángulo que se usa para dibujar las líneas punteadas
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       const value = animatedData[labels[i]] || 0
-      const radius = (value / 10) * maxRadius
+      
+      // Asegurar que el valor esté entre 0 y 10, y calcular el radio proporcionalmente
+      const clampedValue = Math.max(0, Math.min(10, value))
+      const radius = (clampedValue / 10) * maxRadius
 
       const x = center.x + radius * Math.cos(angle)
       const y = center.y + radius * Math.sin(angle)
@@ -139,7 +144,6 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           iconColor: "#5991bc",
           completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema oscuro)
           startedColor: "#3FFFF3", // Color para fases iniciadas
-          numberColor: "#ffffff", // Color para los números
         }
       : {
           hexFill: "white",
@@ -151,7 +155,6 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           iconColor: "#0a2ff1",
           completedColor: "#3FFFF3", // Color más fuerte para fases completadas (tema claro)
           startedColor: "#3FFFF3", // Color para fases iniciadas
-          numberColor: "#0a2ff1", // Color para los números
         }
 
   // Generamos los puntos del hexágono con precisión matemática
@@ -168,150 +171,170 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
 
   return (
     <div className={styles.radarContainer}>
-      <svg viewBox="0 0 400 400" className={styles.radar}>
-        {/* Círculos de fondo - usar la función para generar los puntos del hexágono */}
-        {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
-          <polygon
-            key={`hex-${index}`}
-            points={generateHexPoints({ x: 200, y: 200 }, 150 * scale)}
-            style={{
-              fill: colors.hexFill,
-              stroke: colors.hexStroke,
-              strokeWidth: 10,
-              transform: `scale(${scale})`,
-              transformOrigin: "center",
-            }}
-          />
-        ))}
-
-        {/* Números del 1 al 10 en lugar de puntitos en todas las líneas radiales */}
-        {Array.from({ length: 6 }).map((_, lineIndex) => {
-          // Calculamos el ángulo para cada línea radial (igual que para las líneas punteadas)
-          const angle = (Math.PI * 2 * lineIndex) / 6 - Math.PI / 2;
-          
-          // Para cada línea radial, colocamos los 5 números (2,4,6,8,10)
-          return [0.1,0.2,0.3, 0.4,0.5, 0.6,0.7, 0.8,0.9].map((scale, numIndex) => {
-            const value = numIndex + 1; // Valores 2, 4, 6, 8, 10
-            const x = 200 + (150 * scale) * Math.cos(angle);
-            const y = 200 + (150 * scale) * Math.sin(angle);
-            
-            return (
-              <text
-                key={`number-${lineIndex}-${numIndex}`}
-                x={x}
-                y={y}
+          <svg viewBox="0 0 400 400" className={styles.radar}>
+            {/* Círculos de fondo - usar la función para generar los puntos del hexágono */}
+            {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
+              <polygon
+                key={`hex-${index}`}
+                points={generateHexPoints({ x: 200, y: 200 }, 150 * scale)}
                 style={{
-                  fill: colors.numberColor,
-                  fontSize: "7px",
-                  fontWeight: "bold",
-                  dominantBaseline: "middle",
-                  textAnchor: "middle",
+                  fill: colors.hexFill,
+                  stroke: colors.hexStroke,
+                  strokeWidth: 10,
+                  transform: `scale(${scale})`,
+                  transformOrigin: "center",
                 }}
-              >
-                {value}
-              </text>
-            );
-          });
-        })}
-
-        {/* Líneas punteadas - asegurarse de usar el mismo cálculo de ángulo y distancia */}
-
-
-        {/* Área de datos con animación */}
-        <polygon
-          points={calculatePoints()}
-          className={styles.dataArea}
-          style={{
-            fill: colors.dataFill,
-            fillOpacity: theme === "dark" ? 0.8 : 0.3,
-            stroke: colors.dataStroke,
-            strokeWidth: 2,
-          }}
-        />
-
-        {/* Etiquetas */}
-        {labels.map((label, index) => {
-          const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
-          let radius = 175
-
-          // Ajusta dinámicamente el radio para evitar colisiones
-          if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
-            radius = 204 // Aumenta el radio para estas etiquetas
-          }
-          if(label === "AUTENTICIDAD") {
-            radius = 182
-          }
-          if(label === "ATRACTIVO") {
-            radius = 176
-          }
-
-          const x = 200 + radius * Math.cos(angle)
-          const y = 213 + radius * Math.sin(angle)
-
-          // Verificar si esta fase está completada o iniciada
-          const isCompleted = completedPhases.includes(label)
-          const isStarted = startedPhases.includes(label)
-          const shouldHighlight = isCompleted || isStarted
-
+              />
+            ))}
+    
+            {/* Números del 1 al 10 en lugar de puntitos en todas las líneas radiales */}
+            {Array.from({ length: 6 }).map((_, lineIndex) => {
+              // Calculamos el ángulo para cada línea radial (igual que para las líneas punteadas)
+              const angle = (Math.PI * 2 * lineIndex) / 6 - Math.PI / 2;
+              
+              // Para cada línea radial, colocamos los 9 números (1-9)
+              return [0.1,0.2,0.3, 0.4,0.5, 0.6,0.7, 0.8,0.9].map((scale, numIndex) => {
+                const value = numIndex + 1; // Valores 1, 2, 3, 4, 5, 6, 7, 8, 9
+                // Usar el mismo cálculo de radio que en calculatePoints pero limitado al hexágono
+                const x = 200 + (140 * scale) * Math.cos(angle); // Usar 140 para mantener consistencia
+                const y = 200 + (140 * scale) * Math.sin(angle);
+                
+                return (
+                  <text
+                    key={`number-${lineIndex}-${numIndex}`}
+                    x={x}
+                    y={y}
+                    style={{
+                      fill: "#0a2ff1",
+                      fontSize: "7px",
+                      fontWeight: "bold",
+                      dominantBaseline: "middle",
+                      textAnchor: "middle",
+                    }}
+                  >
+                    {value}
+                  </text>
+                );
+              });
+            })}
+    
+            {/* Líneas punteadas - mantener el radio de 150 para el hexágono exterior */}
+           {Array.from({ length: 6 }).map((_, i) => {
+          const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
+          const x2 = 200 + 150 * Math.cos(angle)
+          const y2 = 200 + 150 * Math.sin(angle)
           return (
-            <g key={label} style={{ transformOrigin: "center" }}>
-              <rect
-                x={x - 45}
-                y={y - 12}
-                width="90"
-                height="24"
-                style={{
-                  fill: theme === "dark" ? "none" : "none",
-                  rx: 4,
-                  ry: 4,
-                }}
-              />
-              <text
-                x={x}
-                y={y}
-                style={{
-                  fill: shouldHighlight ? colors.completedColor : colors.labelText,
-                  fontSize: "11px",
-                  fontWeight: shouldHighlight ? 700 : 500,
-                  dominantBaseline: "middle",
-                  textAnchor: "middle",
-                }}
-              >
-                {label === "CONSISTENCIA Y COMPROMISO" ? (
-                  <>
-                    <tspan x={x} dy="0">
-                      CONSISTENCIA
-                    </tspan>
-                    <tspan x={x} dy="1.2em">
-                      Y COMPROMISO
-                    </tspan>
-                  </>
-                )  : label === "VALIDACIÓN SOCIAL" ? (
-                  <>
-                    <tspan x={x} dy="0">
-                      VALIDACIÓN
-                    </tspan>
-                    <tspan x={x} dy="1.2em">
-                      SOCIAL
-                    </tspan>
-                  </>
-                ) : (
-                  label
-                )}
-              </text>
-              {/* Iconos GIF */}
-              <image 
-                href={icons[index]} 
-                x={x - 15} 
-                y={y - 38} 
-                width="32" 
-                height="32" 
-              />
-            </g>
+            <line
+              key={`line-${i}`}
+              x1="200"
+              y1="200"
+              x2={x2}
+              y2={y2}
+              style={{
+                stroke: colors.dotLine,
+                strokeWidth: 1,
+                strokeDasharray: "4 12",
+                opacity: 0.1,
+              }}
+            />
           )
         })}
-      </svg>
-    </div>
+    
+            {/* Área de datos con animación */}
+            <polygon
+              points={calculatePoints()}
+              className={styles.dataArea}
+              style={{
+                fill: colors.dataFill,
+                fillOpacity: theme === "dark" ? 0.8 : 0.3,
+                stroke: colors.dataStroke,
+                strokeWidth: 2,
+              }}
+            />
+    
+            {/* Etiquetas */}
+            {labels.map((label, index) => {
+              const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
+              let radius = 175
+    
+              // Ajusta dinámicamente el radio para evitar colisiones
+              if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
+                radius = 204 // Aumenta el radio para estas etiquetas
+              }
+              if(label === "AUTENTICIDAD") {
+                radius = 182
+              }
+              if(label === "ATRACTIVO") {
+                radius = 176
+              }
+    
+              const x = 200 + radius * Math.cos(angle)
+              const y = 213 + radius * Math.sin(angle)
+    
+              // Verificar si esta fase está completada o iniciada
+              const isCompleted = completedPhases.includes(label)
+              const isStarted = startedPhases.includes(label)
+              const shouldHighlight = isCompleted || isStarted
+    
+              return (
+                <g key={label} style={{ transformOrigin: "center" }}>
+                  <rect
+                    x={x - 45}
+                    y={y - 12}
+                    width="90"
+                    height="24"
+                    style={{
+                      fill: theme === "dark" ? "none" : "none",
+                      rx: 4,
+                      ry: 4,
+                    }}
+                  />
+                  <text
+                    x={x}
+                    y={y}
+                    style={{
+                      fill: shouldHighlight ? colors.completedColor : colors.labelText,
+                      fontSize: "11px",
+                      fontWeight: shouldHighlight ? 700 : 500,
+                      dominantBaseline: "middle",
+                      textAnchor: "middle",
+                    }}
+                  >
+                    {label === "CONSISTENCIA Y COMPROMISO" ? (
+                      <>
+                        <tspan x={x} dy="0">
+                          CONSISTENCIA
+                        </tspan>
+                        <tspan x={x} dy="1.2em">
+                          Y COMPROMISO
+                        </tspan>
+                      </>
+                    )  : label === "VALIDACIÓN SOCIAL" ? (
+                      <>
+                        <tspan x={x} dy="0">
+                          VALIDACIÓN
+                        </tspan>
+                        <tspan x={x} dy="1.2em">
+                          SOCIAL
+                        </tspan>
+                      </>
+                    ) : (
+                      label
+                    )}
+                  </text>
+                  {/* Iconos GIF */}
+                  <image 
+                    href={icons[index]} 
+                    x={x - 15} 
+                    y={y - 38} 
+                    width="32" 
+                    height="32" 
+                  />
+                </g>
+              )
+            })}
+          </svg>
+        </div>
   )
 }
 

@@ -776,5 +776,91 @@
       gap: 0.5rem;
     }
   }
+
+    @media (min-width: 1920px) {
+    .settingsPage {
+      padding: 1rem;
+    }
+  
+    .content {
+      padding: 1rem;
+    }
+  
+    .phaseTabs {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  
+    .phaseTab {
+      width: 90px;
+      height: 90px;
+    }
+  
+    .phaseIcon {
+      width: 75px;
+      height: 75px;
+    }
+  
+    .editorHeader {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  
+    .editorActions {
+      align-self: flex-end;
+    }
+  
+    .questionInfo {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .pageTitle {
+      font-size: 2.5rem;
+    }
+    .pageDescription {
+      font-size: 2rem;
+    }
+    .modalityTab{
+      font-size: 2.25rem;
+      padding: 1rem 2rem;
+    }
+    .searchContainer input{
+      font-size: 1.5rem;
+      padding: 1rem 1.5rem;
+    }
+    .addButton{
+      width: 48px;
+      height: 48px;
+      font-size: 1.5rem;
+    }
+    .questionCount{
+      font-size: 1.5rem;
+    }
+    .questionItemContent h3{
+      font-size: 1.8rem;
+    }
+    .phase {
+      font-size: 1.5rem;
+    }
+    .editorHeader h2 {
+      font-size: 2.5rem;
+    }
+    .deleteButton{
+      width: 48px;
+      height: 48px;
+      font-size: 1.5rem;
+    }
+    .formGroup label, .formGroup .textarea, .formGroup select {
+      font-size: 2.2rem;
+    }
+    .noQuestionSelected h2{
+      font-size: 2.5rem;
+    }
+    .noQuestionSelected p, .noQuestionSelected span {
+      font-size: 1.7rem;
+    }
+  }
   
   

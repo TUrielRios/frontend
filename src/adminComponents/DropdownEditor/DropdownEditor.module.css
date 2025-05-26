@@ -253,3 +253,33 @@
       border-bottom: 1px solid rgba(0, 0, 255, 0.1);
     }
   }
+
+    @media (min-width: 1920px) {
+      .editorTitle{
+        font-size: 2.5rem;
+      }
+      .editorDescription {
+        font-size: 1.8rem;
+      }
+      .categoriesList h3{
+        font-size: 1.8rem;
+      }
+      .categoryItem {
+        font-size: 1.6rem;
+      }
+      .optionsCount{
+        font-size: 1.5rem;
+      }
+      .editorHeader h3 {
+        font-size: 2.2rem;
+      }
+      .optionInput{
+        font-size: 1.8rem;
+      }
+      .addButton {
+        font-size: 1.6rem;
+      }
+      .infoBox p{
+        font-size: 1.6rem;
+      }
+  }

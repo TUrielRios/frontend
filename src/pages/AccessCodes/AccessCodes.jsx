@@ -253,40 +253,8 @@ const AccessCodes = () => {
           )}
           
           <div className={styles.filters}>
-            <div className={styles.searchBar}>
-              <Search size={20} />
-              <input
-                type="text"
-                placeholder="Buscar códigos..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button className={styles.clearSearchBtn} onClick={() => setSearchTerm("")}>
-                  <X size={16} />
-                </button>
-              )}
-            </div>
             <div className={styles.filterGroup}>
-              <Filter size={20} />
-              <select 
-                value={filters.tipo}
-                onChange={(e) => setFilters(prev => ({ ...prev, tipo: e.target.value }))}
-              >
-                <option value="">Todos los tipos</option>
-                <option value="general">General</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div className={styles.filterGroup}>
-              <select
-                value={filters.estado}
-                onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value }))}
-              >
-                <option value="">Todos los estados</option>
-                <option value="disponible">Disponibles</option>
-                <option value="usado">Usados</option>
-              </select>
+
             </div>
           </div>
         </div>

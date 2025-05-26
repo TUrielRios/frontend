@@ -25,7 +25,7 @@ const Sidebar = ({ activeSection, onSectionChange }) => {
             onClick={() => onSectionChange(item.id)}
           >
             <item.icon size={20} />
-            <span>{item.label}</span>
+            <span className={styles.navItemText}>{item.label}</span>
           </button>
         ))}
       </nav>

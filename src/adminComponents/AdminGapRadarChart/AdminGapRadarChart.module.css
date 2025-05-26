@@ -1,89 +1,134 @@
 .radarContainer {
-    width: 100%;
-    height: 100%;
-    position: relative;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.chartWrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 40px; /* Aumentamos el gap entre elementos */
+}  
+
+.radar {
+  width: 400px;
+  height: 300px;
+  flex-shrink: 0;
+}
+
+.dataArea {
+  transition: all 0.3s ease;
+}
+
+.dataPoint {
+  transition: all 0.3s ease;
+}
+
+/* Estilos para la leyenda */
+.legendContainer {
+  margin-left: -20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  align-self: center;
+  width: 100%;
+}
+
+.legendTitle {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #0a2ff1;
+  text-align: center;
+}
+
+.legendItems {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legendText {
+  font-size: 12px;
+  color: #0a2ff1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
   }
-  
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.pulseAnimation {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Media queries para pantallas 1920px y superiores */
+@media (min-width: 1920px) {
+  .radarContainer {
+    width: 100%;
+    height: 800px; /* Aumentamos la altura del contenedor */
+    padding: 40px; /* Agregamos padding al contenedor */
+  }
+
   .chartWrapper {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-  }  
-  
+    gap: 80px; /* Mayor separación entre elementos */
+  }
+
   .radar {
-    width: 400px;
-    height: 300px;
-    flex-shrink: 0;
+    width: 600px; /* Aumentamos el tamaño del radar */
+    height: 68%;
   }
-  
-  .dataArea {
-    transition: all 0.3s ease;
-  }
-  
-  .dataPoint {
-    transition: all 0.3s ease;
-  }
-  
-  /* Estilos para la leyenda */
+
   .legendContainer {
-    margin-left: -20px;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    align-self: center;
-    width: 100%;
+    margin-left: 0;
+    min-width: 280px; /* Ancho mínimo para la leyenda */
+    max-width: 320px;
   }
-  
+
   .legendTitle {
-    font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 10px;
-    color: #0a2ff1;
-    text-align: center;
+    font-size: 42px; /* Texto más grande para el título */
+    margin-bottom: 15px;
   }
-  
+
   .legendItems {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 8px;
+    gap: 12px; /* Mayor espacio entre items */
   }
-  
-  .legendItem {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
+
   .legendColor {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
+    width: 20px; /* Cuadros de color más grandes */
+    height: 20px;
+    border-radius: 5px;
   }
-  
+
   .legendText {
-    font-size: 12px;
-    color: #0a2ff1;
+    font-size: 25px; /* Texto más legible */
   }
-  
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-      opacity: 0.7;
-    }
-    50% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 0.7;
-    }
-  }
-  
-  .pulseAnimation {
-    animation: pulse 2s infinite ease-in-out;
-  }
+}
+

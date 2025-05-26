@@ -4,6 +4,7 @@
   color: white;
   font-family: 'Red Hat Display', sans-serif;
   height: 100vh;
+  overflow-y: hidden;
 }
 
 .main {
@@ -492,5 +493,154 @@
 
   .timeEstimate {
     font-size: 12px;
+  }
+}
+/* Media Query para pantallas grandes (TV, monitores grandes) */
+@media (min-width: 1920px) {
+  .container {
+    padding: 30px 0;
+  }
+
+  .main {
+    max-width: 90%;
+    gap: 100px;
+    padding: 0px 0;
+  }
+
+  .title {
+    font-size: 96px;
+    margin-bottom: 35px;
+  }
+
+  .subtitle {
+    font-size: 66px;
+    margin-bottom: 45px;
+  }
+
+  .description {
+    font-size: 42px;
+    margin-bottom: 30px;
+    line-height: 1.7;
+  }
+
+  .privacy {
+    font-size: 32px;
+    margin-bottom: 60px;
+  }
+
+  .footerFormContainer {
+    font-size: 28px;
+  }
+
+  .formTypeButton {
+    padding: 18px 60px;
+    font-size: 32px;
+    border-radius: 40px;
+  }
+
+  .formTypeOptions {
+    gap: 30px;
+    margin-top: 30px;
+  }
+
+  .formContainer {
+    padding: 40px;
+    border-radius: 30px;
+    max-height: 700px;
+    max-width: 800px ;
+  }
+
+  .form {
+    gap: 30px;
+    padding-right: 15px;
+  }
+
+  .formTitle {
+    font-size: 46px;
+    margin-bottom: 15px;
+  }
+  .nameFields{
+    flex-direction: column;
+  }
+
+  .formGroup {
+    gap: 12px;
+
+  }
+
+  .formGroup label {
+    font-size: 32px;
+  }
+
+  .inputlarge,
+  .inputMedium,
+  .input,
+  .select {
+    padding: 18px 24px;
+    font-size: 32px;
+    border-radius: 40px;
+  }
+
+  .select {
+    font-size: 32px;
+    border-radius: 30px;
+  }
+
+  .selectIcon {
+    right: 24px;
+  }
+
+  .checkbox {
+    font-size: 32px;
+  }
+
+  .checkbox input[type="checkbox"] + span::before {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    border-radius: 8px;
+  }
+
+  .checkbox input[type="checkbox"] {
+    width: 32px;
+    height: 32px;
+  }
+
+  .submitButton {
+    padding: 20px;
+    font-size: 32px;
+    margin-top: 30px;
+    border-radius: 40px;
+  }
+
+  .timeEstimate {
+    font-size: 28px;
+    margin-top: 18px;
+  }
+
+  .backButton {
+    font-size: 32px;
+    margin-bottom: 30px;
+    padding: 12px 0;
+  }
+
+  .diamanteGif {
+    max-height: 600px;
+    max-width: 450px;
+  }
+
+  .gifContainer {
+    max-width: 450px;
+  }
+
+  .errorMessage {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .form::-webkit-scrollbar {
+    width: 12px;
   }
 }

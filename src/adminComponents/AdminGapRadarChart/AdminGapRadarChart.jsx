@@ -39,6 +39,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
     consistenciaIcono,
     validacionSocialIcono,
   ]
+  
   // Colors for different areas
   const areaColors = {
     Directorio: "#E93C2F", //  // Red
@@ -60,19 +61,20 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
     }
   }, [data, isInitialRender])
 
-  // Calculate points for a specific area
+  // Calculate points for a specific area - CORREGIDO
   const calculatePoints = (areaData) => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150
+    const maxRadius = 140 // Usar 140 para mantener consistencia con el hexágono de fondo
   
     for (let i = 0; i < labels.length; i++) {
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       let value = areaData[labels[i]] || 0
   
-      // Ensure minimum area is visible
-      value = Math.max(value, 2) // Avoid very small values
+      // Clamp value between 0 and 10
+      value = Math.max(0, Math.min(10, value))
   
+      // Calculate radius: valor 10 = maxRadius, valor 0 = 0
       const radius = (value / 10) * maxRadius
   
       const x = center.x + radius * Math.cos(angle)
@@ -108,7 +110,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
         legendText: "#0a2ff1",
       }
 
-  // Generate hexagon points with mathematical precision
+  // Generate hexagon points with mathematical precision - CORREGIDO
   const generateHexPoints = (center, radius) => {
     const points = []
     for (let i = 0; i < 6; i++) {
@@ -124,7 +126,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
     <div className={styles.radarContainer}>
       <div className={styles.chartWrapper}>
         <svg viewBox="0 0 400 400" className={styles.radar}>
-          {/* Background hexagons s */}
+          {/* Background hexagons - CORREGIDO: usar 150 para el hexágono exterior */}
           {[0.2, 0.4, 0.6, 0.8, 1].map((scale, index) => (
             <polygon
               key={`hex-${index}`}
@@ -139,7 +141,38 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
             />
           ))}
 
-          {/* Dotted lines */}
+          {/* Números del 1 al 9 en todas las líneas radiales - AÑADIDO */}
+          {Array.from({ length: 6 }).map((_, lineIndex) => {
+            // Calculamos el ángulo para cada línea radial (igual que para las líneas punteadas)
+            const angle = (Math.PI * 2 * lineIndex) / 6 - Math.PI / 2;
+            
+            // Para cada línea radial, colocamos los 9 números (1-9)
+            return [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9].map((scale, numIndex) => {
+              const value = numIndex + 1; // Valores 1, 2, 3, 4, 5, 6, 7, 8, 9
+              // Usar el mismo cálculo de radio que en calculatePoints pero limitado al hexágono
+              const x = 200 + (140 * scale) * Math.cos(angle); // Usar 140 para mantener consistencia
+              const y = 200 + (140 * scale) * Math.sin(angle);
+              
+              return (
+                <text
+                  key={`number-${lineIndex}-${numIndex}`}
+                  x={x}
+                  y={y}
+                  style={{
+                    fill: "#0a2ff1",
+                    fontSize: "7px",
+                    fontWeight: "bold",
+                    dominantBaseline: "middle",
+                    textAnchor: "middle",
+                  }}
+                >
+                  {value}
+                </text>
+              );
+            });
+          })}
+
+          {/* Dotted lines - CORREGIDO: usar 150 para el hexágono exterior */}
           {Array.from({ length: 6 }).map((_, i) => {
             const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
             const x2 = 200 + 150 * Math.cos(angle)
@@ -155,8 +188,8 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
                 style={{
                   stroke: colors.dotLine,
                   strokeWidth: 1,
-                  strokeDasharray: "4 4",
-                  opacity: 0.7,
+                  strokeDasharray: "4 12",
+                  opacity: 0.1,
                 }}
               />
             )
@@ -251,7 +284,7 @@ const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => 
               {/* Iconos GIF */}
               <image 
                 href={icons[index]} 
-                x={x - 18} 
+                x={x - 15} 
                 y={y - 38} 
                 width="32" 
                 height="32" 

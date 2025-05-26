@@ -281,3 +281,29 @@
     display: inline-block;
   }
 }
+
+/* For high-resolution displays */
+/*for media queries of 1920x1280*/
+@media (min-width: 1920px) {
+  .modalContent {
+    max-width: 70%;
+    padding: 40px;
+  }
+
+  .modalContent h2 {
+    font-size: 78px;
+  }
+
+  .modalText h3 {
+    font-size: 52px;
+  }
+
+  .modalText {
+    font-size: 40px;
+  }
+
+  .modalCloseButton {
+    padding: 15px 30px;
+    font-size: 40px;
+  }
+}

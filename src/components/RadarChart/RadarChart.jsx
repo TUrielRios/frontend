@@ -9,6 +9,12 @@ import reciprocidadIcono from "../../assets/iconos-animados/reciprocidad-icono.g
 import autoridadIcono from "../../assets/iconos-animados/autoridad-icono.gif"
 import autenticidadIcono from "../../assets/iconos-animados/autenticidad-icono.gif"
 import consistenciaIcono from "../../assets/iconos-animados/compromiso-icono.gif"
+import validacionSocialIconoCeleste from "../../assets/iconos-animados/validacion-social-icono-celeste.png"
+import atractivoIconoCeleste from "../../assets/iconos-animados/atractivo-icono-celeste.png"
+import reciprocidadIconoCeleste from "../../assets/iconos-animados/reciprocidad-icono-celeste.png"
+import autoridadIconoCeleste from "../../assets/iconos-animados/autoridad-icono-celeste.png"
+import autenticidadIconoCeleste from "../../assets/iconos-animados/autenticidad-icono-celeste.png"
+import consistenciaIconoCeleste from "../../assets/iconos-animados/consistencia-compromiso-icono-celeste.png"
 
 const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases = [] }) => {
   const [animatedData, setAnimatedData] = useState({
@@ -42,6 +48,16 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     autenticidadIcono,
     consistenciaIcono,
     validacionSocialIcono,
+  ]
+
+  // Celeste icons mapping for easy reference
+  const celesteIcons = [
+    atractivoIconoCeleste,
+    reciprocidadIconoCeleste,
+    autoridadIconoCeleste,
+    autenticidadIconoCeleste,
+    consistenciaIconoCeleste,
+    validacionSocialIconoCeleste,
   ]
 
   // Effect to animate data when it changes
@@ -110,13 +126,18 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
   const calculatePoints = () => {
     const points = []
     const center = { x: 200, y: 200 }
-    const maxRadius = 150 // Use same maxRadius as for hexagon
+    // Ajustar maxRadius para que el valor 10 no se salga del hexágono
+    // Usar un radio máximo de 140 en lugar de 150 para dejar un margen
+    const maxRadius = 140
 
     for (let i = 0; i < labels.length; i++) {
       // Make sure to use the same angle calculation used for drawing dotted lines
       const angle = (Math.PI * 2 * i) / labels.length - Math.PI / 2
       const value = animatedData[labels[i]] || 0
-      const radius = (value / 10) * maxRadius
+
+      // Asegurar que el valor esté entre 0 y 10, y calcular el radio proporcionalmente
+      const clampedValue = Math.max(0, Math.min(10, value))
+      const radius = (clampedValue / 10) * maxRadius
 
       const x = center.x + radius * Math.cos(angle)
       const y = center.y + radius * Math.sin(angle)
@@ -164,23 +185,6 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
     return points.join(" ")
   }
 
-  // Common icon filter style for consistency across all screen sizes
-  const getIconStyle = (isHighlighted) => {
-    if (theme === "dark") {
-      return {
-        opacity: isHighlighted ? 1 : 0.85,
-        filter: isHighlighted ? "brightness(8) hue-rotate(14deg)" : "brightness(2.2)",
-        overflow: "visible",
-      }
-    } else {
-      return {
-        opacity: isHighlighted ? 1 : 0.85,
-        filter: isHighlighted ? "brightness(1.5) hue-rotate(14deg)" : "brightness(1)",
-        overflow: "visible",
-      }
-    }
-  }
-
   return (
     <div className={styles.radarContainer}>
       <svg viewBox="0 0 450 450" className={styles.radar}>
@@ -198,7 +202,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           />
         ))}
 
-        {/* Dotted lines - ensure same angle and distance calculation */}
+        {/* Dotted lines - usar el mismo radio máximo que el hexágono exterior */}
         {Array.from({ length: 6 }).map((_, i) => {
           const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
           const x2 = 200 + 150 * Math.cos(angle)
@@ -241,10 +245,10 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
           if (label !== "ATRACTIVO" && label !== "AUTENTICIDAD") {
             radius = 214 // Increase radius for these labels
           }
-          if(label === "AUTENTICIDAD") {
+          if (label === "AUTENTICIDAD") {
             radius = 204
           }
-          if(label === "ATRACTIVO") {
+          if (label === "ATRACTIVO") {
             radius = 190
           }
 
@@ -289,7 +293,7 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                       Y COMPROMISO
                     </tspan>
                   </>
-                )  : label === "VALIDACIÓN SOCIAL" ? (
+                ) : label === "VALIDACIÓN SOCIAL" ? (
                   <>
                     <tspan x={x} dy="0">
                       VALIDACIÓN
@@ -302,17 +306,15 @@ const RadarChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
                   label
                 )}
               </text>
-              {/* GIF Icons with consistent styling */}
-              <image 
-                href={icons[index]} 
-                x={x - 18} 
+              {/* Use celeste (light blue) icons for highlighted phases instead of applying filters */}
+              <image
+                href={shouldHighlight ? celesteIcons[index] : icons[index]}
+                x={x - 18}
                 y={y - 45}
-                width="32" 
-                height="32" 
-                style={getIconStyle(shouldHighlight)}
-                data-highlighted={shouldHighlight ? "true" : "false"}
+                width="32"
+                height="32"
                 className={shouldHighlight ? styles.highlightedIcon : styles.normalIcon}
-              />  
+              />
             </g>
           )
         })}

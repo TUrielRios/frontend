@@ -338,3 +338,98 @@
     margin-bottom: 15px;
   }
 }
+
+/* Media Query para pantallas grandes (TV, monitores grandes) */
+@media (min-width: 1920px) {
+  .container {
+    padding: 30px 0;
+  }
+
+  .main {
+    max-width: 90%;
+    gap: 100px;
+    padding: 0px 0;
+  }
+
+  .rightColumn{
+    max-width: 100%;
+  }
+  .title {
+    font-size: 96px;
+    margin-bottom: 35px;
+  }
+
+
+  .footerFormContainer {
+    font-size: 28px;
+  }
+
+  .formTypeButton {
+    padding: 18px 60px;
+    font-size: 32px;
+    border-radius: 40px;
+  }
+
+  .formTypeOptions {
+    gap: 30px;
+    margin-top: 30px;
+  }
+
+  .formContainer {
+    padding: 40px;
+    border-radius: 30px;
+    max-height: 700px;
+  }
+
+  .form {
+    gap: 30px;
+    padding-right: 15px;
+    width: 100%;
+  }
+
+  .formTitle {
+    font-size: 46px;
+    margin-bottom: 15px;
+  }
+
+
+  .formGroup {
+    gap: 12px;
+    width: 100%;
+  }
+
+  .formGroup label {
+    font-size: 32px;
+  }
+
+  .inputlarge,
+  .inputMedium,
+  .input,
+  .select {
+    padding: 18px 24px;
+    font-size: 32px;
+    border-radius: 40px;
+  }
+
+
+
+
+  .submitButton {
+    padding: 20px;
+    font-size: 32px;
+    margin-top: 30px;
+    border-radius: 40px;
+  }
+
+
+  .errorMessage {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .form::-webkit-scrollbar {
+    width: 12px;
+  }
+}

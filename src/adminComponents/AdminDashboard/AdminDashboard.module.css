@@ -1,12 +1,12 @@
-/* Base Styles */
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+
 .dashboard {
   padding: 2rem;
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
 }
 
 .content {
-  max-width: 1400px;
+  max-width: 90%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -15,7 +15,9 @@
 }
 
 /* Estados de carga y error */
-.loading, .error, .noData {
+.loading,
+.error,
+.noData {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,6 +165,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 70;
+
 }
 
 .chartHeader {
@@ -185,7 +189,7 @@
 
 .chartBody {
   padding: 1.5rem;
-  height: 300px;
+  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,12 +204,12 @@
 }
 
 .chartContainer {
-  width: 50%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 550px;
+  height: 100vh;
   scale: 1.3;
 }
 
@@ -335,9 +339,8 @@
 .modal {
   background: white;
   border-radius: 16px;
-  width: 90%;
-  max-width: 1200px;
-  max-height: 90vh;
+  width: 95%;
+  max-height: 100vh;
   overflow: hidden;
   position: relative;
 }
@@ -363,7 +366,7 @@
 
 .modalContent {
   display: flex;
-  height: 80vh;
+  height: 90vh;
 }
 
 /* Sidebar Styles */
@@ -489,7 +492,6 @@
 /* Main Content Styles */
 .mainContent {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -500,6 +502,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: 100%;
+
 }
 
 /* Scrollbar Styles */
@@ -527,10 +531,138 @@
 
 /* Animation */
 @keyframes modalFadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modalContent {
   animation: modalFadeIn 0.3s ease-out;
+}
+
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+
+.factorName {
+  font-size: 1.875rem;
+  color: #666;
+}
+.factorsList h3 {
+  color: #0a2ff1;
+  font-size: 2rem;
+  margin: 0;
+}
+.chartIcon {
+  width: 64px;
+  height: 64px;
+  background: #0a2ff1;
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.titleInfo h2 {
+  margin: 0;
+  font-size: 2.25rem;
+  color: #0a2ff1;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 1.875rem;
+}
+.accordionTitle {
+  font-size: 2.25rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.accordionDate {
+  font-size: 1.875rem;
+  color: #666;
+  margin-right: 1rem;
+}
+.previewButton {
+  background: white;
+  color: #0a2ff1;
+  border: 1px solid #0a2ff1;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.downloadButton{
+  font-size: 1.6rem;
+}
+.chartTitle h3 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+.sectionTitle {
+  color: #0a2ff1;
+  font-size: 2.75rem;
+  font-weight: 500;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.workshopDate {
+  font-size: 1.875rem;
+  font-weight: normal;
+  color: #666;
+  margin-left: 1rem;
+}
+
+.subsectionTitle {
+  font-size: 2.25rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.value {
+  font-size: 3rem;
+  font-weight: 600;
+  color: #0a2ff1;
+}
+
+.percentage {
+  font-size: 2.875rem;
+  font-weight: 500;
+}
+
+
+.chartFooter {
+  padding: 2rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  border-top: 1px solid rgba(10, 47, 241, 0.1);
+  margin-top: 10vh;
+
+}
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(1000px, 2fr));
+  gap: 1.5rem;
+}
+
+.metricTitle{
+  font-size: 33px;
+}
+
 }
