@@ -7,7 +7,7 @@ import styles from "./AdminDashboard.module.css"
 import html2canvas from "html2canvas"
 import AdminHeader from "../AdminHeader/AdminHeader"
 import axios from "axios"
-
+import iconoDiamante from "../../assets/iconos-animados/diamante-icono.png"
 // Función para descargar un gráfico como PNG
 const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
   if (!chartRef.current) return
@@ -67,7 +67,7 @@ const ChartPreviewModal = ({ isOpen, onClose, title, chartData, chartType = "rad
           <div className={styles.sidebar}>
             <div className={styles.previewHeader}>
               <div className={styles.titleIcon}>
-                <span className={styles.chartIcon}>📊</span>
+                <img className={styles.chartIcon} src={iconoDiamante} alt="" />
                 <div className={styles.titleInfo}>
                   <h2>Vista previa: {title}</h2>
                   <span className={styles.subtitle}>{isGapChart ? "Gap entre áreas" : "Análisis de factores"}</span>

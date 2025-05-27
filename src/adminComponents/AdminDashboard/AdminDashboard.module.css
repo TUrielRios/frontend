@@ -395,7 +395,6 @@
 .chartIcon {
   width: 64px;
   height: 64px;
-  background: #0a2ff1;
   color: white;
   border-radius: 16px;
   display: flex;
@@ -559,9 +558,8 @@
   margin: 0;
 }
 .chartIcon {
-  width: 64px;
-  height: 64px;
-  background: #0a2ff1;
+  width: 94px;
+  height: 94px;
   color: white;
   border-radius: 16px;
   display: flex;
