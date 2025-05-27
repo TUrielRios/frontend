@@ -53,9 +53,11 @@
 /* Navigation container for buttons */
 .navigationContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 20px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .nextButton,
@@ -120,7 +122,6 @@
 
   .navigationContainer {
     flex-direction: row;
-    justify-content: space-between;
   }
 
   .nextButton,

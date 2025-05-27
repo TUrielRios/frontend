@@ -13,14 +13,66 @@ const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
   if (!chartRef.current) return
 
   try {
-    const canvas = await html2canvas(chartRef.current, {
-      backgroundColor: null,
+    // Crear un elemento temporal para capturar solo el contenido del gráfico
+    const originalElement = chartRef.current
+    const clonedElement = originalElement.cloneNode(true)
+
+    // Remover elementos que no queremos en la captura
+    const elementsToRemove = clonedElement.querySelectorAll(
+      `.${styles.chartFooter}, .${styles.previewButton}, .${styles.downloadButton}, button, [class*="button"]`,
+    )
+    elementsToRemove.forEach((el) => el.remove())
+
+    // Crear un contenedor temporal fuera de la vista
+    const tempContainer = document.createElement("div")
+    tempContainer.style.position = "absolute"
+    tempContainer.style.left = "-9999px"
+    tempContainer.style.top = "-9999px"
+    tempContainer.style.width = originalElement.offsetWidth + "px"
+    tempContainer.style.height = "auto"
+    tempContainer.style.backgroundColor = "#ffffff"
+    tempContainer.style.padding = "20px"
+    tempContainer.appendChild(clonedElement)
+
+    document.body.appendChild(tempContainer)
+
+    // Esperar un momento para que se renderice
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const canvas = await html2canvas(tempContainer, {
+      backgroundColor: "#ffffff",
       useCORS: true,
       allowTaint: false,
       scale: 2,
+      logging: false,
+      ignoreElements: (element) => {
+        // Ignorar elementos específicos que puedan causar problemas
+        return (
+          element.tagName === "BUTTON" ||
+          element.classList.contains("chartFooter") ||
+          element.classList.contains("previewButton") ||
+          element.classList.contains("downloadButton")
+        )
+      },
+      onclone: (clonedDoc) => {
+        // Reemplazar imágenes problemáticas con texto alternativo
+        const images = clonedDoc.querySelectorAll("img")
+        images.forEach((img) => {
+          if (img.src.includes("diamante-icono.png")) {
+            const span = clonedDoc.createElement("span")
+            span.textContent = "💎"
+            span.style.fontSize = "24px"
+            span.style.display = "inline-block"
+            img.parentNode.replaceChild(span, img)
+          }
+        })
+      },
     })
 
-    const pngUrl = canvas.toDataURL("image/png")
+    // Limpiar el elemento temporal
+    document.body.removeChild(tempContainer)
+
+    const pngUrl = canvas.toDataURL("image/png", 1.0)
     const downloadLink = document.createElement("a")
     downloadLink.href = pngUrl
     downloadLink.download = fileName
@@ -67,7 +119,7 @@ const ChartPreviewModal = ({ isOpen, onClose, title, chartData, chartType = "rad
           <div className={styles.sidebar}>
             <div className={styles.previewHeader}>
               <div className={styles.titleIcon}>
-                <img className={styles.chartIcon} src={iconoDiamante} alt="" />
+                <img className={styles.chartIcon} src={iconoDiamante || "/placeholder.svg"} alt="" />
                 <div className={styles.titleInfo}>
                   <h2>Vista previa: {title}</h2>
                   <span className={styles.subtitle}>{isGapChart ? "Gap entre áreas" : "Análisis de factores"}</span>

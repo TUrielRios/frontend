@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import styles from "./Questionnaire.module.css"
-import { ThumbsUp, BarChart2, X } from "lucide-react"
+import { ThumbsUp , X } from "lucide-react"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
 // Componentes
@@ -12,6 +12,7 @@ import QuestionPhase from "../../components/QuestionPhase/QuestionPhase"
 import RadarChart from "../../components/RadarChart/RadarChart"
 import ResultsPhase from "../../components/ResultsPhase/ResultsPhase"
 import phaseInfo from "../../constants/phasesInfo"
+import iconoDiamente from "../../assets/iconos-animados/diamante-icono.png"
 
 const Questionnaire = () => {
   // Estados
@@ -374,7 +375,7 @@ const Questionnaire = () => {
             {/* Botón para mostrar/ocultar el gráfico en móvil */}
             {isMobile && (
               <button className={styles.toggleChartButton} onClick={handleToggleChart} aria-label="Ver gráfico">
-                <BarChart2 size={24} />
+                <img src={iconoDiamente} alt="" srcset="" />
               </button>
             )}
 
