@@ -5,7 +5,7 @@ import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
 import gif from "../../assets/diamante-animacion-dos.gif"
 import Header from "../../components/Header/Header"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown } from 'lucide-react'
 import textos from "../../constants/constants"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
@@ -38,12 +38,12 @@ const Form = () => {
   const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
   const [loading, setLoading] = useState(false)
 
-  // Estado para almacenar los labels dinámicos
+  // Estado para almacenar los labels dinámicos y su visibilidad
   const [labels, setLabels] = useState({
-    compania: "Compañía",
-    industria: "Industria",
-    sector: "Sector",
-    areaDesempeno: "Área de Desempeño",
+    compania: { value: "Compañía", isHidden: false },
+    industria: { value: "Industria", isHidden: false },
+    sector: { value: "Sector", isHidden: false },
+    areaDesempeno: { value: "Área de Desempeño", isHidden: false },
   })
   const [loadingLabels, setLoadingLabels] = useState(true)
 
@@ -79,21 +79,21 @@ const Form = () => {
 
       const data = await response.json()
 
-      // Crear un objeto con los labels basado en las keys
+      // Crear un objeto con los labels y su visibilidad basado en las keys
       const labelsMap = {}
       data.forEach((item) => {
         switch (item.key) {
           case "titulo_campo_uno":
-            labelsMap.compania = item.value
+            labelsMap.compania = { value: item.value, isHidden: item.isHidden || false }
             break
           case "titulo_campo_dos":
-            labelsMap.industria = item.value
+            labelsMap.industria = { value: item.value, isHidden: item.isHidden || false }
             break
           case "titulo_campo_tres":
-            labelsMap.sector = item.value
+            labelsMap.sector = { value: item.value, isHidden: item.isHidden || false }
             break
           case "titulo_campo_cuatro":
-            labelsMap.areaDesempeno = item.value
+            labelsMap.areaDesempeno = { value: item.value, isHidden: item.isHidden || false }
             break
         }
       })
@@ -392,97 +392,105 @@ const Form = () => {
 
         {error && <div className={styles.errorMessage}>{error}</div>}
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.compania}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="compania"
-              value={formData.compania}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("compania")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+        {!labels.compania.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.compania.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="compania"
+                value={formData.compania}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("compania")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.industria}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="industriaSector"
-              value={formData.industriaSector}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("industriaSector")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+        {!labels.industria.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.industria.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="industriaSector"
+                value={formData.industriaSector}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("industriaSector")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
+            {formData.industriaSector === "Otro" && (
+              <input
+                type="text"
+                name="industriaSectorOtro"
+                value={formData.industriaSectorOtro}
+                onChange={handleInputChange}
+                placeholder="Especifique la industria/sector"
+                className={styles.inputlarge}
+                style={{ marginTop: "10px" }}
+                required
+              />
+            )}
           </div>
-          {formData.industriaSector === "Otro" && (
-            <input
-              type="text"
-              name="industriaSectorOtro"
-              value={formData.industriaSectorOtro}
-              onChange={handleInputChange}
-              placeholder="Especifique la industria/sector"
-              className={styles.inputlarge}
-              style={{ marginTop: "10px" }}
-              required
-            />
-          )}
-        </div>
+        )}
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.sector}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="sector"
-              value={formData.sector}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("sector")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+        {!labels.sector.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.sector.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="sector"
+                value={formData.sector}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("sector")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="areaDesempeno"
-              value={formData.areaDesempeno}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("areaDesempeno")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+        {!labels.areaDesempeno.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="areaDesempeno"
+                value={formData.areaDesempeno}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("areaDesempeno")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
+            {formData.areaDesempeno === "Otro" && (
+              <input
+                type="text"
+                name="areaDesempenoOtro"
+                value={formData.areaDesempenoOtro}
+                onChange={handleInputChange}
+                placeholder="Especifique el área de desempeño"
+                className={styles.inputlarge}
+                style={{ marginTop: "10px" }}
+                required
+              />
+            )}
           </div>
-          {formData.areaDesempeno === "Otro" && (
-            <input
-              type="text"
-              name="areaDesempenoOtro"
-              value={formData.areaDesempenoOtro}
-              onChange={handleInputChange}
-              placeholder="Especifique el área de desempeño"
-              className={styles.inputlarge}
-              style={{ marginTop: "10px" }}
-              required
-            />
-          )}
-        </div>
+        )}
 
         <div className={styles.checkboxGroup}>
           <label className={styles.checkbox}>
@@ -570,93 +578,101 @@ const Form = () => {
           </div>
         </div>
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.compania}*</label>
-          <input
-            type="text"
-            name="compania"
-            value={formData.compania}
-            onChange={handleInputChange}
-            placeholder="Nombre de la compañía"
-            className={styles.inputlarge}
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.industria}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="industriaSector"
-              value={formData.industriaSector}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("industriaSector")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-          </div>
-          {formData.industriaSector === "Otro" && (
+        {!labels.compania.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.compania.value}*</label>
             <input
               type="text"
-              name="industriaSectorOtro"
-              value={formData.industriaSectorOtro}
+              name="compania"
+              value={formData.compania}
               onChange={handleInputChange}
-              placeholder="Especifique la industria/sector"
+              placeholder="Nombre de la compañía"
               className={styles.inputlarge}
-              style={{ marginTop: "10px" }}
               required
             />
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.sector}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="sector"
-              value={formData.sector}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("sector")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
           </div>
-        </div>
+        )}
 
-        <div className={styles.formGroup}>
-          <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno}*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="areaDesempeno"
-              value={formData.areaDesempeno}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("areaDesempeno")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+        {!labels.industria.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.industria.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="industriaSector"
+                value={formData.industriaSector}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("industriaSector")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
+            {formData.industriaSector === "Otro" && (
+              <input
+                type="text"
+                name="industriaSectorOtro"
+                value={formData.industriaSectorOtro}
+                onChange={handleInputChange}
+                placeholder="Especifique la industria/sector"
+                className={styles.inputlarge}
+                style={{ marginTop: "10px" }}
+                required
+              />
+            )}
           </div>
-          {formData.areaDesempeno === "Otro" && (
-            <input
-              type="text"
-              name="areaDesempenoOtro"
-              value={formData.areaDesempenoOtro}
-              onChange={handleInputChange}
-              placeholder="Especifique el área de desempeño"
-              className={styles.inputlarge}
-              style={{ marginTop: "10px" }}
-              required
-            />
-          )}
-        </div>
+        )}
+
+        {!labels.sector.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.sector.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="sector"
+                value={formData.sector}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("sector")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
+          </div>
+        )}
+
+        {!labels.areaDesempeno.isHidden && (
+          <div className={styles.formGroup}>
+            <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno.value}*</label>
+            <div className={styles.selectWrapper}>
+              <select
+                name="areaDesempeno"
+                value={formData.areaDesempeno}
+                onChange={handleSelectChange}
+                className={styles.select}
+                required
+              >
+                <option value="">Seleccione una opción</option>
+                {renderDropdownOptions("areaDesempeno")}
+              </select>
+              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+            </div>
+            {formData.areaDesempeno === "Otro" && (
+              <input
+                type="text"
+                name="areaDesempenoOtro"
+                value={formData.areaDesempenoOtro}
+                onChange={handleInputChange}
+                placeholder="Especifique el área de desempeño"
+                className={styles.inputlarge}
+                style={{ marginTop: "10px" }}
+                required
+              />
+            )}
+          </div>
+        )}
 
         <div className={styles.formGroup}>
           <label>Cargo/Posición*</label>

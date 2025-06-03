@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react"
 import { Save, Edit, X, RefreshCw, Search, FileText, Eye, EyeOff } from "lucide-react"
 import styles from "./Settings.module.css"
@@ -116,6 +118,53 @@ const Settings = () => {
     setSuccess(null)
   }
 
+  // Alternar visibilidad del texto
+  const handleToggleVisibility = async () => {
+    if (!selectedText) return
+
+    try {
+      setSaving(true)
+      setError(null)
+
+      const newIsHidden = !selectedText.isHidden
+
+      const response = await fetch("https://lacocina-backend-deploy.vercel.app/textos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: selectedText.key,
+          value: selectedText.value,
+          isHidden: newIsHidden,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Error al cambiar la visibilidad")
+      }
+
+      const updatedText = await response.json()
+
+      // Actualizar el estado local con el texto actualizado
+      const updatedTexts = texts.map((text) => (text.id === updatedText.id ? updatedText : text))
+      setTexts(updatedTexts)
+      setSelectedText(updatedText)
+
+      // Usar el nuevo estado para el mensaje
+      setSuccess(`Campo ${newIsHidden ? "ocultado" : "mostrado"} correctamente`)
+
+      // Limpiar el mensaje de éxito después de 3 segundos
+      setTimeout(() => {
+        setSuccess(null)
+      }, 3000)
+    } catch (err) {
+      setError("Error al cambiar la visibilidad: " + err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
   // Filtrar textos por término de búsqueda
   const filteredTexts = texts.filter(
     (text) =>
@@ -177,12 +226,15 @@ const Settings = () => {
                   filteredTexts.map((text) => (
                     <div
                       key={text.id}
-                      className={`${styles.textItem} ${selectedText?.id === text.id ? styles.selected : ""}`}
+                      className={`${styles.textItem} ${selectedText?.id === text.id ? styles.selected : ""} ${text.isHidden ? styles.hiddenText : ""}`}
                       onClick={() => handleSelectText(text)}
                     >
                       <FileText size={18} className={styles.textIcon} />
                       <div className={styles.textItemContent}>
-                        <h3>{formatKey(text.key)}</h3>
+                        <h3>
+                          {formatKey(text.key)}
+                          {text.isHidden && <span className={styles.hiddenBadge}>OCULTO</span>}
+                        </h3>
                         <p>{text.value.substring(0, 60).replace(/<br\/>/g, " ")}...</p>
                       </div>
                     </div>
@@ -205,6 +257,18 @@ const Settings = () => {
                     >
                       {showPreview ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
+                    <div className={styles.visibilityToggle}>
+                      <span className={styles.toggleLabel}>{selectedText?.isHidden ? "Oculto" : "Visible"}</span>
+                      <label className={styles.switch}>
+                        <input
+                          type="checkbox"
+                          checked={!selectedText?.isHidden}
+                          onChange={handleToggleVisibility}
+                          disabled={saving}
+                        />
+                        <span className={styles.slider}></span>
+                      </label>
+                    </div>
                     <button
                       className={styles.cancelButton}
                       onClick={handleCancelEdit}
@@ -252,6 +316,7 @@ const Settings = () => {
                 <div className={styles.editorFooter}>
                   <div className={styles.textInfo}>
                     <span>Última actualización: {new Date(selectedText.updatedAt).toLocaleString()}</span>
+                    <span>Estado: {selectedText.isHidden ? "Oculto en la app" : "Visible en la app"}</span>
                   </div>
                   <div className={styles.editorTips}>
                     <p>
@@ -278,4 +343,3 @@ const Settings = () => {
 }
 
 export default Settings
-
