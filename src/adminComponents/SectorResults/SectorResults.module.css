@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+
+.sectorResultsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.resultsSection {
+  margin-bottom: 2rem;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+}
+
+.chartHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0a2ff1;
+}
+
+.chartTitle h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chartBody {
+  padding: 1.5rem;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chartFooter {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  border-top: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.downloadButton {
+  background: #0a2ff1;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadButton:hover {
+  background: #0926c9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
+}
+
+.previewButton {
+  background: white;
+  color: #0a2ff1;
+  border: 1px solid #0a2ff1;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.previewButton:hover {
+  background: rgba(10, 47, 241, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.1);
+}
+
+.noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.125rem;
+  color: #666;
+}
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+  .previewButton {
+    background: white;
+    color: #0a2ff1;
+    border: 1px solid #0a2ff1;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .downloadButton {
+    font-size: 1.6rem;
+  }
+
+  .chartTitle h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 500;
+  }
+
+  .subsectionTitle {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .chartFooter {
+    padding: 2rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(10, 47, 241, 0.1);
+    margin-top: 10vh;
+  }
+
+  .chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(1000px, 2fr));
+    gap: 1.5rem;
+  }
+}

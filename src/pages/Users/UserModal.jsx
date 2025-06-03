@@ -1,4 +1,4 @@
-import { X, Mail, Building2, Briefcase, Calendar, Award, User } from "lucide-react"
+import { X, Mail, Building2, Briefcase, Calendar, Award, User, MessageSquare } from "lucide-react"
 import styles from "./UserModal.module.css"
 import AdminChart from "../../adminComponents/AdminChart/AdminChart"
 
@@ -35,15 +35,16 @@ const UserModal = ({ user, onClose }) => {
                   {user.modalidad === 'Taller' ? 'T' : user.name?.charAt(0) || 'U'}
                 </span>
                 <div className={styles.profileInfo}>
-                <h2>
-            {user.modalidad === 'Taller' 
-              ? `Usuario Taller del ${new Date(user.createdAt).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric'
-                })}`
-              : user.name}
-          </h2>                  <span className={`${styles.role} ${user.modalidad === 'Taller' ? styles.tallerRole : styles.cursoRole}`}>
+                  <h2>
+                    {user.modalidad === 'Taller' 
+                      ? `Usuario Taller del ${new Date(user.createdAt).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric'
+                        })}`
+                      : user.name}
+                  </h2>
+                  <span className={`${styles.role} ${user.modalidad === 'Taller' ? styles.tallerRole : styles.cursoRole}`}>
                     {user.modalidad === 'Taller' ? 'Participante Taller' : user.cargo || 'Participante Curso'}
                   </span>
                 </div>
@@ -78,7 +79,6 @@ const UserModal = ({ user, onClose }) => {
                     <span>{user.curso}</span>
                   </div>
                 )}
-
               </div>
             </div>
 
@@ -118,6 +118,23 @@ const UserModal = ({ user, onClose }) => {
                   </div>
                 </div>
               )}
+
+              {/* Sección de Feedback */}
+              <div className={styles.feedbackSection}>
+                <h3>
+                  <MessageSquare size={18} style={{ marginRight: '8px' }} />
+                  Feedback del Usuario
+                </h3>
+                {user.mensajeFeedback ? (
+                  <div className={styles.feedbackContent}>
+                    <p>{user.mensajeFeedback}</p>
+                  </div>
+                ) : (
+                  <div className={styles.noFeedback}>
+                    <p>El usuario no ha dejado feedback</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

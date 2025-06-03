@@ -22,6 +22,7 @@ const Form = () => {
     compania: "",
     industriaSector: "",
     industriaSectorOtro: "",
+    sector: "",
     areaDesempeno: "",
     areaDesempenoOtro: "",
     // Campos específicos de curso
@@ -37,11 +38,21 @@ const Form = () => {
   const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
   const [loading, setLoading] = useState(false)
 
+  // Estado para almacenar los labels dinámicos
+  const [labels, setLabels] = useState({
+    compania: "Compañía",
+    industria: "Industria",
+    sector: "Sector",
+    areaDesempeno: "Área de Desempeño",
+  })
+  const [loadingLabels, setLoadingLabels] = useState(true)
+
   // Estado para almacenar las opciones de los dropdowns
   const [dropdownOptions, setDropdownOptions] = useState({
     curso: [],
     compania: [],
     industriaSector: [],
+    sector: [],
     areaDesempeno: [],
     cargo: [],
   })
@@ -51,9 +62,54 @@ const Form = () => {
     curso: false,
     compania: false,
     industriaSector: false,
+    sector: false,
     areaDesempeno: false,
     cargo: false,
   })
+
+  // Función para cargar los labels dinámicos desde la API
+  const cargarLabels = async () => {
+    setLoadingLabels(true)
+    try {
+      const response = await fetch("https://lacocina-backend-deploy.vercel.app/textos")
+
+      if (!response.ok) {
+        throw new Error(`Error al cargar los labels: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      // Crear un objeto con los labels basado en las keys
+      const labelsMap = {}
+      data.forEach((item) => {
+        switch (item.key) {
+          case "titulo_campo_uno":
+            labelsMap.compania = item.value
+            break
+          case "titulo_campo_dos":
+            labelsMap.industria = item.value
+            break
+          case "titulo_campo_tres":
+            labelsMap.sector = item.value
+            break
+          case "titulo_campo_cuatro":
+            labelsMap.areaDesempeno = item.value
+            break
+        }
+      })
+
+      // Actualizar el estado con los nuevos labels, manteniendo los defaults si no se encuentran
+      setLabels((prevLabels) => ({
+        ...prevLabels,
+        ...labelsMap,
+      }))
+    } catch (err) {
+      console.error("Error al cargar los labels:", err)
+      // Mantener los labels por defecto en caso de error
+    } finally {
+      setLoadingLabels(false)
+    }
+  }
 
   // Función para cargar las opciones de los dropdowns desde la API
   const cargarOpcionesDropdown = async () => {
@@ -61,6 +117,7 @@ const Form = () => {
       curso: "https://lacocina-backend-deploy.vercel.app/desplegables/curso",
       compania: "https://lacocina-backend-deploy.vercel.app/desplegables/compania",
       industriaSector: "https://lacocina-backend-deploy.vercel.app/desplegables/industriaSector",
+      sector: "https://lacocina-backend-deploy.vercel.app/desplegables/sector",
       areaDesempeno: "https://lacocina-backend-deploy.vercel.app/desplegables/areaDesempeno",
       cargo: "https://lacocina-backend-deploy.vercel.app/desplegables/cargo",
     }
@@ -120,8 +177,9 @@ const Form = () => {
     }
   }
 
-  // Cargar las opciones de los dropdowns al montar el componente
+  // Cargar los labels y las opciones de los dropdowns al montar el componente
   useEffect(() => {
+    cargarLabels()
     cargarOpcionesDropdown()
   }, [])
 
@@ -170,6 +228,7 @@ const Form = () => {
           formData.industriaSector === "Otro" && formData.industriaSectorOtro
             ? `Otro: ${formData.industriaSectorOtro}`
             : formData.industriaSector || "",
+        sector: formData.sector,
         areaDesempeno:
           formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro
             ? `Otro: ${formData.areaDesempenoOtro}`
@@ -334,7 +393,7 @@ const Form = () => {
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <div className={styles.formGroup}>
-          <label>Compañía*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.compania}*</label>
           <div className={styles.selectWrapper}>
             <select
               name="compania"
@@ -351,7 +410,7 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Industria/Sector*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.industria}*</label>
           <div className={styles.selectWrapper}>
             <select
               name="industriaSector"
@@ -380,7 +439,24 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Área de Desempeño*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.sector}*</label>
+          <div className={styles.selectWrapper}>
+            <select
+              name="sector"
+              value={formData.sector}
+              onChange={handleSelectChange}
+              className={styles.select}
+              required
+            >
+              <option value="">Seleccione una opción</option>
+              {renderDropdownOptions("sector")}
+            </select>
+            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno}*</label>
           <div className={styles.selectWrapper}>
             <select
               name="areaDesempeno"
@@ -433,7 +509,6 @@ const Form = () => {
   }
 
   // Formulario para CURSO
-
   const renderCursoForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
@@ -496,7 +571,7 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Compañía*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.compania}*</label>
           <input
             type="text"
             name="compania"
@@ -509,7 +584,7 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Industria/Sector*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.industria}*</label>
           <div className={styles.selectWrapper}>
             <select
               name="industriaSector"
@@ -538,7 +613,24 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Área de Desempeño*</label>
+          <label>{loadingLabels ? "Cargando..." : labels.sector}*</label>
+          <div className={styles.selectWrapper}>
+            <select
+              name="sector"
+              value={formData.sector}
+              onChange={handleSelectChange}
+              className={styles.select}
+              required
+            >
+              <option value="">Seleccione una opción</option>
+              {renderDropdownOptions("sector")}
+            </select>
+            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno}*</label>
           <div className={styles.selectWrapper}>
             <select
               name="areaDesempeno"
@@ -636,9 +728,10 @@ const Form = () => {
             la Influencia
           </h1>
           <p className={styles.description}>{loading ? "Cargando..." : descripcionTexto}</p>
-          <p className={styles.footerFormContainer}>Recordá que la información que proporciones es
-confidencial y se utilizará únicamente con fines
-estadísticos.</p>
+          <p className={styles.footerFormContainer}>
+            Recordá que la información que proporciones es confidencial y se utilizará únicamente con fines
+            estadísticos.
+          </p>
 
           {/* Botones de selección debajo del texto */}
           {formType === null && (
@@ -676,4 +769,3 @@ estadísticos.</p>
 }
 
 export default Form
-//Form

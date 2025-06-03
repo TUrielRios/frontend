@@ -28,6 +28,8 @@ const Questionnaire = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
   const [startedPhases, setStartedPhases] = useState([])
   const [theme, setTheme] = useState("dark")
   const [showChartMobile, setShowChartMobile] = useState(false)
@@ -62,12 +64,15 @@ const Questionnaire = () => {
   }, [showIntro])
 
   // Cargar el ID del usuario desde localStorage
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId")
-    if (storedUserId) {
-      setUserId(storedUserId)
-    }
-  }, [])
+useEffect(() => {
+  const storedUserId = localStorage.getItem("userId");
+  if (!storedUserId) {
+    console.error("No se encontró userId en localStorage");
+    // Puedes redirigir o manejar este caso según tu flujo
+  } else {
+    setUserId(storedUserId);
+  }
+}, []);
 
   // Cargar preguntas
   useEffect(() => {
@@ -229,6 +234,60 @@ const Questionnaire = () => {
     }
   }
 
+  // Función para manejar el envío de feedback
+const handleFeedbackSubmit = async (feedbackMessage) => {
+  try {
+    // 1. Verificar que tenemos userId y feedback
+    if (!userId) {
+      console.error("No se encontró ID de usuario para enviar feedback");
+      throw new Error("No se pudo identificar tu usuario. Por favor recarga la página.");
+    }
+
+    if (!feedbackMessage.trim()) {
+      throw new Error("El mensaje de feedback no puede estar vacío");
+    }
+
+    // 2. Obtener el usuario actual primero para verificar que existe
+    const userResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`);
+    
+    if (!userResponse.ok) {
+      const errorData = await userResponse.json();
+      throw new Error(errorData.error || "Usuario no encontrado");
+    }
+
+    const userData = await userResponse.json();
+
+    // 3. Actualizar solo el campo mensajeFeedback
+    const updateResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mensajeFeedback: feedbackMessage
+      }),
+    });
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.json();
+      throw new Error(errorData.error || "Error al actualizar el feedback");
+    }
+
+    // 4. Manejar éxito
+    setFeedbackSubmitted(true);
+    return { success: true };
+
+  } catch (err) {
+    console.error("Error al enviar feedback:", err);
+    
+    // Mostrar alerta al usuario (puedes personalizar esto)
+    alert(`Error al enviar feedback: ${err.message}`);
+    
+    return { success: false, error: err.message };
+  }
+};
+
+
   const handleNext = () => {
     setSelectedOption(null)
     const phaseQuestions = questions[currentPhase] || []
@@ -315,9 +374,10 @@ const Questionnaire = () => {
       <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
         <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
         <ResultsPhase
-          phaseScores={displayedPhaseScores} // Use displayed scores for final results
+          phaseScores={displayedPhaseScores}
           onDownloadBook={handleDownloadBook}
           onDownloadResults={handleDownloadResults}
+          onFeedbackSubmit={handleFeedbackSubmit}
         />
       </div>
     )

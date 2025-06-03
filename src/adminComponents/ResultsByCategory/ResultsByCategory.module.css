@@ -1,0 +1,432 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+
+.categoryResultsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: "Red Hat Display", sans-serif;
+}
+
+.resultsSection {
+  margin-bottom: 2rem;
+}
+
+.subsectionTitle {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.chartHeader {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.chartTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0a2ff1;
+}
+
+.chartTitle h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.chartBody {
+  padding: 1.5rem;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chartFooter {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  border-top: 1px solid rgba(10, 47, 241, 0.1);
+}
+
+.downloadButton {
+  background: #0a2ff1;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.downloadButton:hover {
+  background: #0926c9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
+}
+
+.previewButton {
+  background: white;
+  color: #0a2ff1;
+  border: 1px solid #0a2ff1;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.previewButton:hover {
+  background: rgba(10, 47, 241, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 47, 241, 0.1);
+}
+
+.noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.125rem;
+  color: #666;
+}
+
+/* Modal Preview Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  width: 95%;
+  max-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  z-index: 10;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: #f0f0ff;
+  color: #0a2ff1;
+}
+
+.modalContent {
+  display: flex;
+  height: 90vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 320px;
+  background: #f8f8ff;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.previewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.titleIcon {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chartIcon {
+  width: 64px;
+  height: 64px;
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.titleInfo h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0a2ff1;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Factor List Styles */
+.factorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.factorsList h3 {
+  color: #0a2ff1;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.factorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.factorInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.factorName {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.factorScore {
+  font-weight: 600;
+  color: #0a2ff1;
+}
+
+.factorBar {
+  height: 4px;
+  background: #e0e0ff;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.factorProgress {
+  height: 100%;
+  background: #0a2ff1;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.averageProgress {
+  height: 100%;
+  background: #0a2ff1;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.averageScore {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0ff;
+}
+
+.gapAreaContainer {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0ff;
+}
+
+.areaTitle {
+  color: #0a2ff1;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+/* Main Content Styles */
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chartsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.chartContainer {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  scale: 1.3;
+}
+
+/* Scrollbar Styles */
+.sidebar::-webkit-scrollbar,
+.mainContent::-webkit-scrollbar {
+  width: 2px;
+}
+
+.sidebar::-webkit-scrollbar-track,
+.mainContent::-webkit-scrollbar-track {
+  background: #f0f0ff;
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.mainContent::-webkit-scrollbar-thumb {
+  background: #0a2ff1;
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover,
+.mainContent::-webkit-scrollbar-thumb:hover {
+  background: #0830c7;
+}
+
+/* Animation */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalContent {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* 1920X1280 MEDIA QUERIES */
+@media (min-width: 1920px) {
+  .factorName {
+    font-size: 1.875rem;
+    color: #666;
+  }
+
+  .factorsList h3 {
+    color: #0a2ff1;
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .chartIcon {
+    width: 94px;
+    height: 94px;
+    color: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+  }
+
+  .titleInfo h2 {
+    margin: 0;
+    font-size: 2.25rem;
+    color: #0a2ff1;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 1.875rem;
+  }
+
+  .previewButton {
+    background: white;
+    color: #0a2ff1;
+    border: 1px solid #0a2ff1;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .downloadButton {
+    font-size: 1.6rem;
+  }
+
+  .chartTitle h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 500;
+  }
+
+  .subsectionTitle {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .chartFooter {
+    padding: 2rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(10, 47, 241, 0.1);
+    margin-top: 10vh;
+  }
+
+  .chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(1000px, 2fr));
+    gap: 1.5rem;
+  }
+}

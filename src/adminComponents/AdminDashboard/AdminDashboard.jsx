@@ -1,13 +1,15 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Download, Users, UserCheck, TrendingUp, X, Maximize, ChevronDown, ChevronUp } from "lucide-react"
+import { Users, UserCheck, TrendingUp, X, ChevronDown, ChevronUp } from "lucide-react"
 import AdminUserChart from "../AdminUserChart/AdminUserChart"
+import ResultsByCategory from "../ResultsByCategory/ResultsByCategory"
 import styles from "./AdminDashboard.module.css"
 import html2canvas from "html2canvas"
 import AdminHeader from "../AdminHeader/AdminHeader"
 import axios from "axios"
 import iconoDiamante from "../../assets/iconos-animados/diamante-icono.png"
+
 // Función para descargar un gráfico como PNG
 const downloadChartAsPNG = async (chartRef, fileName = "chart.png") => {
   if (!chartRef.current) return
@@ -227,147 +229,6 @@ const MetricCard = ({ title, value, percentage, icon }) => {
   )
 }
 
-// Componente para los gráficos de radar por área
-const AreaRadarChart = ({ title, data }) => {
-  const chartRef = useRef(null)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-
-  const handleDownload = () => {
-    downloadChartAsPNG(chartRef, `${title.replace(/\s+/g, "-").toLowerCase()}-radar.png`)
-  }
-
-  const openPreview = () => {
-    setIsPreviewOpen(true)
-  }
-
-  const closePreview = () => {
-    setIsPreviewOpen(false)
-  }
-
-  return (
-    <>
-      <div className={styles.chartCard} ref={chartRef}>
-        <div className={styles.chartHeader}>
-          <div className={styles.chartTitle}>
-            <h3>{title}</h3>
-          </div>
-        </div>
-        <div className={styles.chartBody}>
-          <AdminUserChart data={data} type="radar" theme="light" />
-        </div>
-        <div className={styles.chartFooter}>
-          <button className={styles.previewButton} onClick={openPreview}>
-            <span>Vista previa</span>
-            <Maximize size={16} />
-          </button>
-          <button className={styles.downloadButton} onClick={handleDownload}>
-            <span>Descargar resultado</span>
-            <Download size={16} />
-          </button>
-        </div>
-      </div>
-
-      <ChartPreviewModal isOpen={isPreviewOpen} onClose={closePreview} title={title} chartData={data} />
-    </>
-  )
-}
-
-// Componente para el gráfico de resultado promedio
-const AverageRadarChart = ({ data }) => {
-  const chartRef = useRef(null)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-
-  const handleDownload = () => {
-    downloadChartAsPNG(chartRef, "resultado-promedio.png")
-  }
-
-  const openPreview = () => {
-    setIsPreviewOpen(true)
-  }
-
-  const closePreview = () => {
-    setIsPreviewOpen(false)
-  }
-
-  return (
-    <>
-      <div className={styles.chartCard} ref={chartRef}>
-        <div className={styles.chartHeader}>
-          <div className={styles.chartTitle}>
-            <h3>Resultado Promedio</h3>
-          </div>
-        </div>
-        <div className={styles.chartBody}>
-          <AdminUserChart data={data} type="radar" theme="light" />
-        </div>
-        <div className={styles.chartFooter}>
-          <button className={styles.previewButton} onClick={openPreview}>
-            <span>Vista previa</span>
-            <Maximize size={16} />
-          </button>
-          <button className={styles.downloadButton} onClick={handleDownload}>
-            <span>Descargar resultado</span>
-            <Download size={16} />
-          </button>
-        </div>
-      </div>
-
-      <ChartPreviewModal isOpen={isPreviewOpen} onClose={closePreview} title="Resultado Promedio" chartData={data} />
-    </>
-  )
-}
-
-// Componente para el gráfico de gap entre áreas
-const GapRadarChart = ({ data }) => {
-  const chartRef = useRef(null)
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-
-  const handleDownload = () => {
-    downloadChartAsPNG(chartRef, "gap-areas.png")
-  }
-
-  const openPreview = () => {
-    setIsPreviewOpen(true)
-  }
-
-  const closePreview = () => {
-    setIsPreviewOpen(false)
-  }
-
-  return (
-    <>
-      <div className={styles.chartCard} ref={chartRef}>
-        <div className={styles.chartHeader}>
-          <div className={styles.chartTitle}>
-            <h3>Gap entre áreas</h3>
-          </div>
-        </div>
-        <div className={styles.chartBody}>
-          <AdminUserChart data={data} type="gaap" theme="light" />
-        </div>
-        <div className={styles.chartFooter}>
-          <button className={styles.previewButton} onClick={openPreview}>
-            <span>Vista previa</span>
-            <Maximize size={16} />
-          </button>
-          <button className={styles.downloadButton} onClick={handleDownload}>
-            <span>Descargar resultado</span>
-            <Download size={16} />
-          </button>
-        </div>
-      </div>
-
-      <ChartPreviewModal
-        isOpen={isPreviewOpen}
-        onClose={closePreview}
-        title="Gap entre áreas"
-        chartData={data}
-        chartType="gaap"
-      />
-    </>
-  )
-}
-
 // Componente de acordeón para mostrar talleres anteriores
 const WorkshopAccordion = ({ workshop, index, isOpen, toggleAccordion }) => {
   return (
@@ -382,24 +243,31 @@ const WorkshopAccordion = ({ workshop, index, isOpen, toggleAccordion }) => {
 
       {isOpen && (
         <div className={styles.accordionContent}>
-          <div className={styles.chartsGrid}>
-            {workshop.areaResults &&
-              Object.keys(workshop.areaResults).map((area, idx) => (
-                <AreaRadarChart key={idx} title={area} data={workshop.areaResults[area]} />
-              ))}
-          </div>
+          {/* Resultados por Área de Desempeño */}
+          <ResultsByCategory
+            data={workshop.data}
+            categoryField="areaDesempeno"
+            categoryTitle="Área de Desempeño"
+            categoryType="area"
+          />
 
-          <div className={styles.chartsGrid}>
-            <AverageRadarChart data={workshop.averageResult} />
-            <GapRadarChart data={workshop.gapResult} />
-          </div>
+          {/* Resultados por Industria */}
+          <ResultsByCategory
+            data={workshop.data}
+            categoryField="industriaSector"
+            categoryTitle="Industria"
+            categoryType="industria"
+          />
+
+          {/* Resultados por Sector */}
+          <ResultsByCategory data={workshop.data} categoryField="sector" categoryTitle="Sector" categoryType="sector" />
         </div>
       )}
     </div>
   )
 }
 
-// Add this component after the WorkshopAccordion component
+// Componente de acordeón para mostrar cursos anteriores
 const CourseAccordion = ({ course, index, isOpen, toggleAccordion }) => {
   return (
     <div className={styles.accordionItem}>
@@ -413,17 +281,24 @@ const CourseAccordion = ({ course, index, isOpen, toggleAccordion }) => {
 
       {isOpen && (
         <div className={styles.accordionContent}>
-          <div className={styles.chartsGrid}>
-            {course.areaResults &&
-              Object.keys(course.areaResults).map((area, idx) => (
-                <AreaRadarChart key={idx} title={area} data={course.areaResults[area]} />
-              ))}
-          </div>
+          {/* Resultados por Área de Desempeño */}
+          <ResultsByCategory
+            data={course.data}
+            categoryField="areaDesempeno"
+            categoryTitle="Área de Desempeño"
+            categoryType="area"
+          />
 
-          <div className={styles.chartsGrid}>
-            <AverageRadarChart data={course.averageResult} />
-            <GapRadarChart data={course.gapResult} />
-          </div>
+          {/* Resultados por Industria */}
+          <ResultsByCategory
+            data={course.data}
+            categoryField="industriaSector"
+            categoryTitle="Industria"
+            categoryType="industria"
+          />
+
+          {/* Resultados por Sector */}
+          <ResultsByCategory data={course.data} categoryField="sector" categoryTitle="Sector" categoryType="sector" />
         </div>
       )}
     </div>
@@ -431,20 +306,18 @@ const CourseAccordion = ({ course, index, isOpen, toggleAccordion }) => {
 }
 
 const AdminDashboard = () => {
-  // 1. Add a new state for courses
   const [workshops, setWorkshops] = useState([])
-  const [courses, setCourses] = useState([]) // Add this line
+  const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [openAccordion, setOpenAccordion] = useState(null)
-  const [openCourseAccordion, setOpenCourseAccordion] = useState(null) // Add this line
+  const [openCourseAccordion, setOpenCourseAccordion] = useState(null)
   const [metrics, setMetrics] = useState({
     totalUsers: 0,
     activeUsers: 0,
     completionRate: 0,
   })
   const [courseMetrics, setCourseMetrics] = useState({
-    // Add this block
     totalUsers: 0,
     activeUsers: 0,
     completionRate: 0,
@@ -471,8 +344,7 @@ const AdminDashboard = () => {
     return Object.values(grouped)
   }
 
-  // 2. Add a function to group courses by name
-  // Add this function after the groupWorkshops function
+  // Función para agrupar cursos por nombre
   const groupCourses = (data) => {
     const grouped = {}
 
@@ -480,7 +352,7 @@ const AdminDashboard = () => {
       const key = course.curso // Group by course name
       if (!grouped[key]) {
         grouped[key] = {
-          nombre: course.curso, // Aseguramos que el nombre se asigna correctamente
+          nombre: course.curso,
           fecha: course.createdAt,
           participantes: [],
           data: [],
@@ -492,64 +364,14 @@ const AdminDashboard = () => {
     return Object.values(grouped)
   }
 
-  // Función para calcular promedios por área
-  const calculateAverages = (groupedWorkshops) => {
-    return groupedWorkshops.map((group) => {
-      const areas = {}
-
-      // Agrupar por área de desempeño
-      const areaGroups = {}
-      group.data.forEach((workshop) => {
-        if (!areaGroups[workshop.areaDesempeno]) {
-          areaGroups[workshop.areaDesempeno] = []
-        }
-        areaGroups[workshop.areaDesempeno].push(workshop)
-      })
-
-      // Calcular promedio para cada área
-      Object.keys(areaGroups).forEach((area) => {
-        const workshopsInArea = areaGroups[area]
-        const count = workshopsInArea.length
-
-        areas[area] = {
-          ATRACTIVO: workshopsInArea.reduce((sum, w) => sum + (w.atractivo || 0), 0) / count,
-          RECIPROCIDAD: workshopsInArea.reduce((sum, w) => sum + (w.reciprocidad || 0), 0) / count,
-          AUTORIDAD: workshopsInArea.reduce((sum, w) => sum + (w.autoridad || 0), 0) / count,
-          AUTENTICIDAD: workshopsInArea.reduce((sum, w) => sum + (w.autenticidad || 0), 0) / count,
-          "CONSISTENCIA Y COMPROMISO":
-            workshopsInArea.reduce((sum, w) => sum + (w.consistenciaCompromiso || 0), 0) / count,
-          "VALIDACIÓN SOCIAL": workshopsInArea.reduce((sum, w) => sum + (w.validacionSocial || 0), 0) / count,
-        }
-      })
-
-      // Calcular promedio general
-      const allValues = []
-      Object.values(areas).forEach((area) => {
-        Object.values(area).forEach((value) => allValues.push(value))
-      })
-
-      const averageResult = {
-        ATRACTIVO: allValues.filter((_, i) => i % 6 === 0).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-        RECIPROCIDAD: allValues.filter((_, i) => i % 6 === 1).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-        AUTORIDAD: allValues.filter((_, i) => i % 6 === 2).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-        AUTENTICIDAD: allValues.filter((_, i) => i % 6 === 3).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-        "CONSISTENCIA Y COMPROMISO":
-          allValues.filter((_, i) => i % 6 === 4).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-        "VALIDACIÓN SOCIAL":
-          allValues.filter((_, i) => i % 6 === 5).reduce((a, b) => a + b, 0) / (allValues.length / 6),
-      }
-
-      return {
-        ...group,
-        nombre: group.nombre || `${group.compania} - ${new Date(group.fecha).toLocaleDateString()}`,
-        areaResults: areas,
-        averageResult,
-        gapResult: areas,
-      }
-    })
+  // Función simplificada para procesar grupos
+  const processGroups = (groups) => {
+    return groups.map((group) => ({
+      ...group,
+      nombre: group.nombre || `${group.compania} - ${new Date(group.fecha).toLocaleDateString()}`,
+    }))
   }
 
-  // 3. Modify the useEffect to fetch both workshops and courses
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -564,7 +386,7 @@ const AdminDashboard = () => {
         if (workshopResponse.data && Array.isArray(workshopResponse.data)) {
           // Process workshop data
           const grouped = groupWorkshops(workshopResponse.data)
-          const processedWorkshops = calculateAverages(grouped)
+          const processedWorkshops = processGroups(grouped)
           const sortedWorkshops = processedWorkshops.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
           setWorkshops(sortedWorkshops)
@@ -588,7 +410,7 @@ const AdminDashboard = () => {
         // Process course data
         if (courseResponse.data && Array.isArray(courseResponse.data)) {
           const groupedCourses = groupCourses(courseResponse.data)
-          const processedCourses = calculateAverages(groupedCourses)
+          const processedCourses = processGroups(groupedCourses)
           const sortedCourses = processedCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
           setCourses(sortedCourses)
@@ -619,8 +441,6 @@ const AdminDashboard = () => {
     fetchData()
   }, [])
 
-  // 5. Add a function to toggle course accordion
-  // Add this function after the toggleAccordion function
   const toggleCourseAccordion = (index) => {
     setOpenCourseAccordion(openCourseAccordion === index ? null : index)
   }
@@ -639,8 +459,6 @@ const AdminDashboard = () => {
 
   const latestWorkshop = workshops.length > 0 ? workshops[0] : null
 
-  // 6. Update the return statement to include courses
-  // Replace the entire return statement with this updated version
   return (
     <div className={styles.dashboard}>
       <AdminHeader username="Administrador" />
@@ -656,23 +474,29 @@ const AdminDashboard = () => {
             <div className={styles.dashboardSection}>
               <h2 className={styles.sectionTitle}>Taller más reciente: {latestWorkshop.nombre}</h2>
 
-              <div className={styles.resultsSection}>
-                <h3 className={styles.subsectionTitle}>Resultados según Área de Desempeño</h3>
-                <div className={styles.chartsGrid}>
-                  {latestWorkshop.areaResults &&
-                    Object.keys(latestWorkshop.areaResults).map((area, index) => (
-                      <AreaRadarChart key={index} title={area} data={latestWorkshop.areaResults[area]} />
-                    ))}
-                </div>
-              </div>
+              {/* Resultados por Área de Desempeño */}
+              <ResultsByCategory
+                data={latestWorkshop.data}
+                categoryField="areaDesempeno"
+                categoryTitle="Área de Desempeño"
+                categoryType="area"
+              />
 
-              <div className={styles.resultsSection}>
-                <h3 className={styles.subsectionTitle}>Resultado por Industria</h3>
-                <div className={styles.chartsGrid}>
-                  <AverageRadarChart data={latestWorkshop.averageResult} />
-                  <GapRadarChart data={latestWorkshop.gapResult} />
-                </div>
-              </div>
+              {/* Resultados por Industria */}
+              <ResultsByCategory
+                data={latestWorkshop.data}
+                categoryField="industriaSector"
+                categoryTitle="Industria"
+                categoryType="industria"
+              />
+
+              {/* Resultados por Sector */}
+              <ResultsByCategory
+                data={latestWorkshop.data}
+                categoryField="sector"
+                categoryTitle="Sector"
+                categoryType="sector"
+              />
             </div>
 
             {workshops.length > 1 && (
@@ -712,23 +536,29 @@ const AdminDashboard = () => {
             <div className={styles.dashboardSection}>
               <h2 className={styles.sectionTitle}>Curso más reciente: {courses[0].nombre || "Sin nombre"}</h2>
 
-              <div className={styles.resultsSection}>
-                <h3 className={styles.subsectionTitle}>Resultados según Área de Desempeño</h3>
-                <div className={styles.chartsGrid}>
-                  {courses[0].areaResults &&
-                    Object.keys(courses[0].areaResults).map((area, index) => (
-                      <AreaRadarChart key={index} title={area} data={courses[0].areaResults[area]} />
-                    ))}
-                </div>
-              </div>
+              {/* Resultados por Área de Desempeño */}
+              <ResultsByCategory
+                data={courses[0].data}
+                categoryField="areaDesempeno"
+                categoryTitle="Área de Desempeño"
+                categoryType="area"
+              />
 
-              <div className={styles.resultsSection}>
-                <h3 className={styles.subsectionTitle}>Resultado por Industria</h3>
-                <div className={styles.chartsGrid}>
-                  <AverageRadarChart data={courses[0].averageResult} />
-                  <GapRadarChart data={courses[0].gapResult} />
-                </div>
-              </div>
+              {/* Resultados por Industria */}
+              <ResultsByCategory
+                data={courses[0].data}
+                categoryField="industriaSector"
+                categoryTitle="Industria"
+                categoryType="industria"
+              />
+
+              {/* Resultados por Sector */}
+              <ResultsByCategory
+                data={courses[0].data}
+                categoryField="sector"
+                categoryTitle="Sector"
+                categoryType="sector"
+              />
             </div>
 
             {courses.length > 1 && (

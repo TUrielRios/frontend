@@ -11,6 +11,7 @@ const DropdownEditor = () => {
     //COMPAÑIA
     { id: "compania", name: "Compañía", options: [] },
     { id: "industriaSector", name: "Industria/Sector", options: [] },
+    { id: "sector", name:"Sector", options: []},
     { id: "areaDesempeno", name: "Área de Desempeño", options: [] },
     { id: "cargo", name: "Cargo/Posición", options: [] }
   ]);
