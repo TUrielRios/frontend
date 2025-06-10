@@ -73,46 +73,52 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
   return (
     <div className={styles.resultsContainer}>
       <div className={styles.resultsContent}>
-        <h1 className={styles.resultsTitle}>¡Gracias por participar!</h1>
-        <div className={styles.resultsText}>
-          <p dangerouslySetInnerHTML={createMarkup(formatDescription(textos.texto_final))} />
-        </div>
-
         {!isSubmitted ? (
-          <form onSubmit={handleSubmit} className={styles.feedbackForm}>
-            <label htmlFor="feedback" className={styles.feedbackLabel}>
-              {loadingQuestion ? "Cargando..." : feedbackQuestion}
-            </label>
-            <textarea
-              id="feedback"
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              className={styles.feedbackInput}
-              placeholder="Escribe tu mensaje aquí..."
-              rows={4}
-            />
-            <button type="submit" className={styles.feedbackSubmit}>
-              Enviar
-            </button>
-          </form>
+          <>
+            <h1 className={styles.resultsTitle}>{textos.titulo_fase_final}</h1>
+            <form onSubmit={handleSubmit} className={styles.feedbackForm}>
+              <label htmlFor="feedback" className={styles.feedbackLabel}>
+                {loadingQuestion ? "Cargando..." : feedbackQuestion}
+              </label>
+              <textarea
+                id="feedback"
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                className={styles.feedbackInput}
+                placeholder="Escribe tu mensaje aquí..."
+                rows={4}
+              />
+              <button type="submit" className={styles.feedbackSubmit}>
+                Enviar
+              </button>
+            </form>
+          </>
         ) : (
-          <div className={styles.feedbackThanks}>¡Gracias por tu mensaje! Tu opinión es muy valiosa para nosotros.</div>
+          <div className={styles.thanksContainer}>
+            <h1 className={styles.thanksTitle}>¡Gracias por participar!</h1>
+            <div 
+              className={styles.thanksText}
+              dangerouslySetInnerHTML={createMarkup(formatDescription(textos.texto_post_mensaje_final))}
+            />
+          </div>
         )}
       </div>
-      <div className={styles.resultsChartContainer}>
-        <RadarChart
-          data={{
-            ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
-            "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
-            RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
-            AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
-            AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
-            "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
-          }}
-          theme="dark"
-          completedPhases={allPhases}
-        />
-      </div>
+      {!isSubmitted && (
+        <div className={styles.resultsChartContainer}>
+          <RadarChart
+            data={{
+              ATRACTIVO: phaseScores["ATRACTIVO_avg"] || 0,
+              "VALIDACIÓN SOCIAL": phaseScores["VALIDACIÓN SOCIAL_avg"] || 0,
+              RECIPROCIDAD: phaseScores["RECIPROCIDAD_avg"] || 0,
+              AUTORIDAD: phaseScores["AUTORIDAD_avg"] || 0,
+              AUTENTICIDAD: phaseScores["AUTENTICIDAD_avg"] || 0,
+              "CONSISTENCIA Y COMPROMISO": phaseScores["CONSISTENCIA Y COMPROMISO_avg"] || 0,
+            }}
+            theme="dark"
+            completedPhases={allPhases}
+          />
+        </div>
+      )}
     </div>
   )
 }
