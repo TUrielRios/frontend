@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Search, Filter, X, RefreshCw, Trash2 } from "lucide-react"
+import { Search, Filter, X, RefreshCw, Trash2, Download } from "lucide-react"
 import styles from "./Users.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 import UserModal from "./UserModal"
@@ -10,6 +10,9 @@ const Users = () => {
   const [filters, setFilters] = useState({
     modalidad: "",
     industry: "",
+    compania: "",
+    sector: "",
+    areaDesempeno: ""
   })
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -17,59 +20,124 @@ const Users = () => {
   const [error, setError] = useState(null)
   const [selectedUsers, setSelectedUsers] = useState([])
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [uniqueFilters, setUniqueFilters] = useState({
+    industries: [],
+    companies: [],
+    sectors: [],
+    areas: []
+  })
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 10
 
-  // Fetch users function extracted for reusability
-  const fetchUsers = async () => {
+ // Función para descargar feedbacks
+  const downloadFeedbacks = () => {
+    // Filtrar usuarios con feedback no vacío
+    const usersWithFeedback = users.filter(
+      user => user.mensajeFeedback && user.mensajeFeedback.trim() !== ""
+    )
 
-    try {
-      setLoading(true)
-      
-      // Obtener usuarios de Taller y Curso en paralelo
-      const [tallerResponse, cursoResponse] = await Promise.all([
-        fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller"),
-        fetch("https://lacocina-backend-deploy.vercel.app/usuarios/curso")
-      ])
-
-      if (!tallerResponse.ok || !cursoResponse.ok) {
-        throw new Error("Error al cargar usuarios")
-      }
-
-      const tallerUsers = await tallerResponse.json()
-      const cursoUsers = await cursoResponse.json()
-
-      // Mapear a formato común
-      const formattedTallerUsers = tallerUsers.map(user => ({
-        ...user,
-        modalidad: 'Taller',
-        name: `Usuario ${user.codigoTaller}`,
-        email: '',
-        role: 'Participante Taller',
-        completionDate: user.createdAt
-      }))
-
-      const formattedCursoUsers = cursoUsers.map(user => ({
-        ...user,
-        modalidad: 'Curso',
-        name: `${user.nombre} ${user.apellido}`,
-        email: user.email,
-        role: user.cargo || 'Participante Curso',
-        completionDate: user.createdAt
-      }))
-
-      setUsers([...formattedTallerUsers, ...formattedCursoUsers])
-      setLoading(false)
-      setIsRefreshing(false)
-      setSelectedUsers([]) // Reset selected users on refresh
-    } catch (err) {
-      setError(err.message)
-      setLoading(false)
-      setIsRefreshing(false)
+    if (usersWithFeedback.length === 0) {
+      alert("No hay feedbacks para descargar")
+      return
     }
+
+    // Crear contenido del archivo
+    let fileContent = ""
+    usersWithFeedback.forEach(user => {
+      fileContent += `=== Feedback ID: ${user.id} ===\n`
+      fileContent += `Empresa: ${user.compania || 'N/A'}\n`
+      fileContent += `Fecha: ${new Date(user.createdAt).toLocaleString()}\n`
+      fileContent += `Área: ${user.areaDesempeno || 'N/A'}\n`
+      fileContent += `Feedback:\n${user.mensajeFeedback}\n\n`
+    })
+
+    // Crear blob y descargar
+    const blob = new Blob([fileContent], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `feedbacks_${new Date().toISOString().split('T')[0]}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
+
+  // Fetch users function extracted for reusability
+const fetchUsers = async () => {
+  try {
+    setLoading(true);
+    
+    // Obtener usuarios de Taller y Curso en paralelo
+    const [tallerResponse, cursoResponse] = await Promise.all([
+      fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller"),
+      fetch("https://lacocina-backend-deploy.vercel.app/usuarios/curso")
+    ]);
+
+    if (!tallerResponse.ok || !cursoResponse.ok) {
+      throw new Error("Error al cargar usuarios");
+    }
+
+    const tallerUsers = await tallerResponse.json();
+    const cursoUsers = await cursoResponse.json();
+
+    // Mapear a formato común
+    const formattedTallerUsers = tallerUsers.map(user => ({
+      ...user,
+      modalidad: 'Taller',
+      name: `Usuario ${user.codigoTaller}`,
+      email: '',
+      role: 'Participante Taller',
+      completionDate: user.createdAt
+    }));
+
+    const formattedCursoUsers = cursoUsers.map(user => ({
+      ...user,
+      modalidad: 'Curso',
+      name: `${user.nombre} ${user.apellido}`,
+      email: user.email,
+      role: user.cargo || 'Participante Curso',
+      completionDate: user.createdAt
+    }));
+
+    const allUsers = [...formattedTallerUsers, ...formattedCursoUsers];
+    setUsers(allUsers);
+
+    // Función para normalizar nombres de empresas
+    const normalizeCompanies = (users) => {
+      const companyMap = new Map();
+      
+      users.forEach(user => {
+        if (!user.compania) return;
+        
+        const lowerCaseName = user.compania.toLowerCase().trim();
+        if (!companyMap.has(lowerCaseName)) {
+          companyMap.set(lowerCaseName, user.compania);
+        }
+      });
+      
+      return Array.from(companyMap.values()).sort((a, b) => a.localeCompare(b));
+    };
+
+    // Extraer valores únicos para los filtros
+    setUniqueFilters({
+      industries: [...new Set(allUsers.map(user => user.industriaSector).filter(Boolean))].sort(),
+      companies: normalizeCompanies(allUsers),
+      sectors: [...new Set(allUsers.map(user => user.sector).filter(Boolean))].sort(),
+      areas: [...new Set(allUsers.map(user => user.areaDesempeno).filter(Boolean))].sort()
+    });
+
+    setLoading(false);
+    setIsRefreshing(false);
+    setSelectedUsers([]);
+  } catch (err) {
+    setError(err.message);
+    setLoading(false);
+    setIsRefreshing(false);
+  }
+};
 
   // Obtener usuarios reales del backend
   useEffect(() => {
@@ -147,7 +215,7 @@ const Users = () => {
         throw new Error('Error al eliminar algunos usuarios')
       }
 
-      await fetchUsers() // Refresh the list
+      await fetchUsers()
       setShowDeleteConfirmation(false)
     } catch (err) {
       setError(err.message)
@@ -175,7 +243,7 @@ const Users = () => {
         throw new Error('Error al eliminar el usuario')
       }
 
-      await fetchUsers() // Refresh the list
+      await fetchUsers()
     } catch (err) {
       setError(err.message)
       setLoading(false)
@@ -203,24 +271,21 @@ const Users = () => {
     }
   })
 
-  // Extraer industrias únicas
-  const industries = [...new Set(users.map((user) => user.industriaSector))]
-
   // Aplicar filtros y búsqueda
   const filteredUsers = usersWithScore.filter(user => {
     // Filtro de búsqueda
     const matchesSearch = !searchTerm || 
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      user.compania.toLowerCase().includes(searchTerm.toLowerCase())
+      user.compania?.toLowerCase().includes(searchTerm.toLowerCase())
 
-    // Filtro de modalidad
-    const matchesModalidad = !filters.modalidad || user.modalidad === filters.modalidad
+    // Filtros adicionales
+    const matchesFilters = Object.entries(filters).every(([key, value]) => {
+      if (!value) return true
+      return user[key] === value
+    })
 
-    // Filtro de industria
-    const matchesIndustry = !filters.industry || user.industriaSector === filters.industry
-
-    return matchesSearch && matchesModalidad && matchesIndustry
+    return matchesSearch && matchesFilters
   })
 
   // Pagination logic
@@ -238,12 +303,15 @@ const Users = () => {
     setFilters({
       modalidad: "",
       industry: "",
+      compania: "",
+      sector: "",
+      areaDesempeno: ""
     })
-    setCurrentPage(1) // Reset to first page when clearing filters
+    setCurrentPage(1)
   }
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = searchTerm || filters.modalidad || filters.industry
+  const hasActiveFilters = searchTerm || Object.values(filters).some(Boolean)
 
   if (loading && !isRefreshing) return <div className={styles.loading}>Cargando usuarios...</div>
   if (error) return <div className={styles.error}>Error: {error}</div>
@@ -262,60 +330,134 @@ const Users = () => {
               </button>
             )}
           </div>
-          <div className={styles.filters}>
-            <div className={styles.searchBar}>
-              <Search size={20} />
-              <input
-                type="text"
-                placeholder="Buscar usuario..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button className={styles.clearSearchBtn} onClick={() => setSearchTerm("")}>
-                  <X size={16} />
-                </button>
-              )}
+          {/* Contenedor principal de filtros */}
+          <div className={styles.filtersContainer}>
+            {/* Primera fila de filtros */}
+            <div className={styles.filtersRow}>
+              <div className={styles.searchBar}>
+                <Search size={20} />
+                <input
+                  type="text"
+                  placeholder="Buscar usuario, empresa..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button className={styles.clearSearchBtn} onClick={() => setSearchTerm("")}>
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
+              
+              <div className={styles.filterGroup}>
+                <Filter size={20} />
+                <select 
+                  value={filters.modalidad}
+                  onChange={(e) => {
+                    setFilters(prev => ({ ...prev, modalidad: e.target.value }))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value="">Todas las modalidades</option>
+                  <option value="Taller">Taller</option>
+                  <option value="Curso">Curso</option>
+                </select>
+              </div>
+              
+              <div className={styles.filterGroup}>
+                <select
+                  value={filters.industry}
+                  onChange={(e) => {
+                    setFilters(prev => ({ ...prev, industry: e.target.value }))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value="">Todas las industrias</option>
+                  {uniqueFilters.industries.map((industry) => (
+                    <option key={industry} value={industry}>
+                      {industry}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className={styles.filterGroup}>
-              <Filter size={20} />
-              <select 
-                value={filters.modalidad}
-                onChange={(e) => {
-                  setFilters(prev => ({ ...prev, modalidad: e.target.value }))
-                  setCurrentPage(1) // Reset to first page when changing filter
-                }}
+            
+            {/* Segunda fila de filtros */}
+            <div className={styles.filtersRow}>
+              <div className={styles.filterGroup}>
+                <select
+                  value={filters.compania}
+                  onChange={(e) => {
+                    setFilters(prev => ({ ...prev, compania: e.target.value }))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value="">Todas las empresas</option>
+                  {uniqueFilters.companies.map((company) => (
+                    <option key={company} value={company}>
+                      {company}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className={styles.filterGroup}>
+                <select
+                  value={filters.sector}
+                  onChange={(e) => {
+                    setFilters(prev => ({ ...prev, sector: e.target.value }))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value="">Todos los sectores</option>
+                  {uniqueFilters.sectors.map((sector) => (
+                    <option key={sector} value={sector}>
+                      {sector}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className={styles.filterGroup}>
+                <select
+                  value={filters.areaDesempeno}
+                  onChange={(e) => {
+                    setFilters(prev => ({ ...prev, areaDesempeno: e.target.value }))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <option value="">Todas las áreas</option>
+                  {uniqueFilters.areas.map((area) => (
+                    <option key={area} value={area}>
+                      {area}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            
+            {/* Tercera fila con botones */}
+            <div className={styles.actionsRow}>
+              <button 
+                className={styles.downloadBtn}
+                onClick={downloadFeedbacks}
+                title="Descargar todos los feedbacks"
               >
-                <option value="">Todas las modalidades</option>
-                <option value="Taller">Taller</option>
-                <option value="Curso">Curso</option>
-              </select>
-            </div>
-            <div className={styles.filterGroup}>
-              <select
-                value={filters.industry}
-                onChange={(e) => {
-                  setFilters(prev => ({ ...prev, industry: e.target.value }))
-                  setCurrentPage(1) // Reset to first page when changing filter
-                }}
+                <Download size={20} />
+                <span>Descargar Feedbacks</span>
+              </button>
+              
+              <button 
+                className={`${styles.reloadBtn} ${isRefreshing ? styles.spinning : ''}`}
+                onClick={handleReload}
+                disabled={isRefreshing}
               >
-                <option value="">Todas las industrias</option>
-                {industries.map((industry) => (
-                  <option key={industry} value={industry}>
-                    {industry}
-                  </option>
-                ))}
-              </select>
+                <RefreshCw size={20} />
+                {isRefreshing ? 'Actualizando...' : 'Actualizar'}
+              </button>
             </div>
-            <button 
-              className={`${styles.reloadBtn} ${isRefreshing ? styles.spinning : ''}`}
-              onClick={handleReload}
-              disabled={isRefreshing}
-            >
-              <RefreshCw size={20} />
-              {isRefreshing ? 'Actualizando...' : 'Actualizar'}
-            </button>
           </div>
+        
         </div>
 
         <div className={styles.usersList}>
@@ -360,6 +502,8 @@ const Users = () => {
                     <th>Empresa</th>
                     <th>Tipo</th>
                     <th>Industria</th>
+                    <th>Sector</th>
+                    <th>Área</th>
                     <th>Fecha</th>
                     <th>Resultado</th>
                     <th>Acciones</th>
@@ -391,7 +535,6 @@ const Users = () => {
                                 : user.name}
                             </p>
                             {user.email && <small>{user.email}</small>}
-
                           </div>
                         </div>
                       </td>
@@ -402,6 +545,8 @@ const Users = () => {
                         </span>
                       </td>
                       <td onClick={() => setSelectedUser(user)}>{user.industriaSector}</td>
+                      <td onClick={() => setSelectedUser(user)}>{user.sector}</td>
+                      <td onClick={() => setSelectedUser(user)}>{user.areaDesempeno}</td>
                       <td onClick={() => setSelectedUser(user)}>
                         {new Date(user.createdAt).toLocaleDateString('es-ES', {
                           day: '2-digit',
@@ -451,7 +596,6 @@ const Users = () => {
                         Math.abs(number - currentPage) <= 1
                       )
                       .map((number, index, array) => {
-                        // Add ellipsis if there are gaps
                         if (index > 0 && array[index - 1] !== number - 1) {
                           return (
                             <React.Fragment key={`ellipsis-${number}`}>
@@ -521,4 +665,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default Users  

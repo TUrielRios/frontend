@@ -6,6 +6,7 @@ import Sidebar from "../Sidebar/Sidebar"
 import Settings from "../../pages/Settings/Settings"
 import AccessCodes from "../../pages/AccessCodes/AccessCodes"
 import Help from "../../pages/Help/Help"
+import DashboardSOS from "../../pages/DashboardSOS/DashboardSOS"
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -15,6 +16,8 @@ const Admin = () => {
     switch (activeSection) {
       case "dashboard":
         return <AdminDashboard />
+      case "dashboardSOS":
+        return <DashboardSOS />
       case "accessCodes":
         return <AccessCodes />
       case "users":

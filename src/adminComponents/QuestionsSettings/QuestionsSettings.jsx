@@ -14,12 +14,13 @@ import consistenciaIcono from "../../assets/iconos-animados/compromiso-icono.gif
 
 const QuestionsSettings = () => {
   const [questions, setQuestions] = useState([])
+  const [originalQuestions, setOriginalQuestions] = useState([]) // Nuevo estado para mantener el orden original
   const [selectedQuestion, setSelectedQuestion] = useState(null)
   const [editedQuestion, setEditedQuestion] = useState({
     text: "",
     category: "",
     phase: "",
-    modalidad: "Curso" // Valor por defecto
+    modalidad: "Curso"
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -42,10 +43,12 @@ const QuestionsSettings = () => {
         }
         const data = await response.json()
         setQuestions(data)
+        setOriginalQuestions(data) // Guardar el orden original
 
         // Extract unique phases
         const uniquePhases = [...new Set(data.map((q) => q.phase))]
         setPhases(uniquePhases)
+        console.log(phases)
 
         // Set default selected phase if available
         if (uniquePhases.length > 0 && !selectedPhase) {
@@ -69,8 +72,7 @@ const QuestionsSettings = () => {
       text: question.text,
       category: question.category,
       phase: question.phase,
-      modalidad: question.modalidad // Añade esto
-
+      modalidad: question.modalidad
     })
     setError(null)
     setSuccess(null)
@@ -85,8 +87,7 @@ const QuestionsSettings = () => {
       text: "",
       category: "",
       phase: selectedPhase || "",
-      modalidad: "Curso" // Valor por defecto
-
+      modalidad: "Curso"
     })
     setError(null)
     setSuccess(null)
@@ -105,7 +106,6 @@ const QuestionsSettings = () => {
 
   // Guardar cambios en una pregunta
   const handleSaveQuestion = async () => {
-    // Validar campos
     if (!editedQuestion.text || !editedQuestion.category || !editedQuestion.phase) {
       setError("Todos los campos son obligatorios")
       return
@@ -122,15 +122,12 @@ const QuestionsSettings = () => {
         text: editedQuestion.text,
         category: editedQuestion.category,
         phase: editedQuestion.phase,
-        modalidad: editedQuestion.modalidad // Añade esto
-
+        modalidad: editedQuestion.modalidad
       }
 
       if (isCreating) {
-        // Crear nueva pregunta
         method = "POST"
       } else {
-        // Actualizar pregunta existente
         method = "PUT"
         url = `${url}/${selectedQuestion.id}`
       }
@@ -149,23 +146,29 @@ const QuestionsSettings = () => {
 
       const updatedQuestion = await response.json()
 
-      // Actualizar el estado local
+      // Actualizar el estado local manteniendo el orden original
       if (isCreating) {
+        // Para nuevas preguntas, agregar al final
         setQuestions([...questions, updatedQuestion])
+        setOriginalQuestions([...originalQuestions, updatedQuestion])
         setSelectedQuestion(updatedQuestion)
         setIsCreating(false)
       } else {
-        const updatedQuestions = questions.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
+        // Para preguntas editadas, mantener su posición original
+        const updatedQuestions = questions.map((q) => 
+          q.id === updatedQuestion.id ? updatedQuestion : q
+        )
+        const updatedOriginalQuestions = originalQuestions.map((q) =>
+          q.id === updatedQuestion.id ? updatedQuestion : q
+        )
+        
         setQuestions(updatedQuestions)
+        setOriginalQuestions(updatedOriginalQuestions)
         setSelectedQuestion(updatedQuestion)
       }
 
       setSuccess(`Pregunta ${isCreating ? "creada" : "actualizada"} correctamente`)
-
-      // Limpiar el mensaje de éxito después de 3 segundos
-      setTimeout(() => {
-        setSuccess(null)
-      }, 3000)
+      setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
       setError(`Error al ${isCreating ? "crear" : "actualizar"} la pregunta: ${err.message}`)
     } finally {
@@ -181,25 +184,25 @@ const QuestionsSettings = () => {
       setSaving(true)
       setError(null)
 
-      const response = await fetch(`https://lacocina-backend-deploy.vercel.app/preguntas/${selectedQuestion.id}`, {
-        method: "DELETE",
-      })
+      const response = await fetch(
+        `https://lacocina-backend-deploy.vercel.app/preguntas/${selectedQuestion.id}`,
+        { method: "DELETE" }
+      )
 
       if (!response.ok) {
         throw new Error("Error al eliminar la pregunta")
       }
 
-      // Actualizar el estado local
+      // Actualizar ambos estados para mantener consistencia
       const updatedQuestions = questions.filter((q) => q.id !== selectedQuestion.id)
+      const updatedOriginalQuestions = originalQuestions.filter((q) => q.id !== selectedQuestion.id)
+      
       setQuestions(updatedQuestions)
+      setOriginalQuestions(updatedOriginalQuestions)
       setSelectedQuestion(null)
       setDeleteConfirm(false)
       setSuccess("Pregunta eliminada correctamente")
-
-      // Limpiar el mensaje de éxito después de 3 segundos
-      setTimeout(() => {
-        setSuccess(null)
-      }, 3000)
+      setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
       setError("Error al eliminar la pregunta: " + err.message)
     } finally {
@@ -217,6 +220,7 @@ const QuestionsSettings = () => {
         text: selectedQuestion.text,
         category: selectedQuestion.category,
         phase: selectedQuestion.phase,
+        modalidad: selectedQuestion.modalidad
       })
     }
     setError(null)
@@ -224,49 +228,30 @@ const QuestionsSettings = () => {
     setDeleteConfirm(false)
   }
 
-  // Filtrar preguntas por término de búsqueda
-  const filteredQuestions = questions.filter(
-    (question) =>
-      question.modalidad === editedQuestion.modalidad && // Filtra por modalidad
+  // Filtrar preguntas manteniendo el orden original
+  const filteredQuestions = originalQuestions
+    .filter((question) => 
+      question.modalidad === editedQuestion.modalidad &&
       (selectedPhase ? question.phase === selectedPhase : true) &&
       (searchTerm
         ? question.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
           question.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
           question.phase.toLowerCase().includes(searchTerm.toLowerCase())
-        : true),
-  )
+        : true)
+    )
 
   // Mapeo de fases a iconos y nombres
   const phaseIcons = {
-    "VALIDACIÓN SOCIAL": {
-      icon: validacionSocialIcono,
-      name: "Validación Social",
-    },
-    ATRACTIVO: {
-      icon: atractivoIcono,
-      name: "Atractivo",
-    },
-    RECIPROCIDAD: {
-      icon: reciprocidadIcono,
-      name: "Reciprocidad",
-    },
-    AUTORIDAD: {
-      icon: autoridadIcono,
-      name: "Autoridad",
-    },
-    AUTENTICIDAD: {
-      icon: autenticidadIcono,
-      name: "Autenticidad",
-    },
-    "CONSISTENCIA Y COMPROMISO": {
-      icon: consistenciaIcono,
-      name: "Consistencia y Compromiso",
-    },
+    "VALIDACIÓN SOCIAL": { icon: validacionSocialIcono, name: "Validación Social" },
+    ATRACTIVO: { icon: atractivoIcono, name: "Atractivo" },
+    RECIPROCIDAD: { icon: reciprocidadIcono, name: "Reciprocidad" },
+    AUTORIDAD: { icon: autoridadIcono, name: "Autoridad" },
+    AUTENTICIDAD: { icon: autenticidadIcono, name: "Autenticidad" },
+    "CONSISTENCIA Y COMPROMISO": { icon: consistenciaIcono, name: "Consistencia y Compromiso" },
   }
 
   return (
     <div className={styles.settingsPage}>
-
       <div className={styles.content}>
         <div className={styles.centeredContainer}>
           <h1 className={styles.pageTitle}>Gestión de Preguntas</h1>
@@ -274,23 +259,23 @@ const QuestionsSettings = () => {
             Administra las preguntas que se muestran en la aplicación. Selecciona un factor para ver sus preguntas.
           </p>
 
-              {/* Selector de Modalidad */}
-    <div className={styles.modalitySelector}>
-      <div className={styles.modalityTabs}>
-        <button
-          className={`${styles.modalityTab} ${editedQuestion.modalidad === ' ' ? styles.activeModality : ''}`}
-          onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Curso' }))}
-        >
-          Curso
-        </button>
-        <button
-          className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Taller' ? styles.activeModality : ''}`}
-          onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Taller' }))}
-        >
-          Taller
-        </button>
-      </div>
-    </div>
+          {/* Selector de Modalidad */}
+          <div className={styles.modalitySelector}>
+            <div className={styles.modalityTabs}>
+              <button
+                className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Curso' ? styles.activeModality : ''}`}
+                onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Curso' }))}
+              >
+                Curso
+              </button>
+              <button
+                className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Taller' ? styles.activeModality : ''}`}
+                onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Taller' }))}
+              >
+                Taller
+              </button>
+            </div>
+          </div>
 
           <div className={styles.phaseTabs}>
             {Object.keys(phaseIcons).map((phase) => (
@@ -421,7 +406,7 @@ const QuestionsSettings = () => {
                     </div>
 
                     <div className={styles.formRow}>
-                          <div className={styles.formGroup}>
+                      <div className={styles.formGroup}>
                         <label htmlFor="phase">Factor</label>
                         <select
                           id="phase"
@@ -485,4 +470,3 @@ const QuestionsSettings = () => {
 }
 
 export default QuestionsSettings
-

@@ -1,4 +1,4 @@
-import { X, Mail, Building2, Briefcase, Calendar, Award, User, MessageSquare } from "lucide-react"
+import { X, Mail, Building2, Briefcase, Calendar, Award, User, MessageSquare, Building } from "lucide-react"
 import styles from "./UserModal.module.css"
 import AdminChart from "../../adminComponents/AdminChart/AdminChart"
 
@@ -68,6 +68,12 @@ const UserModal = ({ user, onClose }) => {
                 <div className={styles.detailItem}>
                   <User size={18} />
                   <span>{user.areaDesempeno}</span>
+                </div>
+                {/*SECTOR /*/}
+                <div className={styles.detailItem}>
+                  {/* emoji de lugar*/}
+                  <Building size={18} />
+                  <span>{user.sector || 'N/A'}</span>
                 </div>
                 <div className={styles.detailItem}>
                   <Calendar size={18} />

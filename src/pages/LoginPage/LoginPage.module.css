@@ -248,6 +248,55 @@
     font-size: 15px;
   }
 }
+/* Contenedor para el input con el botón de mostrar/ocultar */
+.passwordInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* El input ocupa todo el espacio excepto el botón */
+.passwordInputContainer .inputlarge {
+  padding-right: 50px; /* Espacio para el botón */
+  width: 100%;
+}
+
+/* Botón para mostrar/ocultar contraseña */
+.togglePasswordBtn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.togglePasswordBtn:hover {
+  color: #333;
+}
+
+.togglePasswordBtn:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .togglePasswordBtn {
+    color: #aaa;
+  }
+  
+  .togglePasswordBtn:hover {
+    color: #fff;
+  }
+}
 
 /* Small Mobile */
 @media (max-width: 480px) {

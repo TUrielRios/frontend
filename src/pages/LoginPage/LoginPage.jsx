@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import styles from "./LoginPage.module.css"
 import Header from "../../components/Header/Header"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Eye, EyeOff } from "lucide-react"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
 
@@ -14,10 +14,15 @@ const LoginPage = ({ title, onSuccess, tipo, redirectPath }) => {
   const [accessCode, setAccessCode] = useState("")
   const [error, setError] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
   const from = location.state?.from?.pathname || redirectPath
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -111,16 +116,26 @@ const LoginPage = ({ title, onSuccess, tipo, redirectPath }) => {
             <form className={styles.form} onSubmit={handleLogin}>
               <div className={styles.formGroup}>
                 <label htmlFor="accessCode">Código de acceso*</label>
-                <input
-                  id="accessCode"
-                  type="password"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
-                  placeholder="Ingresa tu código de acceso"
-                  className={styles.inputlarge}
-                  required
-                  aria-label="Código de acceso"
-                />
+                <div className={styles.passwordInputContainer}>
+                  <input
+                    id="accessCode"
+                    type={showPassword ? "text" : "password"}
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value)}
+                    placeholder="Ingresa tu código de acceso"
+                    className={styles.inputlarge}
+                    required
+                    aria-label="Código de acceso"
+                  />
+                  <button
+                    type="button"
+                    className={styles.togglePasswordBtn}
+                    onClick={togglePasswordVisibility}
+                    aria-label={showPassword ? "Ocultar código" : "Mostrar código"}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
 
               <button
