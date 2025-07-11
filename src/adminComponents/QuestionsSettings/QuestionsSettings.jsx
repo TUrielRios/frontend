@@ -1,5 +1,4 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import { Save, Edit, X, RefreshCw, Search, FileText, Plus, Trash2, AlertCircle } from "lucide-react"
 import styles from "./QuestionsSettings.module.css"
@@ -20,7 +19,7 @@ const QuestionsSettings = () => {
     text: "",
     category: "",
     phase: "",
-    modalidad: "Curso"
+    modalidad: "Curso",
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -44,24 +43,20 @@ const QuestionsSettings = () => {
         const data = await response.json()
         setQuestions(data)
         setOriginalQuestions(data) // Guardar el orden original
-
         // Extract unique phases
         const uniquePhases = [...new Set(data.map((q) => q.phase))]
         setPhases(uniquePhases)
         console.log(phases)
-
         // Set default selected phase if available
         if (uniquePhases.length > 0 && !selectedPhase) {
           setSelectedPhase(uniquePhases[0])
         }
-
         setLoading(false)
       } catch (err) {
         setError("Error al cargar las preguntas: " + err.message)
         setLoading(false)
       }
     }
-
     fetchQuestions()
   }, [])
 
@@ -72,7 +67,7 @@ const QuestionsSettings = () => {
       text: question.text,
       category: question.category,
       phase: question.phase,
-      modalidad: question.modalidad
+      modalidad: question.modalidad,
     })
     setError(null)
     setSuccess(null)
@@ -87,7 +82,7 @@ const QuestionsSettings = () => {
       text: "",
       category: "",
       phase: selectedPhase || "",
-      modalidad: "Curso"
+      modalidad: "Curso",
     })
     setError(null)
     setSuccess(null)
@@ -110,11 +105,9 @@ const QuestionsSettings = () => {
       setError("Todos los campos son obligatorios")
       return
     }
-
     try {
       setSaving(true)
       setError(null)
-
       let response
       let method
       let url = "https://lacocina-backend-deploy.vercel.app/preguntas"
@@ -122,16 +115,14 @@ const QuestionsSettings = () => {
         text: editedQuestion.text,
         category: editedQuestion.category,
         phase: editedQuestion.phase,
-        modalidad: editedQuestion.modalidad
+        modalidad: editedQuestion.modalidad,
       }
-
       if (isCreating) {
         method = "POST"
       } else {
         method = "PUT"
         url = `${url}/${selectedQuestion.id}`
       }
-
       response = await fetch(url, {
         method,
         headers: {
@@ -139,13 +130,10 @@ const QuestionsSettings = () => {
         },
         body: JSON.stringify(body),
       })
-
       if (!response.ok) {
         throw new Error(`Error al ${isCreating ? "crear" : "actualizar"} la pregunta`)
       }
-
       const updatedQuestion = await response.json()
-
       // Actualizar el estado local manteniendo el orden original
       if (isCreating) {
         // Para nuevas preguntas, agregar al final
@@ -155,18 +143,15 @@ const QuestionsSettings = () => {
         setIsCreating(false)
       } else {
         // Para preguntas editadas, mantener su posición original
-        const updatedQuestions = questions.map((q) => 
-          q.id === updatedQuestion.id ? updatedQuestion : q
-        )
+        const updatedQuestions = questions.map((q) => (q.id === updatedQuestion.id ? updatedQuestion : q))
         const updatedOriginalQuestions = originalQuestions.map((q) =>
-          q.id === updatedQuestion.id ? updatedQuestion : q
+          q.id === updatedQuestion.id ? updatedQuestion : q,
         )
-        
+
         setQuestions(updatedQuestions)
         setOriginalQuestions(updatedOriginalQuestions)
         setSelectedQuestion(updatedQuestion)
       }
-
       setSuccess(`Pregunta ${isCreating ? "creada" : "actualizada"} correctamente`)
       setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
@@ -179,24 +164,19 @@ const QuestionsSettings = () => {
   // Eliminar una pregunta
   const handleDeleteQuestion = async () => {
     if (!selectedQuestion) return
-
     try {
       setSaving(true)
       setError(null)
-
-      const response = await fetch(
-        `https://lacocina-backend-deploy.vercel.app/preguntas/${selectedQuestion.id}`,
-        { method: "DELETE" }
-      )
-
+      const response = await fetch(`https://lacocina-backend-deploy.vercel.app/preguntas/${selectedQuestion.id}`, {
+        method: "DELETE",
+      })
       if (!response.ok) {
         throw new Error("Error al eliminar la pregunta")
       }
-
       // Actualizar ambos estados para mantener consistencia
       const updatedQuestions = questions.filter((q) => q.id !== selectedQuestion.id)
       const updatedOriginalQuestions = originalQuestions.filter((q) => q.id !== selectedQuestion.id)
-      
+
       setQuestions(updatedQuestions)
       setOriginalQuestions(updatedOriginalQuestions)
       setSelectedQuestion(null)
@@ -220,7 +200,7 @@ const QuestionsSettings = () => {
         text: selectedQuestion.text,
         category: selectedQuestion.category,
         phase: selectedQuestion.phase,
-        modalidad: selectedQuestion.modalidad
+        modalidad: selectedQuestion.modalidad,
       })
     }
     setError(null)
@@ -229,16 +209,16 @@ const QuestionsSettings = () => {
   }
 
   // Filtrar preguntas manteniendo el orden original
-  const filteredQuestions = originalQuestions
-    .filter((question) => 
+  const filteredQuestions = originalQuestions.filter(
+    (question) =>
       question.modalidad === editedQuestion.modalidad &&
       (selectedPhase ? question.phase === selectedPhase : true) &&
       (searchTerm
         ? question.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
           question.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
           question.phase.toLowerCase().includes(searchTerm.toLowerCase())
-        : true)
-    )
+        : true),
+  )
 
   // Mapeo de fases a iconos y nombres
   const phaseIcons = {
@@ -258,25 +238,23 @@ const QuestionsSettings = () => {
           <p className={styles.pageDescription}>
             Administra las preguntas que se muestran en la aplicación. Selecciona un factor para ver sus preguntas.
           </p>
-
           {/* Selector de Modalidad */}
           <div className={styles.modalitySelector}>
             <div className={styles.modalityTabs}>
               <button
-                className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Curso' ? styles.activeModality : ''}`}
-                onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Curso' }))}
+                className={`${styles.modalityTab} ${editedQuestion.modalidad === "Curso" ? styles.activeModality : ""}`}
+                onClick={() => setEditedQuestion((prev) => ({ ...prev, modalidad: "Curso" }))}
               >
                 Curso
               </button>
               <button
-                className={`${styles.modalityTab} ${editedQuestion.modalidad === 'Taller' ? styles.activeModality : ''}`}
-                onClick={() => setEditedQuestion(prev => ({ ...prev, modalidad: 'Taller' }))}
+                className={`${styles.modalityTab} ${editedQuestion.modalidad === "Taller" ? styles.activeModality : ""}`}
+                onClick={() => setEditedQuestion((prev) => ({ ...prev, modalidad: "Taller" }))}
               >
                 Taller
               </button>
             </div>
           </div>
-
           <div className={styles.phaseTabs}>
             {Object.keys(phaseIcons).map((phase) => (
               <button
@@ -296,7 +274,6 @@ const QuestionsSettings = () => {
               </button>
             ))}
           </div>
-
           <div className={styles.questionEditorContainer}>
             <div className={styles.questionsList}>
               <div className={styles.listHeader}>
@@ -319,7 +296,6 @@ const QuestionsSettings = () => {
                   <Plus size={18} />
                 </button>
               </div>
-
               {loading ? (
                 <div className={styles.loadingContainer}>
                   <RefreshCw size={24} className={styles.loadingIcon} />
@@ -332,12 +308,13 @@ const QuestionsSettings = () => {
                   ) : (
                     <>
                       <div className={styles.questionCount}>Mostrando {filteredQuestions.length} preguntas</div>
-                      {filteredQuestions.map((question) => (
+                      {filteredQuestions.map((question, index) => (
                         <div
                           key={question.id}
                           className={`${styles.questionItem} ${selectedQuestion?.id === question.id ? styles.selected : ""}`}
                           onClick={() => handleSelectQuestion(question)}
                         >
+                          <div className={styles.questionNumber}>{index + 1}</div>
                           <FileText size={18} className={styles.questionIcon} />
                           <div className={styles.questionItemContent}>
                             <h3>{question.text}</h3>
@@ -352,12 +329,15 @@ const QuestionsSettings = () => {
                 </div>
               )}
             </div>
-
             <div className={styles.questionEditor}>
               {selectedQuestion || isCreating ? (
                 <>
                   <div className={styles.editorHeader}>
-                    <h2>{isCreating ? "Nueva Pregunta" : "Editar Pregunta"}</h2>
+                    <h2>
+                      {isCreating
+                        ? "Nueva Pregunta"
+                        : `Pregunta ${filteredQuestions.findIndex((q) => q.id === selectedQuestion?.id) + 1} - Editar`}
+                    </h2>
                     <div className={styles.editorActions}>
                       {!isCreating && (
                         <button
@@ -381,7 +361,6 @@ const QuestionsSettings = () => {
                       </button>
                     </div>
                   </div>
-
                   {error && <div className={styles.errorMessage}>{error}</div>}
                   {success && <div className={styles.successMessage}>{success}</div>}
                   {deleteConfirm && (
@@ -390,7 +369,6 @@ const QuestionsSettings = () => {
                       <span>¿Estás seguro de que deseas eliminar esta pregunta? Esta acción no se puede deshacer.</span>
                     </div>
                   )}
-
                   <div className={styles.editorContent}>
                     <div className={styles.formGroup}>
                       <label htmlFor="text">Pregunta</label>
@@ -404,7 +382,6 @@ const QuestionsSettings = () => {
                         rows={4}
                       />
                     </div>
-
                     <div className={styles.formRow}>
                       <div className={styles.formGroup}>
                         <label htmlFor="phase">Factor</label>
@@ -438,7 +415,6 @@ const QuestionsSettings = () => {
                       </div>
                     </div>
                   </div>
-
                   {!isCreating && selectedQuestion && (
                     <div className={styles.editorFooter}>
                       <div className={styles.questionInfo}>

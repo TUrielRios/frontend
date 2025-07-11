@@ -1,8 +1,7 @@
-
 .container {
   background-color: #0a2ff1;
   color: white;
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
   height: 100vh;
   overflow-y: hidden;
 }
@@ -16,7 +15,7 @@
   max-width: 90%;
   margin: 0 auto;
   height: 90%;
-  }
+}
 
 .content {
   display: flex;
@@ -48,9 +47,10 @@
   margin-bottom: 40px;
 }
 
-.footerFormContainer{
+.footerFormContainer {
   font-size: 12px;
 }
+
 .privacy {
   font-size: 14px;
   opacity: 0.8;
@@ -81,6 +81,32 @@
   background-color: #f5f5f5;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para botones desactivados */
+.formTypeButtonDisabled {
+  background-color: #cccccc !important;
+  color: #666666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+  box-shadow: none !important;
+}
+
+.formTypeButtonDisabled:hover {
+  background-color: #cccccc !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Estilo para el mensaje de carga de modalidades */
+.loadingModalidades {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  text-align: center;
 }
 
 /* Estilos para la columna derecha */
@@ -223,8 +249,7 @@
   align-items: center;
   position: relative;
   cursor: pointer;
-    color: #0A2FF1;
-
+  color: #0a2ff1;
 }
 
 /* Esconder el checkbox nativo pero mantenerlo accesible */
@@ -239,10 +264,10 @@
 
 /* Crear el cuadro exterior */
 .checkbox input[type="checkbox"] + span::before {
-  content: '';
+  content: "";
   width: 18px;
   height: 18px;
-  border: 1px solid #0A2FF1;
+  border: 1px solid #0a2ff1;
   display: inline-block;
   border-radius: 6px;
   margin-right: 8px;
@@ -253,19 +278,17 @@
 
 /* Estilo cuando está seleccionado */
 .checkbox input[type="checkbox"]:checked + span::before {
-  border-color: #0A2FF1;
+  border-color: #0a2ff1;
   background-color: white;
   box-shadow: inset 0 0 0 2px white;
-  background-color: #0A2FF1;
+  background-color: #0a2ff1;
 }
 
 /* Estilo para el enlace */
 .link {
-  color: #0A2FF1;
+  color: #0a2ff1;
   text-decoration: underline;
 }
-
-
 
 .submitButton {
   background-color: #0041ff;
@@ -369,7 +392,7 @@
     padding: 40px 0;
   }
 
-  .formTitle{
+  .formTitle {
     text-align: left;
   }
 
@@ -403,21 +426,20 @@
     font-size: 36px;
     padding-left: 10px;
   }
-  .footerFormContainer{
-  font-size: 12px;
-  padding-left: 10px;
-}
+
+  .footerFormContainer {
+    font-size: 12px;
+    padding-left: 10px;
+  }
 
   .subtitle {
     font-size: 20px;
-        padding-left: 10px;
-
+    padding-left: 10px;
   }
 
   .description {
     font-size: 16px;
-        padding-left: 10px;
-
+    padding-left: 10px;
   }
 
   .formTypeOptions {
@@ -425,13 +447,14 @@
     align-items: center;
     gap: 15px;
   }
+
   .formTypeButton {
-    font-size:12px
+    font-size: 12px;
   }
-  .content{
+
+  .content {
     text-align: left;
     margin-top: 0;
-
   }
 
   .container {
@@ -444,8 +467,6 @@
     border-radius: 15px;
   }
 
-
-  
   .nameFields {
     flex-direction: column;
     gap: 15px;
@@ -495,6 +516,7 @@
     font-size: 12px;
   }
 }
+
 /* Media Query para pantallas grandes (TV, monitores grandes) */
 @media (min-width: 1920px) {
   .container {
@@ -547,7 +569,7 @@
     padding: 40px;
     border-radius: 30px;
     max-height: 700px;
-    max-width: 800px ;
+    max-width: 800px;
   }
 
   .form {
@@ -559,13 +581,13 @@
     font-size: 46px;
     margin-bottom: 15px;
   }
-  .nameFields{
+
+  .nameFields {
     flex-direction: column;
   }
 
   .formGroup {
     gap: 12px;
-
   }
 
   .formGroup label {
@@ -642,5 +664,10 @@
 
   .form::-webkit-scrollbar {
     width: 12px;
+  }
+
+  .loadingModalidades {
+    font-size: 28px;
+    padding: 18px 30px;
   }
 }

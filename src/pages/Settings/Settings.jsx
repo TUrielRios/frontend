@@ -6,6 +6,7 @@ import styles from "./Settings.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 import QuestionsSettings from "../../adminComponents/QuestionsSettings/QuestionsSettings"
 import DropdownEditor from "../../adminComponents/DropdownEditor/DropdownEditor"
+import ModalidadesSettings from "../../adminComponents/ModalidadesSettings/ModalidadesSettings"
 
 const Settings = () => {
   const [texts, setTexts] = useState([])
@@ -188,6 +189,7 @@ const Settings = () => {
   return (
     <div className={styles.settingsPage}>
       <AdminHeader username="Administrador" />
+      <ModalidadesSettings />
       <QuestionsSettings />
       <div className={styles.content}>
         <h1 className={styles.pageTitle}>Configuración de Textos</h1>

@@ -1,11 +1,10 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import styles from "./Form.module.css"
 import { useNavigate } from "react-router-dom"
 import gif from "../../assets/diamante-animacion-dos.gif"
 import Header from "../../components/Header/Header"
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown } from "lucide-react"
 import textos from "../../constants/constants"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
@@ -15,7 +14,6 @@ const Form = () => {
   const navigate = useNavigate()
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
-
   const [formType, setFormType] = useState(null) // null, 'taller', or 'curso'
   const [formData, setFormData] = useState({
     // Campos comunes
@@ -37,6 +35,10 @@ const Form = () => {
   const [error, setError] = useState(null)
   const [descripcionTexto, setDescripcionTexto] = useState(textos.parrafo_formulario)
   const [loading, setLoading] = useState(false)
+
+  // Estado para las modalidades dinámicas
+  const [modalidades, setModalidades] = useState([])
+  const [loadingModalidades, setLoadingModalidades] = useState(true)
 
   // Estado para almacenar los labels dinámicos y su visibilidad
   const [labels, setLabels] = useState({
@@ -67,18 +69,38 @@ const Form = () => {
     cargo: false,
   })
 
+  // Función para cargar las modalidades desde la API
+  const cargarModalidades = async () => {
+    setLoadingModalidades(true)
+    try {
+      const response = await fetch("https://lacocina-backend-deploy.vercel.app/modalidades")
+      if (!response.ok) {
+        throw new Error(`Error al cargar las modalidades: ${response.status}`)
+      }
+      const data = await response.json()
+      console.log("Modalidades cargadas:", data)
+      setModalidades(data)
+    } catch (err) {
+      console.error("Error al cargar las modalidades:", err)
+      // Fallback a modalidades por defecto en caso de error (cambiar 'activo' por 'habilitado')
+      setModalidades([
+        { nombre: "Curso", habilitado: true },
+        { nombre: "Taller", habilitado: true },
+      ])
+    } finally {
+      setLoadingModalidades(false)
+    }
+  }
+
   // Función para cargar los labels dinámicos desde la API
   const cargarLabels = async () => {
     setLoadingLabels(true)
     try {
       const response = await fetch("https://lacocina-backend-deploy.vercel.app/textos")
-
       if (!response.ok) {
         throw new Error(`Error al cargar los labels: ${response.status}`)
       }
-
       const data = await response.json()
-
       // Crear un objeto con los labels y su visibilidad basado en las keys
       const labelsMap = {}
       data.forEach((item) => {
@@ -97,7 +119,6 @@ const Form = () => {
             break
         }
       })
-
       // Actualizar el estado con los nuevos labels, manteniendo los defaults si no se encuentran
       setLabels((prevLabels) => ({
         ...prevLabels,
@@ -125,19 +146,14 @@ const Form = () => {
     // Para cada categoría, inicializamos la carga y hacemos la petición
     for (const [category, url] of Object.entries(endpoints)) {
       setLoadingDropdowns((prev) => ({ ...prev, [category]: true }))
-
       try {
         const response = await fetch(url)
-
         if (!response.ok) {
           throw new Error(`Error al cargar opciones de ${category}: ${response.status}`)
         }
-
         const data = await response.json()
-
         // Ordenamos las opciones según el campo "orden"
         const sortedOptions = data.sort((a, b) => a.orden - b.orden).map((item) => item.valor)
-
         setDropdownOptions((prev) => ({
           ...prev,
           [category]: sortedOptions,
@@ -153,20 +169,16 @@ const Form = () => {
   // Función para cargar el texto según el tipo de formulario
   const cargarTexto = async (tipo) => {
     if (!tipo) return
-
     setLoading(true)
     try {
       const endpoint =
         tipo === "taller"
           ? "https://lacocina-backend-deploy.vercel.app/textos/texto_taller"
           : "https://lacocina-backend-deploy.vercel.app/textos/texto_curso"
-
       const response = await fetch(endpoint)
-
       if (!response.ok) {
         throw new Error(`Error al cargar el texto: ${response.status}`)
       }
-
       const data = await response.json()
       setDescripcionTexto(data.value)
     } catch (err) {
@@ -177,10 +189,11 @@ const Form = () => {
     }
   }
 
-  // Cargar los labels y las opciones de los dropdowns al montar el componente
+  // Cargar los labels, las opciones de los dropdowns y las modalidades al montar el componente
   useEffect(() => {
     cargarLabels()
     cargarOpcionesDropdown()
+    cargarModalidades()
   }, [])
 
   // Efecto para cargar el texto cuando cambia el tipo de formulario
@@ -213,12 +226,9 @@ const Form = () => {
 
   const handleNavigate = async (e) => {
     e.preventDefault()
-
     if (!termsAccepted) return
-
     setIsSubmitting(true)
     setError(null)
-
     try {
       // Preparar los datos según el tipo de formulario
       const userData = {
@@ -296,10 +306,16 @@ const Form = () => {
   }
 
   const handleFormTypeSelect = (type) => {
-    setFormType(type)
-    // Guardar la modalidad seleccionada
-    const modalidad = type === "taller" ? "Taller" : "Curso"
-    localStorage.setItem("selectedModalidad", modalidad)
+    // Buscar la modalidad en el array para verificar si está habilitada
+    const modalidad = modalidades.find((m) => m.nombre.toLowerCase() === type.toLowerCase())
+
+    // Solo permitir la selección si la modalidad está habilitada (cambiar 'activo' por 'habilitado')
+    if (modalidad && modalidad.habilitado) {
+      setFormType(type)
+      // Guardar la modalidad seleccionada
+      const modalidadNombre = type === "taller" ? "Taller" : "Curso"
+      localStorage.setItem("selectedModalidad", modalidadNombre)
+    }
   }
 
   const handleBackToSelection = () => {
@@ -384,12 +400,43 @@ const Form = () => {
     ) : null
   }
 
+  // Función para renderizar los botones de modalidades dinámicamente
+  const renderModalidadButtons = () => {
+    if (loadingModalidades) {
+      return (
+        <div className={styles.formTypeOptions}>
+          <div className={styles.loadingModalidades}>Cargando modalidades...</div>
+        </div>
+      )
+    }
+
+    return (
+      <div className={styles.formTypeOptions}>
+        {modalidades.map((modalidad, index) => {
+          const isActive = modalidad.habilitado // Cambiar 'activo' por 'habilitado'
+          const buttonType = modalidad.nombre.toLowerCase()
+
+          return (
+            <button
+              key={index}
+              className={`${styles.formTypeButton} ${!isActive ? styles.formTypeButtonDisabled : ""}`}
+              onClick={() => handleFormTypeSelect(buttonType)}
+              disabled={!isActive}
+              title={!isActive ? `${modalidad.nombre} no disponible` : `Seleccionar ${modalidad.nombre}`}
+            >
+              {modalidad.nombre.toUpperCase()}
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+
   // Formulario para TALLER
   const renderTallerForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
         <h2 className={styles.formTitle}>Preguntas Clasificatorias</h2>
-
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         {!labels.compania.isHidden && (
@@ -510,7 +557,6 @@ const Form = () => {
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
         </button>
-
         <p className={styles.timeEstimate}>Solo tomará 10 minutos</p>
       </form>
     )
@@ -521,7 +567,6 @@ const Form = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
         <h2 className={styles.formTitle}>Preguntas Clasificatorias</h2>
-
         {error && <div className={styles.errorMessage}>{error}</div>}
 
         <div className={styles.formGroup}>
@@ -725,7 +770,6 @@ const Form = () => {
         <button type="submit" className={styles.submitButton} disabled={!termsAccepted || isSubmitting}>
           {isSubmitting ? "Enviando..." : "Comenzar el cuestionario"}
         </button>
-
         <p className={styles.timeEstimate}>Solo tomará 10 minutos</p>
       </form>
     )
@@ -734,7 +778,6 @@ const Form = () => {
   return (
     <div className={styles.container}>
       <Header logoDark={logoDark} logoLight={logoLight} />
-
       <main className={styles.main}>
         {/* Columna izquierda con el contenido y botones */}
         <div className={styles.content}>
@@ -750,16 +793,7 @@ const Form = () => {
           </p>
 
           {/* Botones de selección debajo del texto */}
-          {formType === null && (
-            <div className={styles.formTypeOptions}>
-              <button className={styles.formTypeButton} onClick={() => handleFormTypeSelect("taller")}>
-                TALLER
-              </button>
-              <button className={styles.formTypeButton} onClick={() => handleFormTypeSelect("curso")}>
-                CURSO
-              </button>
-            </div>
-          )}
+          {formType === null && renderModalidadButtons()}
         </div>
 
         {/* Columna derecha con el GIF o el formulario */}

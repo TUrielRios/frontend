@@ -1,10 +1,10 @@
 "use client"
-
 import { useState, useEffect } from "react"
 import styles from "./Questionnaire.module.css"
-import { ThumbsUp , X } from "lucide-react"
+import { ThumbsUp, X } from "lucide-react"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
+
 // Componentes
 import Header from "../../components/Header/Header"
 import IntroPhase from "../../components/IntroPhase/IntroPhase"
@@ -24,37 +24,135 @@ const Questionnaire = () => {
   const [error, setError] = useState(null)
   const [showIntro, setShowIntro] = useState(true)
   const [phaseScores, setPhaseScores] = useState({})
-  const [displayedPhaseScores, setDisplayedPhaseScores] = useState({}) // New state for displayed scores
+  const [displayedPhaseScores, setDisplayedPhaseScores] = useState({})
   const [selectedOption, setSelectedOption] = useState(null)
   const [isCompleted, setIsCompleted] = useState(false)
   const [completedPhases, setCompletedPhases] = useState([])
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
   const [startedPhases, setStartedPhases] = useState([])
   const [theme, setTheme] = useState("dark")
   const [showChartMobile, setShowChartMobile] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [previousAnswers, setPreviousAnswers] = useState({}) // Store previous answers
-
+  const [previousAnswers, setPreviousAnswers] = useState({})
   const [userId, setUserId] = useState(null)
   const [selectedModalidad, setSelectedModalidad] = useState(() => {
-    // Obtener la modalidad seleccionada del localStorage
     return localStorage.getItem("selectedModalidad") || "Curso"
   })
+
+  // Nuevos estados para manejo de progreso
+  const [progressLoaded, setProgressLoaded] = useState(false)
+  const [userValidated, setUserValidated] = useState(false)
+
+  // Función para guardar el progreso en localStorage
+  const saveProgress = () => {
+    if (!userId) return
+
+    const progressData = {
+      userId,
+      selectedModalidad,
+      currentPhase,
+      currentStep,
+      showIntro,
+      phaseScores,
+      displayedPhaseScores,
+      previousAnswers,
+      completedPhases,
+      startedPhases,
+      isCompleted,
+      feedbackSubmitted,
+      timestamp: new Date().toISOString(),
+    }
+
+    try {
+      localStorage.setItem("questionnaireProgress", JSON.stringify(progressData))
+      console.log("Progreso guardado:", progressData)
+    } catch (error) {
+      console.error("Error al guardar progreso:", error)
+    }
+  }
+
+  // Función para cargar el progreso desde localStorage
+  const loadProgress = async () => {
+    try {
+      const savedProgress = localStorage.getItem("questionnaireProgress")
+      if (!savedProgress) {
+        console.log("No hay progreso guardado")
+        return false
+      }
+
+      const progressData = JSON.parse(savedProgress)
+      console.log("Progreso encontrado:", progressData)
+
+      // Verificar que el progreso no sea muy antiguo (más de 7 días)
+      const savedTime = new Date(progressData.timestamp)
+      const currentTime = new Date()
+      const daysDifference = (currentTime - savedTime) / (1000 * 60 * 60 * 24)
+
+      if (daysDifference > 7) {
+        console.log("Progreso muy antiguo, eliminando...")
+        localStorage.removeItem("questionnaireProgress")
+        return false
+      }
+
+      // Verificar que el usuario existe en el backend
+      const userExists = await validateUser(progressData.userId)
+      if (!userExists) {
+        console.log("Usuario no válido, eliminando progreso...")
+        localStorage.removeItem("questionnaireProgress")
+        return false
+      }
+
+      // Restaurar el estado
+      setUserId(progressData.userId)
+      setSelectedModalidad(progressData.selectedModalidad)
+      setCurrentPhase(progressData.currentPhase)
+      setCurrentStep(progressData.currentStep)
+      setShowIntro(progressData.showIntro)
+      setPhaseScores(progressData.phaseScores || {})
+      setDisplayedPhaseScores(progressData.displayedPhaseScores || {})
+      setPreviousAnswers(progressData.previousAnswers || {})
+      setCompletedPhases(progressData.completedPhases || [])
+      setStartedPhases(progressData.startedPhases || [])
+      setIsCompleted(progressData.isCompleted || false)
+      setFeedbackSubmitted(progressData.feedbackSubmitted || false)
+
+      // Restaurar la respuesta seleccionada actual si existe
+      const currentAnswer = progressData.previousAnswers?.[`${progressData.currentPhase}_${progressData.currentStep}`]
+      setSelectedOption(currentAnswer || null)
+
+      console.log("Progreso restaurado exitosamente")
+      return true
+    } catch (error) {
+      console.error("Error al cargar progreso:", error)
+      localStorage.removeItem("questionnaireProgress")
+      return false
+    }
+  }
+
+  // Función para validar que el usuario existe en el backend
+  const validateUser = async (userIdToValidate) => {
+    try {
+      const response = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userIdToValidate}`)
+      return response.ok
+    } catch (error) {
+      console.error("Error al validar usuario:", error)
+      return false
+    }
+  }
+
+  // Función para limpiar el progreso guardado
+  const clearProgress = () => {
+    localStorage.removeItem("questionnaireProgress")
+    console.log("Progreso eliminado")
+  }
 
   // Detectar si es dispositivo móvil
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-
-    // Verificar al cargar
     checkIfMobile()
-
-    // Agregar listener para cambios de tamaño
     window.addEventListener("resize", checkIfMobile)
-
-    // Limpiar listener
     return () => window.removeEventListener("resize", checkIfMobile)
   }, [])
 
@@ -63,19 +161,51 @@ const Questionnaire = () => {
     setTheme(showIntro ? "light" : "dark")
   }, [showIntro])
 
-  // Cargar el ID del usuario desde localStorage
-useEffect(() => {
-  const storedUserId = localStorage.getItem("userId");
-  if (!storedUserId) {
-    console.error("No se encontró userId en localStorage");
-    // Puedes redirigir o manejar este caso según tu flujo
-  } else {
-    setUserId(storedUserId);
-  }
-}, []);
+  // Cargar el ID del usuario y progreso al inicializar
+  useEffect(() => {
+    const initializeUser = async () => {
+      try {
+        // Intentar cargar progreso guardado primero
+        const progressLoaded = await loadProgress()
+
+        if (!progressLoaded) {
+          // Si no hay progreso, obtener userId del localStorage
+          const storedUserId = localStorage.getItem("userId")
+          if (!storedUserId) {
+            setError("No se encontró información de usuario. Por favor, completa el formulario inicial.")
+            setLoading(false)
+            return
+          }
+
+          // Validar que el usuario existe
+          const userExists = await validateUser(storedUserId)
+          if (!userExists) {
+            setError("Usuario no válido. Por favor, completa el formulario inicial nuevamente.")
+            localStorage.removeItem("userId")
+            localStorage.removeItem("selectedModalidad")
+            setLoading(false)
+            return
+          }
+
+          setUserId(storedUserId)
+        }
+
+        setUserValidated(true)
+        setProgressLoaded(true)
+      } catch (error) {
+        console.error("Error al inicializar usuario:", error)
+        setError("Error al cargar la información del usuario.")
+        setLoading(false)
+      }
+    }
+
+    initializeUser()
+  }, [])
 
   // Cargar preguntas
   useEffect(() => {
+    if (!userValidated || !progressLoaded) return
+
     const fetchQuestions = async () => {
       try {
         const response = await fetch("https://lacocina-backend-deploy.vercel.app/preguntas")
@@ -83,7 +213,6 @@ useEffect(() => {
           throw new Error("Error al obtener las preguntas")
         }
         const data = await response.json()
-
         if (!Array.isArray(data) || !data.every((q) => q.phase && q.text)) {
           throw new Error("Estructura de datos inválida")
         }
@@ -125,7 +254,11 @@ useEffect(() => {
 
         setQuestions(orderedQuestions)
         setPhases(phaseOrder)
-        setCurrentPhase(phaseOrder[0] || null)
+
+        // Solo establecer la fase inicial si no hay progreso cargado
+        if (!currentPhase) {
+          setCurrentPhase(phaseOrder[0] || null)
+        }
       } catch (err) {
         setError(err.message)
       } finally {
@@ -134,7 +267,28 @@ useEffect(() => {
     }
 
     fetchQuestions()
-  }, [selectedModalidad])
+  }, [selectedModalidad, userValidated, progressLoaded, currentPhase])
+
+  // Guardar progreso automáticamente cuando cambian los estados importantes
+  useEffect(() => {
+    if (userId && progressLoaded && !loading) {
+      saveProgress()
+    }
+  }, [
+    userId,
+    currentPhase,
+    currentStep,
+    showIntro,
+    phaseScores,
+    displayedPhaseScores,
+    previousAnswers,
+    completedPhases,
+    startedPhases,
+    isCompleted,
+    feedbackSubmitted,
+    progressLoaded,
+    loading,
+  ])
 
   // Función para actualizar el puntaje de una fase en el backend
   const updatePhaseScore = async (phase, score) => {
@@ -227,7 +381,6 @@ useEffect(() => {
     if (currentStep > 0) {
       // Go back to the previous question in the same phase
       setCurrentStep(currentStep - 1)
-
       // Restore the previous answer if it exists
       const previousAnswer = previousAnswers[`${currentPhase}_${currentStep - 1}`]
       setSelectedOption(previousAnswer || null)
@@ -235,58 +388,59 @@ useEffect(() => {
   }
 
   // Función para manejar el envío de feedback
-const handleFeedbackSubmit = async (feedbackMessage) => {
-  try {
-    // 1. Verificar que tenemos userId y feedback
-    if (!userId) {
-      console.error("No se encontró ID de usuario para enviar feedback");
-      throw new Error("No se pudo identificar tu usuario. Por favor recarga la página.");
+  const handleFeedbackSubmit = async (feedbackMessage) => {
+    try {
+      // 1. Verificar que tenemos userId y feedback
+      if (!userId) {
+        console.error("No se encontró ID de usuario para enviar feedback")
+        throw new Error("No se pudo identificar tu usuario. Por favor recarga la página.")
+      }
+      if (!feedbackMessage.trim()) {
+        throw new Error("El mensaje de feedback no puede estar vacío")
+      }
+
+      // 2. Obtener el usuario actual primero para verificar que existe
+      const userResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`)
+
+      if (!userResponse.ok) {
+        const errorData = await userResponse.json()
+        throw new Error(errorData.error || "Usuario no encontrado")
+      }
+
+      const userData = await userResponse.json()
+
+      // 3. Actualizar solo el campo mensajeFeedback
+      const updateResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mensajeFeedback: feedbackMessage,
+        }),
+      })
+
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json()
+        throw new Error(errorData.error || "Error al actualizar el feedback")
+      }
+
+      // 4. Manejar éxito
+      setFeedbackSubmitted(true)
+
+      // 5. Limpiar progreso guardado ya que el cuestionario está completado
+      clearProgress()
+
+      return { success: true }
+    } catch (err) {
+      console.error("Error al enviar feedback:", err)
+
+      // Mostrar alerta al usuario (puedes personalizar esto)
+      alert(`Error al enviar feedback: ${err.message}`)
+
+      return { success: false, error: err.message }
     }
-
-    if (!feedbackMessage.trim()) {
-      throw new Error("El mensaje de feedback no puede estar vacío");
-    }
-
-    // 2. Obtener el usuario actual primero para verificar que existe
-    const userResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`);
-    
-    if (!userResponse.ok) {
-      const errorData = await userResponse.json();
-      throw new Error(errorData.error || "Usuario no encontrado");
-    }
-
-    const userData = await userResponse.json();
-
-    // 3. Actualizar solo el campo mensajeFeedback
-    const updateResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        mensajeFeedback: feedbackMessage
-      }),
-    });
-
-    if (!updateResponse.ok) {
-      const errorData = await updateResponse.json();
-      throw new Error(errorData.error || "Error al actualizar el feedback");
-    }
-
-    // 4. Manejar éxito
-    setFeedbackSubmitted(true);
-    return { success: true };
-
-  } catch (err) {
-    console.error("Error al enviar feedback:", err);
-    
-    // Mostrar alerta al usuario (puedes personalizar esto)
-    alert(`Error al enviar feedback: ${err.message}`);
-    
-    return { success: false, error: err.message };
   }
-};
-
 
   const handleNext = () => {
     setSelectedOption(null)
@@ -301,7 +455,6 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
     } else if (currentStep < phaseQuestions.length - 1) {
       // Not the last question of the phase, just move to the next question
       setCurrentStep((prev) => prev + 1)
-
       // Set the selected option to the previously saved answer if it exists
       const nextAnswer = previousAnswers[`${currentPhase}_${currentStep + 1}`]
       setSelectedOption(nextAnswer || null)
@@ -310,11 +463,9 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
       // Calculate the average score for the current phase
       const currentScores = phaseScores[currentPhase] || []
       const validScores = currentScores.filter((score) => score !== undefined)
-
       if (validScores.length > 0) {
         const averageScore = validScores.reduce((sum, score) => sum + score, 0) / validScores.length
         const roundedAverage = Math.round(averageScore * 10) / 10 // Redondear a 1 decimal
-
         console.log(`Fase ${currentPhase} completada. Puntaje promedio: ${roundedAverage}`)
 
         // Update the backend score
@@ -358,9 +509,26 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
     console.log("Descargando resultados...")
   }
 
+  // Función para reiniciar el cuestionario (útil para testing)
+  const handleRestart = () => {
+    if (window.confirm("¿Estás seguro de que quieres reiniciar el cuestionario? Se perderá todo el progreso.")) {
+      clearProgress()
+      window.location.reload()
+    }
+  }
+
   // Renderizado condicional para estados de carga y error
-  if (loading) return <p className={styles.loading}>Cargando preguntas...</p>
-  if (error) return <p className={styles.error}>Error: {error}</p>
+  if (loading) return <p className={styles.loading}>Cargando cuestionario...</p>
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <p className={styles.error}>Error: {error}</p>
+        <button onClick={() => (window.location.href = "/")} className={styles.backToFormButton}>
+          Volver al formulario inicial
+        </button>
+      </div>
+    )
+  }
 
   // Preparar datos para el componente actual
   const phaseQuestions = questions[currentPhase] || []
@@ -389,6 +557,29 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
   return (
     <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>
       <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
+
+      {/* Botón de reinicio para desarrollo/testing */}
+      {/* {process.env.NODE_ENV === "development" && (
+        <button
+          onClick={handleRestart}
+          className={styles.restartButton}
+          style={{
+            position: "fixed",
+            top: "10px",
+            right: "10px",
+            zIndex: 1000,
+            background: "#ff4444",
+            color: "white",
+            border: "none",
+            padding: "8px 12px",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          Reiniciar
+        </button>
+      )} */}
+
       <main className={styles.container}>
         {showIntro ? (
           <IntroPhase
@@ -410,9 +601,8 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
                 selectedOption={selectedOption}
                 onSelect={handleAnswer}
                 onNext={handleNext}
-                onPrevious={handlePrevious} // Pass the new handler
+                onPrevious={handlePrevious}
               />
-
               {/* Para tamaños desktop, mostrar el sidebar normalmente */}
               {!isMobile && (
                 <aside className={styles.sidebar}>
@@ -435,7 +625,7 @@ const handleFeedbackSubmit = async (feedbackMessage) => {
             {/* Botón para mostrar/ocultar el gráfico en móvil */}
             {isMobile && (
               <button className={styles.toggleChartButton} onClick={handleToggleChart} aria-label="Ver gráfico">
-                <img src={iconoDiamente} alt="" srcset="" />
+                <img src={iconoDiamente || "/placeholder.svg"} alt="" srcSet="" />
               </button>
             )}
 
