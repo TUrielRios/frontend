@@ -1,10 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
-
 .dashboard {
   padding: 2rem;
   font-family: "Red Hat Display", sans-serif;
 }
-
 .content {
   max-width: 90%;
   margin: 0 auto;
@@ -13,7 +11,6 @@
   gap: 2rem;
   padding: 2rem;
 }
-
 /* Estados de carga y error */
 .loading,
 .error,
@@ -25,11 +22,9 @@
   font-size: 1.125rem;
   color: #666;
 }
-
 .error {
   color: #f44336;
 }
-
 /* Period Selector */
 .periodSelector {
   display: flex;
@@ -37,12 +32,10 @@
   gap: 1rem;
   color: #666;
 }
-
 .periodOptions {
   display: flex;
   gap: 0.5rem;
 }
-
 .periodButton {
   background: white;
   border: 1px solid #e0e0ff;
@@ -53,62 +46,52 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .periodButton.active {
   background: #0a2ff1;
   color: white;
   border-color: #0a2ff1;
 }
-
 /* Metrics Section */
 .metricsSection {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
-
 .metricCard {
   background: white;
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
 }
-
 .metricContent {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
-
 .metricInfo {
   display: flex;
   flex-direction: column;
 }
-
 .metricTitle {
   color: #666;
   font-size: 0.875rem;
   font-weight: 400;
   margin: 0 0 0.5rem 0;
 }
-
 .metricValue {
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
 }
-
 .value {
   font-size: 2rem;
   font-weight: 600;
   color: #0a2ff1;
 }
-
 .percentage {
   font-size: 0.875rem;
   font-weight: 500;
 }
-
 .metricIcon {
   background: rgba(10, 47, 241, 0.1);
   padding: 0.75rem;
@@ -117,14 +100,12 @@
   align-items: center;
   justify-content: center;
 }
-
 /* Dashboard Sections */
 .dashboardSection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 .sectionTitle {
   color: #0a2ff1;
   font-size: 1.25rem;
@@ -133,31 +114,26 @@
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(10, 47, 241, 0.1);
 }
-
 .workshopDate {
   font-size: 0.875rem;
   font-weight: normal;
   color: #666;
   margin-left: 1rem;
 }
-
 .resultsSection {
   margin-bottom: 2rem;
 }
-
 .subsectionTitle {
   font-size: 1.25rem;
   margin-bottom: 1rem;
   color: #333;
 }
-
 /* Chart Grid & Cards */
 .chartsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 1.5rem;
 }
-
 .chartCard {
   background: white;
   border-radius: 10px;
@@ -165,28 +141,24 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 70;
-
+  height: auto; /* Changed from 70 to auto, as 70 is not a valid height unit */
+  min-height: 400px; /* Ensure minimum height for chart visibility */
 }
-
 .chartHeader {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid rgba(10, 47, 241, 0.1);
 }
-
 .chartTitle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: #0a2ff1;
 }
-
 .chartTitle h3 {
   margin: 0;
   font-size: 1rem;
   font-weight: 500;
 }
-
 .chartBody {
   padding: 1.5rem;
   height: 500px;
@@ -194,7 +166,6 @@
   justify-content: center;
   align-items: center;
 }
-
 .chartFooter {
   padding: 1rem 1.5rem;
   display: flex;
@@ -202,17 +173,15 @@
   gap: 1rem;
   border-top: 1px solid rgba(10, 47, 241, 0.1);
 }
-
 .chartContainer {
   width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%; /* Changed from 100vh to 100% to fit within chartBody */
   scale: 1.3;
 }
-
 /* Button Styles */
 .downloadButton {
   background: #0a2ff1;
@@ -227,13 +196,11 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .downloadButton:hover {
   background: #0926c9;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(10, 47, 241, 0.2);
 }
-
 .previewButton {
   background: white;
   color: #0a2ff1;
@@ -247,13 +214,11 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .previewButton:hover {
   background: rgba(10, 47, 241, 0.1);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(10, 47, 241, 0.1);
 }
-
 .closeModalButton {
   background: transparent;
   color: #666;
@@ -264,12 +229,10 @@
   cursor: pointer;
   transition: all 0.2s;
 }
-
 .closeModalButton:hover {
   background: #f0f0ff;
   color: #0a2ff1;
 }
-
 /* Accordion Styles */
 .accordionContainer {
   margin-top: 1rem;
@@ -277,15 +240,12 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
 .accordionItem {
   border-bottom: 1px solid #eaeaea;
 }
-
 .accordionItem:last-child {
   border-bottom: none;
 }
-
 .accordionHeader {
   display: flex;
   align-items: center;
@@ -295,33 +255,27 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
 .accordionHeader:hover {
   background-color: #f0f0f0;
 }
-
 .accordionHeader.active {
   background-color: #e6f7ff;
   border-left: 3px solid #0a2ff1;
 }
-
 .accordionTitle {
   font-size: 1rem;
   font-weight: 500;
   margin: 0;
 }
-
 .accordionDate {
   font-size: 0.875rem;
   color: #666;
   margin-right: 1rem;
 }
-
 .accordionContent {
   padding: 1rem;
   background-color: #fff;
 }
-
 /* Modal Preview Styles */
 .modalOverlay {
   position: fixed;
@@ -335,7 +289,6 @@
   justify-content: center;
   z-index: 1000;
 }
-
 .modal {
   background: white;
   border-radius: 16px;
@@ -344,7 +297,6 @@
   overflow: hidden;
   position: relative;
 }
-
 .closeButton {
   position: absolute;
   top: 1rem;
@@ -358,17 +310,14 @@
   z-index: 10;
   transition: all 0.2s;
 }
-
 .closeButton:hover {
   background: #f0f0ff;
   color: #0a2ff1;
 }
-
 .modalContent {
   display: flex;
   height: 90vh;
 }
-
 /* Sidebar Styles */
 .sidebar {
   width: 320px;
@@ -379,19 +328,16 @@
   gap: 2rem;
   overflow-y: auto;
 }
-
 .previewHeader {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
-
 .titleIcon {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
 .chartIcon {
   width: 64px;
   height: 64px;
@@ -403,91 +349,76 @@
   font-size: 1.5rem;
   font-weight: 600;
 }
-
 .titleInfo h2 {
   margin: 0;
   font-size: 1.25rem;
   color: #0a2ff1;
 }
-
 .subtitle {
   color: #666;
   font-size: 0.875rem;
 }
-
 /* Factor List Styles */
 .factorsList {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 .factorsList h3 {
   color: #0a2ff1;
   font-size: 1rem;
   margin: 0;
 }
-
 .factorItem {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 .factorInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .factorName {
   font-size: 0.875rem;
   color: #666;
 }
-
 .factorScore {
   font-weight: 600;
   color: #0a2ff1;
 }
-
 .factorBar {
   height: 4px;
   background: #e0e0ff;
   border-radius: 2px;
   overflow: hidden;
 }
-
 .factorProgress {
   height: 100%;
   background: #0a2ff1;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
-
 .averageProgress {
   height: 100%;
   background: #0a2ff1;
   border-radius: 2px;
   transition: width 0.3s ease;
 }
-
 .averageScore {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #e0e0ff;
 }
-
 .scoreRange {
   margin-top: 0.5rem;
 }
-
 .actionButtons {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: auto;
 }
-
 /* Main Content Styles */
 .mainContent {
   flex: 1;
@@ -496,38 +427,31 @@
   flex-direction: column;
   gap: 2rem;
 }
-
 .chartsSection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   height: 100%;
-
 }
-
 /* Scrollbar Styles */
 .sidebar::-webkit-scrollbar,
 .mainContent::-webkit-scrollbar {
   width: 2px; /* Ancho del scrollbar */
 }
-
 .sidebar::-webkit-scrollbar-track,
 .mainContent::-webkit-scrollbar-track {
   background: #f0f0ff; /* Color de fondo del track */
   border-radius: 4px; /* Bordes redondeados */
 }
-
 .sidebar::-webkit-scrollbar-thumb,
 .mainContent::-webkit-scrollbar-thumb {
   background: #0a2ff1; /* Color del thumb */
   border-radius: 4px; /* Bordes redondeados */
 }
-
 .sidebar::-webkit-scrollbar-thumb:hover,
 .mainContent::-webkit-scrollbar-thumb:hover {
   background: #0830c7; /* Color del thumb al pasar el mouse */
 }
-
 /* Animation */
 @keyframes modalFadeIn {
   from {
@@ -539,128 +463,165 @@
     transform: translateY(0);
   }
 }
-
 .modalContent {
   animation: modalFadeIn 0.3s ease-out;
 }
-
-
 /* 1920X1280 MEDIA QUERIES */
 @media (min-width: 1920px) {
+  .factorName {
+    font-size: 1.875rem;
+    color: #666;
+  }
+  .factorsList h3 {
+    color: #0a2ff1;
+    font-size: 2rem;
+    margin: 0;
+  }
+  .chartIcon {
+    width: 94px;
+    height: 94px;
+    color: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 600;
+  }
+  .titleInfo h2 {
+    margin: 0;
+    font-size: 2.25rem;
+    color: #0a2ff1;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 1.875rem;
+  }
+  .accordionTitle {
+    font-size: 2.25rem;
+    font-weight: 500;
+    margin: 0;
+  }
+  .accordionDate {
+    font-size: 1.875rem;
+    color: #666;
+    margin-right: 1rem;
+  }
+  .previewButton {
+    background: white;
+    color: #0a2ff1;
+    border: 1px solid #0a2ff1;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .downloadButton {
+    font-size: 1.6rem;
+  }
+  .chartTitle h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 500;
+  }
+  .sectionTitle {
+    color: #0a2ff1;
+    font-size: 2.75rem;
+    font-weight: 500;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+  }
+  .workshopDate {
+    font-size: 1.875rem;
+    font-weight: normal;
+    color: #666;
+    margin-left: 1rem;
+  }
+  .subsectionTitle {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  .value {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #0a2ff1;
+  }
+  .percentage {
+    font-size: 2.875rem;
+    font-weight: 500;
+  }
+  .chartFooter {
+    padding: 2rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    border-top: 1px solid rgba(10, 47, 241, 0.1);
+    margin-top: 10vh;
+  }
+  .chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(1000px, 2fr));
+    gap: 1.5rem;
+  }
+  .metricTitle {
+    font-size: 33px;
+  }
+}
 
-.factorName {
-  font-size: 1.875rem;
-  color: #666;
-}
-.factorsList h3 {
-  color: #0a2ff1;
-  font-size: 2rem;
-  margin: 0;
-}
-.chartIcon {
-  width: 94px;
-  height: 94px;
-  color: white;
-  border-radius: 16px;
+/* NUEVOS ESTILOS PARA LA LISTA DE PARTICIPANTES */
+.participantsList {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  font-weight: 600;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: #f0f0ff;
+  border: 1px solid #e0e0ff;
 }
 
-.titleInfo h2 {
-  margin: 0;
-  font-size: 2.25rem;
-  color: #0a2ff1;
-}
-
-.subtitle {
-  color: #666;
-  font-size: 1.875rem;
-}
-.accordionTitle {
-  font-size: 2.25rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.accordionDate {
-  font-size: 1.875rem;
-  color: #666;
-  margin-right: 1rem;
-}
-.previewButton {
-  background: white;
-  color: #0a2ff1;
-  border: 1px solid #0a2ff1;
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  font-size: 1.6rem;
+.participantItem {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.downloadButton{
-  font-size: 1.6rem;
-}
-.chartTitle h3 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 500;
-}
-.sectionTitle {
-  color: #0a2ff1;
-  font-size: 2.75rem;
-  font-weight: 500;
-  margin: 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
+  padding: 0.5rem 0;
+  border-bottom: 1px dotted #d0d0ed;
 }
 
-.workshopDate {
-  font-size: 1.875rem;
-  font-weight: normal;
-  color: #666;
-  margin-left: 1rem;
+.participantItem:last-child {
+  border-bottom: none;
 }
 
-.subsectionTitle {
-  font-size: 2.25rem;
-  margin-bottom: 1rem;
+.participantItem span {
+  font-size: 0.95rem;
   color: #333;
 }
-.value {
-  font-size: 3rem;
-  font-weight: 600;
+
+.participantItem .previewButton {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  gap: 0.3rem;
+}
+
+/* Estilos para preguntas individuales en la barra lateral del modal */
+/* Reutilizamos .gapAreaContainer para agrupar por fase en la lista de preguntas individuales */
+.gapAreaContainer {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0ff;
+}
+
+/* Reutilizamos .areaTitle para el título de la fase en la lista de preguntas individuales */
+.areaTitle {
   color: #0a2ff1;
-}
-
-.percentage {
-  font-size: 2.875rem;
-  font-weight: 500;
-}
-
-
-.chartFooter {
-  padding: 2rem 1.5rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  border-top: 1px solid rgba(10, 47, 241, 0.1);
-  margin-top: 10vh;
-
-}
-.chartsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(1000px, 2fr));
-  gap: 1.5rem;
-}
-
-.metricTitle{
-  font-size: 33px;
-}
-
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
 }

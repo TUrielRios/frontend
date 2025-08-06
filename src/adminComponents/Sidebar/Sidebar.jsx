@@ -1,4 +1,4 @@
-import { Home, BarChart2, Users, Settings, HelpCircle,Key } from "lucide-react"
+import { Home, BarChart2, Users, Settings, HelpCircle,Key, Bot } from "lucide-react"
 import styles from "./Sidebar.module.css"
 import logo from "../../assets/logo.png"
 
@@ -9,6 +9,7 @@ const menuItems = [
   { id: "accessCodes", icon: Key, label: "Códigos de Acceso" },
   { id: "settings", icon: Settings, label: "Configuración" },
   { id: "help", icon: HelpCircle, label: "Ayuda" },
+  { id: "nicoloAI", icon: Bot, label: "Nicolo AI" }, // New Nicolo AI section
 ]
 
 const Sidebar = ({ activeSection, onSectionChange }) => {

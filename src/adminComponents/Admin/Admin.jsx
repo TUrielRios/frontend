@@ -7,6 +7,7 @@ import Settings from "../../pages/Settings/Settings"
 import AccessCodes from "../../pages/AccessCodes/AccessCodes"
 import Help from "../../pages/Help/Help"
 import DashboardSOS from "../../pages/DashboardSOS/DashboardSOS"
+import NicoloAISection from "../../components/NicoloAiSection/NicoloAiSection"
 
 const Admin = () => {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -26,6 +27,9 @@ const Admin = () => {
         return <Settings />
       case "help":
         return <Help />
+      case "nicoloAI":
+        return <NicoloAISection />
+      
       default:
         return <AdminDashboard />
     }

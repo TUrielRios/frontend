@@ -39,6 +39,10 @@ const Questionnaire = () => {
     return localStorage.getItem("selectedModalidad") || "Curso"
   })
 
+  // NUEVOS ESTADOS para manejo de respuestas individuales
+  const [individualAnswers, setIndividualAnswers] = useState({}) // Almacena respuestas por pregunta
+  const [questionsData, setQuestionsData] = useState({}) // Almacena datos completos de preguntas
+
   // Nuevos estados para manejo de progreso
   const [progressLoaded, setProgressLoaded] = useState(false)
   const [userValidated, setUserValidated] = useState(false)
@@ -46,7 +50,6 @@ const Questionnaire = () => {
   // Función para guardar el progreso en localStorage
   const saveProgress = () => {
     if (!userId) return
-
     const progressData = {
       userId,
       selectedModalidad,
@@ -56,13 +59,13 @@ const Questionnaire = () => {
       phaseScores,
       displayedPhaseScores,
       previousAnswers,
+      individualAnswers, // NUEVO: Guardar respuestas individuales
       completedPhases,
       startedPhases,
       isCompleted,
       feedbackSubmitted,
       timestamp: new Date().toISOString(),
     }
-
     try {
       localStorage.setItem("questionnaireProgress", JSON.stringify(progressData))
       console.log("Progreso guardado:", progressData)
@@ -79,7 +82,6 @@ const Questionnaire = () => {
         console.log("No hay progreso guardado")
         return false
       }
-
       const progressData = JSON.parse(savedProgress)
       console.log("Progreso encontrado:", progressData)
 
@@ -111,6 +113,7 @@ const Questionnaire = () => {
       setPhaseScores(progressData.phaseScores || {})
       setDisplayedPhaseScores(progressData.displayedPhaseScores || {})
       setPreviousAnswers(progressData.previousAnswers || {})
+      setIndividualAnswers(progressData.individualAnswers || {}) // NUEVO: Restaurar respuestas individuales
       setCompletedPhases(progressData.completedPhases || [])
       setStartedPhases(progressData.startedPhases || [])
       setIsCompleted(progressData.isCompleted || false)
@@ -167,7 +170,6 @@ const Questionnaire = () => {
       try {
         // Intentar cargar progreso guardado primero
         const progressLoaded = await loadProgress()
-
         if (!progressLoaded) {
           // Si no hay progreso, obtener userId del localStorage
           const storedUserId = localStorage.getItem("userId")
@@ -189,7 +191,6 @@ const Questionnaire = () => {
 
           setUserId(storedUserId)
         }
-
         setUserValidated(true)
         setProgressLoaded(true)
       } catch (error) {
@@ -213,12 +214,20 @@ const Questionnaire = () => {
           throw new Error("Error al obtener las preguntas")
         }
         const data = await response.json()
+
         if (!Array.isArray(data) || !data.every((q) => q.phase && q.text)) {
           throw new Error("Estructura de datos inválida")
         }
 
         // Filtrar preguntas por modalidad seleccionada
         const filteredData = data.filter((question) => question.modalidad === selectedModalidad)
+
+        // NUEVO: Almacenar datos completos de preguntas para referencia
+        const questionsById = {}
+        filteredData.forEach((question) => {
+          questionsById[question.id] = question
+        })
+        setQuestionsData(questionsById)
 
         // Agrupar preguntas por fase
         const groupedQuestions = filteredData.reduce((acc, question) => {
@@ -282,6 +291,7 @@ const Questionnaire = () => {
     phaseScores,
     displayedPhaseScores,
     previousAnswers,
+    individualAnswers, // NUEVO: Incluir respuestas individuales
     completedPhases,
     startedPhases,
     isCompleted,
@@ -290,101 +300,85 @@ const Questionnaire = () => {
     loading,
   ])
 
-  // Función para actualizar el puntaje de una fase en el backend
-  const updatePhaseScore = async (phase, score) => {
-    if (!userId) {
-      console.error("No se encontró ID de usuario para actualizar puntajes")
+  // NUEVA FUNCIÓN: Sincronizar todas las respuestas individuales con el backend
+  const syncIndividualAnswersWithBackend = async () => {
+    console.log("syncIndividualAnswersWithBackend triggered.")
+    console.log("individualAnswers state before processing:", individualAnswers)
+    console.log("questionsData state before processing:", questionsData)
+
+    if (!userId || Object.keys(individualAnswers).length === 0) {
+      console.warn("No hay respuestas para enviar o falta userId. Abortando syncIndividualAnswersWithBackend.")
       return
     }
 
     try {
-      // Mapear el nombre de la fase al nombre del campo en el backend
-      const phaseFieldMap = {
-        "VALIDACIÓN SOCIAL": "validacionSocial",
-        ATRACTIVO: "atractivo",
-        RECIPROCIDAD: "reciprocidad",
-        AUTORIDAD: "autoridad",
-        AUTENTICIDAD: "autenticidad",
-        "CONSISTENCIA Y COMPROMISO": "consistenciaCompromiso",
-      }
+      // Convertir respuestas individuales al formato esperado por el backend
+      const respuestas = Object.entries(individualAnswers)
+        .map(([questionId, puntuacion]) => {
+          const question = questionsData[questionId]
+          if (!question) {
+            console.warn(`No se encontró información para la pregunta ${questionId}. Saltando.`)
+            return null
+          }
 
-      const fieldName = phaseFieldMap[phase]
-      if (!fieldName) {
-        console.error(`No se encontró mapeo para la fase: ${phase}`)
+          // Ensure the phase name is correctly mapped
+          const mappedPhase = mapPhaseToBackend(question.phase)
+          if (!mappedPhase) {
+            console.warn(`No se pudo mapear la fase "${question.phase}" para la pregunta ${questionId}. Saltando.`)
+            return null
+          }
+
+          return {
+            preguntaId: Number.parseInt(questionId),
+            puntuacion: puntuacion,
+            fase: mappedPhase,
+          }
+        })
+        .filter(Boolean) // Filtrar respuestas nulas
+
+      console.log("Respuestas formateadas para backend (payload):", respuestas)
+
+      if (respuestas.length === 0) {
+        console.warn("El array de respuestas formateadas está vacío. No se enviará nada.")
         return
       }
 
-      // Preparar los datos para la actualización
-      const updateData = {
-        [fieldName]: score,
-      }
-
-      console.log(`Actualizando fase ${phase} (${fieldName}) con puntaje ${score} para usuario ${userId}`)
-
-      // Enviar la actualización al backend
+      // Enviar al endpoint de actualización del usuario
       const response = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({
+          respuestas: respuestas,
+          // Se pueden incluir otros campos si es necesario actualizar la información principal del usuario,
+          // pero para las respuestas, solo 'respuestas' es suficiente
+        }),
       })
 
       if (!response.ok) {
         const errorText = await response.text()
-        throw new Error(`Error al actualizar el puntaje: ${errorText}`)
+        throw new Error(`Error al enviar respuestas: ${errorText}`)
       }
 
-      console.log(`Puntaje de ${phase} actualizado a ${score}`)
-    } catch (err) {
-      console.error("Error al actualizar el puntaje:", err)
+      console.log("Respuestas sincronizadas exitosamente con el backend.")
+    } catch (error) {
+      console.error("Error al sincronizar respuestas:", error)
+      // Podrías mostrar un mensaje de error al usuario aquí
     }
   }
 
-  // Manejadores de eventos
-  const handleAnswer = (value) => {
-    setSelectedOption(value)
-    const scoreMap = {
-      Nunca: 0,
-      "Casi nunca": 2.5,
-      "A veces": 5,
-      "La mayoría de las veces": 7,
-      Siempre: 10,
+  // NUEVA FUNCIÓN: Mapear nombres de fases del frontend al backend
+  const mapPhaseToBackend = (frontendPhase) => {
+    const phaseMap = {
+      "VALIDACIÓN SOCIAL": "validacionSocial",
+      ATRACTIVO: "atractivo",
+      RECIPROCIDAD: "reciprocidad",
+      AUTORIDAD: "autoridad",
+      AUTENTICIDAD: "autenticidad",
+      "CONSISTENCIA Y COMPROMISO": "consistenciaCompromiso",
     }
-    const score = scoreMap[value]
-
-    // Store the answer for this question
-    setPreviousAnswers((prev) => ({
-      ...prev,
-      [`${currentPhase}_${currentStep}`]: value,
-    }))
-
-    setPhaseScores((prevScores) => {
-      const currentScores = prevScores[currentPhase] || []
-      const newScores = [...currentScores]
-      newScores[currentStep] = score
-
-      // Calcular el promedio actual
-      const average =
-        newScores.reduce((sum, curr) => sum + (curr || 0), 0) / (newScores.filter((s) => s !== undefined).length || 1)
-
-      return {
-        ...prevScores,
-        [currentPhase]: newScores,
-        [`${currentPhase}_avg`]: Math.round(average),
-      }
-    })
-  }
-
-  // New function to handle going back to the previous question
-  const handlePrevious = () => {
-    if (currentStep > 0) {
-      // Go back to the previous question in the same phase
-      setCurrentStep(currentStep - 1)
-      // Restore the previous answer if it exists
-      const previousAnswer = previousAnswers[`${currentPhase}_${currentStep - 1}`]
-      setSelectedOption(previousAnswer || null)
-    }
+    return phaseMap[frontendPhase] || frontendPhase.toLowerCase() // Fallback added for safety
   }
 
   // Función para manejar el envío de feedback
@@ -401,13 +395,10 @@ const Questionnaire = () => {
 
       // 2. Obtener el usuario actual primero para verificar que existe
       const userResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`)
-
       if (!userResponse.ok) {
         const errorData = await userResponse.json()
         throw new Error(errorData.error || "Usuario no encontrado")
       }
-
-      const userData = await userResponse.json()
 
       // 3. Actualizar solo el campo mensajeFeedback
       const updateResponse = await fetch(`https://lacocina-backend-deploy.vercel.app/usuarios/${userId}`, {
@@ -434,21 +425,82 @@ const Questionnaire = () => {
       return { success: true }
     } catch (err) {
       console.error("Error al enviar feedback:", err)
-
       // Mostrar alerta al usuario (puedes personalizar esto)
       alert(`Error al enviar feedback: ${err.message}`)
-
       return { success: false, error: err.message }
     }
   }
 
+  const handleAnswer = (value) => {
+    setSelectedOption(value)
+    const scoreMap = {
+      Nunca: 0,
+      "Casi nunca": 2.5,
+      "A veces": 5,
+      "La mayoría de las veces": 7,
+      Siempre: 10,
+    }
+    const score = scoreMap[value]
+
+    // NUEVO: Guardar respuesta individual por ID de pregunta
+    const phaseQuestions = questions[currentPhase] || []
+    const currentQuestion = phaseQuestions[currentStep]
+    if (currentQuestion && currentQuestion.id) {
+      setIndividualAnswers((prev) => ({
+        ...prev,
+        [currentQuestion.id]: score,
+      }))
+      console.log(`Respuesta guardada - Pregunta ${currentQuestion.id} (${currentQuestion.phase}): ${score} (${value})`)
+    } else {
+      console.warn("No se pudo obtener la pregunta actual para guardar la respuesta individual.")
+    }
+
+    // Store the answer for this question (mantener para compatibilidad en navegación)
+    setPreviousAnswers((prev) => ({
+      ...prev,
+      [`${currentPhase}_${currentStep}`]: value,
+    }))
+
+    // Esta parte ya no se enviará al backend directamente, pero se mantiene para el gráfico RadarChart
+    setPhaseScores((prevScores) => {
+      const currentScores = prevScores[currentPhase] || []
+      const newScores = [...currentScores]
+      newScores[currentStep] = score
+
+      const average =
+        newScores.reduce((sum, curr) => sum + (curr || 0), 0) / (newScores.filter((s) => s !== undefined).length || 1)
+
+      return {
+        ...prevScores,
+        [currentPhase]: newScores,
+        [`${currentPhase}_avg`]: Math.round(average),
+      }
+    })
+  }
+
+  // New function to handle going back to the previous question
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      // Go back to the previous question in the same phase
+      setCurrentStep(currentStep - 1)
+      // Restore the previous answer if it exists
+      const nextAnswer = previousAnswers[`${currentPhase}_${currentStep - 1}`] // corrected index
+      setSelectedOption(nextAnswer || null)
+    }
+  }
+
   const handleNext = () => {
+    // Validar que se haya seleccionado una opción antes de avanzar
+    if (selectedOption === null && !showIntro) {
+      alert("Por favor, selecciona una opción antes de continuar.")
+      return // No avanzar si no hay opción seleccionada
+    }
+
     setSelectedOption(null)
     const phaseQuestions = questions[currentPhase] || []
 
     if (showIntro) {
       setShowIntro(false)
-      // Registrar que la fase ha sido iniciada
       if (!startedPhases.includes(currentPhase)) {
         setStartedPhases((prev) => [...prev, currentPhase])
       }
@@ -460,16 +512,15 @@ const Questionnaire = () => {
       setSelectedOption(nextAnswer || null)
     } else {
       // This is the last question of the phase
-      // Calculate the average score for the current phase
+      // Calculate the average score for the current phase (for RadarChart display)
       const currentScores = phaseScores[currentPhase] || []
       const validScores = currentScores.filter((score) => score !== undefined)
+
       if (validScores.length > 0) {
         const averageScore = validScores.reduce((sum, score) => sum + score, 0) / validScores.length
         const roundedAverage = Math.round(averageScore * 10) / 10 // Redondear a 1 decimal
-        console.log(`Fase ${currentPhase} completada. Puntaje promedio: ${roundedAverage}`)
 
-        // Update the backend score
-        updatePhaseScore(currentPhase, roundedAverage)
+        console.log(`Fase ${currentPhase} completada. Puntaje promedio (solo para display): ${roundedAverage}`)
 
         // Update the displayed scores only at the end of each phase
         setDisplayedPhaseScores((prev) => ({
@@ -477,7 +528,7 @@ const Questionnaire = () => {
           [`${currentPhase}_avg`]: Math.round(averageScore),
         }))
       } else {
-        console.warn(`No hay puntajes válidos para la fase ${currentPhase}`)
+        console.warn(`No hay puntajes válidos para la fase ${currentPhase}.`)
       }
 
       // Mark the current phase as completed
@@ -485,11 +536,16 @@ const Questionnaire = () => {
 
       const nextPhaseIndex = phases.indexOf(currentPhase) + 1
       if (nextPhaseIndex < phases.length) {
+        // Antes de pasar a la siguiente fase, sincronizar todas las respuestas recolectadas hasta ahora
+        console.log(`Fase ${currentPhase} terminada. Sincronizando respuestas con el backend...`)
+        syncIndividualAnswersWithBackend() // Llamada a la función de sincronización
         setCurrentPhase(phases[nextPhaseIndex])
         setCurrentStep(0)
         setShowIntro(true)
       } else {
-        // Questionnaire completed - show final results
+        // Cuestionario completado - mostrar resultados finales
+        console.log("Todas las fases completadas. Iniciando envío final de respuestas al backend.")
+        syncIndividualAnswersWithBackend() // Sincronización final
         setIsCompleted(true)
       }
     }
@@ -519,6 +575,7 @@ const Questionnaire = () => {
 
   // Renderizado condicional para estados de carga y error
   if (loading) return <p className={styles.loading}>Cargando cuestionario...</p>
+
   if (error) {
     return (
       <div className={styles.errorContainer}>
@@ -559,8 +616,8 @@ const Questionnaire = () => {
       <Header logoLight={logoLight} logoDark={logoDark} theme={theme} />
 
       {/* Botón de reinicio para desarrollo/testing */}
-      {/* {process.env.NODE_ENV === "development" && (
-        <button
+      {/* Lo he comentado para que no aparezca en producción, pero puedes descomentarlo para depurar */}
+      {/* <button
           onClick={handleRestart}
           className={styles.restartButton}
           style={{
@@ -577,8 +634,7 @@ const Questionnaire = () => {
           }}
         >
           Reiniciar
-        </button>
-      )} */}
+        </button> */}
 
       <main className={styles.container}>
         {showIntro ? (
@@ -603,6 +659,7 @@ const Questionnaire = () => {
                 onNext={handleNext}
                 onPrevious={handlePrevious}
               />
+
               {/* Para tamaños desktop, mostrar el sidebar normalmente */}
               {!isMobile && (
                 <aside className={styles.sidebar}>
