@@ -4,7 +4,6 @@ import logo from "../../assets/logo.png"
 
 const menuItems = [
   { id: "dashboard", icon: Home, label: "Dashboard" },
-  { id: "dashboardSOS", icon: BarChart2, label: "Dashboard SOS" },
   { id: "users", icon: Users, label: "Usuarios" },
   { id: "accessCodes", icon: Key, label: "Códigos de Acceso" },
   { id: "settings", icon: Settings, label: "Configuración" },
