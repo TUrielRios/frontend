@@ -1,505 +1,274 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import styles from "./Stats.module.css"
-import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
-import UserChart from "../../adminComponents/UserChart/UserChart"
-import {
-  BarChart,
-  PieChart,
-  MapPin,
-  Clock,
-  Users,
-  LineChart,
-  Target,
-  Download,
-  Star,
-  MessageSquare,
-  Calendar,
-} from "lucide-react"
 
 const Stats = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("month")
-  const [selectedCategory, setSelectedCategory] = useState("demographics")
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [groupBy, setGroupBy] = useState("industriaSector")
+  const [selectedPhase, setSelectedPhase] = useState("1")
 
-  // Mock data
-  const mockData = {
-    // Demografía
-    industryBreakdown: {
-      Tecnología: 35,
-      Marketing: 25,
-      Ventas: 20,
-      Servicios: 15,
-      Retail: 10,
-      Otros: 5,
-    },
-    roleBreakdown: {
-      CEO: 28,
-      Director: 22,
-      Gerente: 18,
-      Emprendedor: 15,
-      Freelancer: 10,
-      Otros: 5,
-    },
-    locationBreakdown: {
-      España: 45,
-      México: 20,
-      Argentina: 15,
-      Colombia: 10,
-      Chile: 8,
-      Otros: 2,
-    },
+  // Mapeo de fases con sus nombres reales en los datos
+  const phaseMapping = {
+        1: { key: "validacionSocial", name: "Validación Social" },
+    2: { key: "atractivo", name: "Atractivo" },
+    3: { key: "reciprocidad", name: "Reciprocidad" },
+        4: { key: "consistenciaCompromiso", name: "Consistencia y Compromiso" },
+    5: { key: "autenticidad", name: "Autenticidad" },
+        6: { key: "autoridad", name: "Autoridad" },
 
-    // Intereses y Preferencias
-    factorScores: {
-      ATRACTIVO: 8.2,
-      "VALIDACIÓN SOCIAL": 7.5,
-      RECIPROCIDAD: 6.8,
-      AUTORIDAD: 7.9,
-      AUTENTICIDAD: 8.5,
-      "CONSISTENCIA Y COMPROMISO": 7.2,
-    },
-    interestTrends: {
-      Enero: 7.2,
-      Febrero: 7.5,
-      Marzo: 7.8,
-      Abril: 8.0,
-      Mayo: 8.2,
-    },
-
-    // Desempeño
-    scoreByIndustry: {
-      Tecnología: 8.2,
-      Marketing: 7.8,
-      Ventas: 7.5,
-      Servicios: 8.0,
-      Retail: 7.3,
-      Otros: 7.0,
-    },
-    scoreByRole: {
-      CEO: 8.5,
-      Director: 8.2,
-      Gerente: 7.8,
-      Emprendedor: 7.5,
-      Freelancer: 7.2,
-      Otros: 6.8,
-    },
-    scoreDistribution: {
-      "0-2": 5,
-      "3-4": 10,
-      "5-6": 20,
-      "7-8": 40,
-      "9-10": 25,
-    },
-
-    // Comportamiento
-    completionRate: {
-      Completado: 85,
-      Abandonado: 15,
-    },
-    completionTime: {
-      "Menos de 5 min": 15,
-      "5-10 min": 35,
-      "10-15 min": 30,
-      "Más de 15 min": 20,
-    },
-
-    // Conversiones
-    conversionsByIndustry: {
-      Tecnología: 40,
-      Marketing: 30,
-      Ventas: 15,
-      Servicios: 10,
-      Retail: 5,
-    },
-    conversionsByRole: {
-      CEO: 35,
-      Director: 25,
-      Gerente: 20,
-      Emprendedor: 15,
-      Freelancer: 5,
-    },
-    conversionRate: {
-      Enero: 25,
-      Febrero: 28,
-      Marzo: 30,
-      Abril: 32,
-      Mayo: 35,
-    },
-
-    // Feedback
-    satisfactionScore: {
-      "5 estrellas": 45,
-      "4 estrellas": 30,
-      "3 estrellas": 15,
-      "2 estrellas": 7,
-      "1 estrella": 3,
-    },
-    commonFeedback: {
-      Útil: 40,
-      Interesante: 35,
-      Práctico: 30,
-      Innovador: 25,
-      Completo: 20,
-    },
-
-    // Tendencias
-    monthlyUsers: {
-      Enero: 150,
-      Febrero: 180,
-      Marzo: 210,
-      Abril: 250,
-      Mayo: 280,
-    },
   }
 
-  // Opciones de período
-  const periodOptions = [
-    { value: "week", label: "Esta semana" },
-    { value: "month", label: "Este mes" },
-    { value: "quarter", label: "Este trimestre" },
-    { value: "year", label: "Este año" },
-    { value: "all", label: "Todo el tiempo" },
+  // Colores para las categorías
+  const colors = [
+    "#0a2ff1", "#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57",
+    "#ff9ff3", "#54a0ff", "#5f27cd", "#00d2d3", "#ff9f43", "#10ac84",
+    "#ee5a24", "#0984e3", "#6c5ce7", "#a29bfe", "#fd79a8", "#fdcb6e"
   ]
 
-  // Categorías de estadísticas
-  const categories = [
-    { id: "demographics", label: "Demografía", icon: Users },
-    { id: "interests", label: "Intereses", icon: Target },
-    { id: "performance", label: "Desempeño", icon: BarChart },
-    { id: "behavior", label: "Comportamiento", icon: Clock },
-    { id: "conversions", label: "Conversiones", icon: Download },
-    { id: "feedback", label: "Feedback", icon: MessageSquare },
-    { id: "trends", label: "Tendencias", icon: LineChart },
-  ]
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-  // Renderizar gráficos según la categoría seleccionada
-  const renderCharts = () => {
-    switch (selectedCategory) {
-      case "demographics":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <PieChart size={18} />
-                    <h3>Distribución por Industria</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.industryBreakdown} type="doughnut" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Users size={18} />
-                    <h3>Distribución por Rol</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.roleBreakdown} type="pie" />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <MapPin size={18} />
-                    <h3>Distribución Geográfica</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.locationBreakdown} type="bar" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "interests":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Target size={18} />
-                    <h3>Aspectos más Valorados</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.factorScores} type="bar" theme="light" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <LineChart size={18} />
-                    <h3>Tendencias de Interés</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.interestTrends} type="polarArea" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "performance":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <BarChart size={18} />
-                    <h3>Puntuación por Industria</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.scoreByIndustry} type="doughnut" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Users size={18} />
-                    <h3>Puntuación por Rol</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.scoreByRole} type="pie" />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <BarChart size={18} />
-                    <h3>Distribución de Puntuaciones</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.scoreDistribution} type="bar" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "behavior":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <PieChart size={18} />
-                    <h3>Tasa de Finalización</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.completionRate} type="pie" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Clock size={18} />
-                    <h3>Tiempo de Finalización</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.completionTime} type="doughnut" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "conversions":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Download size={18} />
-                    <h3>Conversiones por Industria</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.conversionsByIndustry} type="bar" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Users size={18} />
-                    <h3>Conversiones por Rol</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.conversionsByRole} type="bar" />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <LineChart size={18} />
-                    <h3>Tasa de Conversión</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.conversionRate} type="line" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "feedback":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Star size={18} />
-                    <h3>Puntuación de Satisfacción</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.satisfactionScore} type="bar" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <MessageSquare size={18} />
-                    <h3>Comentarios más Comunes</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.commonFeedback} type="pie" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      case "trends":
-        return (
-          <>
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <Calendar size={18} />
-                    <h3>Evolución de Usuarios por Mes</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.monthlyUsers} type="line" />
-                </div>
-              </div>
-
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <LineChart size={18} />
-                    <h3>Tendencias de Interés</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.interestTrends} type="line" />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.chartRow}>
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <div className={styles.chartTitle}>
-                    <BarChart size={18} />
-                    <h3>Comparación de Industrias</h3>
-                  </div>
-                </div>
-                <div className={styles.chartBody}>
-                  <UserChart data={mockData.scoreByIndustry} type="bar" />
-                </div>
-              </div>
-            </div>
-          </>
-        )
-
-      default:
-        return null
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller")
+      const result = await response.json()
+      console.log("Datos recibidos:", result) // Para debugging
+      setData(result)
+    } catch (error) {
+      console.error("Error fetching data:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  return (
-    <div className={styles.statsPage}>
-      <AdminHeader username="Administrador" />
+  const processData = () => {
+    if (!data || data.length === 0) return []
 
-      <div className={styles.content}>
-        <div className={styles.controlsSection}>
-          <div className={styles.periodSelector}>
-            <span>Mostrar datos de:</span>
-            <div className={styles.periodOptions}>
-              {periodOptions.map((option) => (
-                <button
-                  key={option.value}
-                  className={`${styles.periodButton} ${selectedPeriod === option.value ? styles.active : ""}`}
-                  onClick={() => setSelectedPeriod(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+    // Obtener las fases a analizar
+    let phasesToAnalyze = []
+    if (selectedPhase === "all") {
+      phasesToAnalyze = Object.keys(phaseMapping)
+    } else {
+      phasesToAnalyze = [selectedPhase]
+    }
+
+    // Agrupar datos por la categoría seleccionada y extraer textos de preguntas
+    const groupedData = {}
+    const questionTexts = {} // Para almacenar los textos de las preguntas
+    
+    data.forEach(user => {
+      const groupKey = user[groupBy] || "Sin especificar"
+      
+      if (!groupedData[groupKey]) {
+        groupedData[groupKey] = {}
+        phasesToAnalyze.forEach(phaseNum => {
+          const phaseKey = phaseMapping[phaseNum].key
+          groupedData[groupKey][phaseKey] = []
+        })
+      }
+
+      // Para cada fase, extraer las puntuaciones individuales usando la misma lógica que ResultsByCategory
+      phasesToAnalyze.forEach(phaseNum => {
+        const phaseKey = phaseMapping[phaseNum].key
+        
+        // Verificar si tiene respuestas individuales
+        if (user.tieneRespuestasIndividuales && user.respuestasPorFase && user.respuestasPorFase[phaseKey]) {
+          const preguntas = user.respuestasPorFase[phaseKey].preguntas
+          if (preguntas && Array.isArray(preguntas)) {
+            preguntas.forEach((pregunta, index) => {
+              // Guardar el texto de la pregunta
+              const questionKey = `${phaseKey}_${index}`
+              if (!questionTexts[questionKey] && pregunta.textoPregunta) {
+                questionTexts[questionKey] = pregunta.textoPregunta
+              }
+              
+              if (pregunta.puntuacion && pregunta.puntuacion > 0) {
+                groupedData[groupKey][phaseKey].push(pregunta.puntuacion)
+              }
+            })
+          }
+        } else {
+          // Si no tiene respuestas individuales, usar los promedios calculados
+          const score = user.promediosCalculados?.[phaseKey] || user[phaseKey] || 0
+          if (score > 0) {
+            // Para mantener consistencia, repetimos el promedio por cada pregunta (asumiendo 10 preguntas por fase)
+            for (let i = 0; i < 10; i++) {
+              groupedData[groupKey][phaseKey].push(score)
+            }
+          }
+        }
+      })
+    })
+
+    // Crear estructura para el gráfico - por pregunta individual
+    const chartData = []
+    
+    // Crear datos por pregunta
+    phasesToAnalyze.forEach(phaseNum => {
+      const phaseInfo = phaseMapping[phaseNum]
+      
+      // Para cada fase, crear 10 entradas (una por pregunta)
+      for (let i = 0; i < 10; i++) {
+        const questionKey = `${phaseInfo.key}_${i}`
+        const questionText = questionTexts[questionKey] || `Pregunta ${i + 1} de ${phaseInfo.name}`
+        
+        const questionData = {
+          question: `${phaseInfo.name} P${i + 1}`,
+          questionText: questionText, // Agregamos el texto completo
+          phase: phaseInfo.name,
+          questionNumber: i + 1
+        }
+
+        Object.keys(groupedData).forEach(group => {
+          const phaseQuestions = groupedData[group][phaseInfo.key]
+          if (phaseQuestions && phaseQuestions[i] !== undefined) {
+            questionData[group] = Math.round(phaseQuestions[i] * 100) / 100
+          } else {
+            questionData[group] = 0
+          }
+        })
+
+        chartData.push(questionData)
+      }
+    })
+
+    return chartData
+  }
+
+  const chartData = processData()
+  const categories = chartData.length > 0 ? 
+    Object.keys(chartData[0])
+      .filter(key => key !== "question" && key !== "questionText" && key !== "phase" && key !== "questionNumber") 
+    : []
+
+  // Custom tooltip component with proper text wrapping
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload
+      return (
+        <div className={styles.customTooltip}>
+          <div className={styles.tooltipTitle}>
+            {data.questionText || label}
           </div>
-
-          <div className={styles.categorySelector}>
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                className={`${styles.categoryButton} ${selectedCategory === category.id ? styles.active : ""}`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                <category.icon size={16} />
-                <span>{category.label}</span>
-              </button>
+          <div className={styles.tooltipContent}>
+            {payload.map((entry, index) => (
+              entry.dataKey !== 'questionText' && 
+              entry.dataKey !== 'phase' && 
+              entry.dataKey !== 'questionNumber' ? (
+                <div key={index} className={styles.tooltipItem}>
+                  <span 
+                    className={styles.tooltipColor} 
+                    style={{ backgroundColor: entry.color }}
+                  ></span>
+                  <span className={styles.tooltipLabel}>{entry.dataKey}:</span>
+                  <span className={styles.tooltipValue}>{entry.value} puntos</span>
+                </div>
+              ) : null
             ))}
           </div>
         </div>
+      )
+    }
+    return null
+  }
 
-        <div className={styles.chartsSection}>
-          <h2 className={styles.sectionTitle}>
-            {categories.find((c) => c.id === selectedCategory)?.label || "Estadísticas"}
-          </h2>
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Cargando datos...</div>
+      </div>
+    )
+  }
 
-          {renderCharts()}
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Promedio de Respuestas por Pregunta</h2>
+        
+        <div className={styles.controls}>
+          <div className={styles.controlGroup}>
+            <label>Agrupar por:</label>
+            <select 
+              value={groupBy} 
+              onChange={(e) => setGroupBy(e.target.value)}
+              className={styles.select}
+            >
+              <option value="industriaSector">Industria/Sector</option>
+              <option value="sector">Sector</option>
+              <option value="areaDesempeno">Área de Desempeño</option>
+            </select>
+          </div>
+
+          <div className={styles.controlGroup}>
+            <label>Fase:</label>
+            <select 
+              value={selectedPhase} 
+              onChange={(e) => setSelectedPhase(e.target.value)}
+              className={styles.select}
+            >
+                            <option value="1">Fase 1 - Validación Social</option>
+
+              <option value="2">Fase 2 - Atractivo</option>
+              <option value="3">Fase 3 - Reciprocidad</option>
+                            <option value="4">Fase 4 - Consistencia y Compromiso</option>
+              <option value="5">Fase 5 - Autenticidad</option>
+              <option value="6">Fase 6 - Autoridad</option>
+              <option value="all">Todas las fases</option>
+
+            </select>
+          </div>
         </div>
+      </div>
+
+      <div className={styles.chartContainer}>
+        <ResponsiveContainer width="100%" height={500}>
+          <BarChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 60,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="question" 
+              angle={-45}
+              textAnchor="end"
+              height={100}
+              fontSize={12}
+              interval={0}
+            />
+            <YAxis 
+              domain={[0, 10]}
+              fontSize={12}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            {categories.map((category, index) => (
+              <Bar 
+                key={category}
+                dataKey={category} 
+                fill={colors[index % colors.length]}
+                name={category}
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className={styles.info}>
+        <p>Total de respuestas analizadas: {data.length}</p>
+        <p>Mostrando promedios de {chartData.length} preguntas agrupadas por {groupBy}</p>
       </div>
     </div>
   )
 }
 
 export default Stats
-

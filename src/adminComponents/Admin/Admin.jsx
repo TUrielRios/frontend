@@ -5,8 +5,8 @@ import Users from "../../pages/Users/Users"
 import Sidebar from "../Sidebar/Sidebar"
 import Settings from "../../pages/Settings/Settings"
 import AccessCodes from "../../pages/AccessCodes/AccessCodes"
+import Stats from "../../pages/Stats/Stats"
 import Help from "../../pages/Help/Help"
-import DashboardSOS from "../../pages/DashboardSOS/DashboardSOS"
 import NicoloAISection from "../../components/NicoloAiSection/NicoloAiSection"
 
 const Admin = () => {
@@ -22,6 +22,8 @@ const Admin = () => {
         return <AccessCodes />
       case "users":
         return <Users />
+      case "stats":
+        return <Stats /> 
       case "settings":
         return <Settings />
       case "help":

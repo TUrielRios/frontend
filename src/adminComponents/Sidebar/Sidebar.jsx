@@ -5,6 +5,7 @@ import logo from "../../assets/logo.png"
 const menuItems = [
   { id: "dashboard", icon: Home, label: "Dashboard" },
   { id: "users", icon: Users, label: "Usuarios" },
+  { id: "stats", icon: BarChart2, label: "Estadísticas" },
   { id: "accessCodes", icon: Key, label: "Códigos de Acceso" },
   { id: "settings", icon: Settings, label: "Configuración" },
   { id: "help", icon: HelpCircle, label: "Ayuda" },

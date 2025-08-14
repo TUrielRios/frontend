@@ -7,7 +7,6 @@ import Form from "./pages/Form/Form"
 import LoginPage from "./pages/LoginPage/LoginPage"
 import Questionnaire from "./pages/Questionnaire/Questionnaire"
 import Users from "./pages/Users/Users"
-import Stats from "./pages/Stats/Stats"
 import Admin from "./adminComponents/Admin/Admin"
 
 // Constante para el tiempo de expiración (1 semana en milisegundos)
@@ -306,14 +305,6 @@ function AppContent() {
           }
         />
 
-        <Route
-          path="/admin/stats"
-          element={
-            <ProtectedRoute hasAccess={adminAccess} loginPath="/admin-login">
-              <Stats />
-            </ProtectedRoute>
-          }
-        />
       </Routes>
     </main>
   )

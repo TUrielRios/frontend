@@ -1,79 +1,16 @@
-.statsPage {
+.container {
   padding: 2rem;
-}
-
-.content {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.controlsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.periodSelector {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: #666;
-}
-
-.periodOptions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.periodButton {
   background: white;
-  border: 1px solid #e0e0ff;
-  color: #666;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
+  margin: 1rem;
 }
 
-.periodButton.active {
-  background: #0a2ff1;
-  color: white;
-  border-color: #0a2ff1;
+.header {
+  margin-bottom: 2rem;
 }
 
-.categorySelector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.categoryButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: white;
-  border: 1px solid #e0e0ff;
-  color: #666;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.categoryButton.active {
-  background: #0a2ff1;
-  color: white;
-  border-color: #0a2ff1;
-}
-
-.sectionTitle {
+.title {
   color: #0a2ff1;
   font-size: 1.5rem;
   font-weight: 500;
@@ -82,74 +19,146 @@
   border-bottom: 1px solid rgba(10, 47, 241, 0.1);
 }
 
-.chartsSection {
+.controls {
   display: flex;
-  flex-direction: column;
   gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.chartRow {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.chartCard {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 255, 0.1);
-  overflow: hidden;
+.controlGroup {
   display: flex;
   flex-direction: column;
-}
-
-.chartHeader {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(10, 47, 241, 0.1);
-}
-
-.chartTitle {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  color: #0a2ff1;
 }
 
-.chartTitle h3 {
-  margin: 0;
-  font-size: 1rem;
+.controlGroup label {
   font-weight: 500;
+  color: #666;
+  font-size: 0.875rem;
 }
 
-.chartBody {
-  padding: 1.5rem;
-  height: 300px;
+.select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0ff;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.select:hover {
+  border-color: #0a2ff1;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #0a2ff1;
+  box-shadow: 0 0 0 2px rgba(10, 47, 241, 0.1);
+}
+
+.chartContainer {
+  margin: 2rem 0;
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.loading {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 300px;
+  color: #666;
+  font-size: 1.1rem;
 }
 
-@media (max-width: 1024px) {
-  .chartRow {
-    grid-template-columns: 1fr;
-  }
+.info {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(10, 47, 241, 0.1);
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.info p {
+  margin: 0.25rem 0;
+}
+/* Agregar estos estilos al final de tu Stats.module.css existente */
+
+.customTooltip {
+  background: white;
+  border: 1px solid #e0e0ff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  max-width: 350px;
+  word-wrap: break-word;
+  z-index: 1000;
+}
+
+.tooltipTitle {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.tooltipContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltipItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+}
+
+.tooltipColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.tooltipLabel {
+  color: #666;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.tooltipValue {
+  color: #333;
+  font-weight: 600;
+  margin-left: 4px;
 }
 
 @media (max-width: 768px) {
-  .statsPage {
+  .container {
     padding: 1rem;
   }
-
-  .periodSelector {
+  
+  .controls {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 1rem;
   }
-
-  .categorySelector {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    flex-wrap: nowrap;
+  
+  .controlGroup {
+    width: 100%;
+  }
+  
+  .select {
+    width: 100%;
   }
 }
-
