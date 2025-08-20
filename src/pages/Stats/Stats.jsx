@@ -10,6 +10,7 @@ const Stats = () => {
   const [groupBy, setGroupBy] = useState("industriaSector")
   const [selectedPhase, setSelectedPhase] = useState("1")
   const [selectedCompany, setSelectedCompany] = useState("all")
+  const [visibleCategories, setVisibleCategories] = useState({}) // Nuevo estado para controlar visibilidad
 
   const phaseMapping = {
     1: { key: "validacionSocial", name: "Validación Social" },
@@ -50,7 +51,7 @@ const Stats = () => {
       setLoading(true)
       const response = await fetch("https://lacocina-backend-deploy.vercel.app/usuarios/taller")
       const result = await response.json()
-      console.log("Datos recibidos:", result) // Para debugging
+      console.log("Datos recibidos:", result)
       setData(result)
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -162,7 +163,41 @@ const Stats = () => {
         )
       : []
 
+  // Efecto para inicializar visibilidad cuando cambian las categorías
+  useEffect(() => {
+    if (categories.length > 0) {
+      setVisibleCategories(prevVisible => {
+        const newVisible = {}
+        categories.forEach(category => {
+          newVisible[category] = prevVisible[category] !== undefined ? prevVisible[category] : true
+        })
+        return newVisible
+      })
+    }
+  }, [categories.join(',')]) // Dependency en string para evitar re-renders innecesarios
+
   const uniqueCompanies = getUniqueCompanies()
+
+  // Funciones para manejar la visibilidad
+  const toggleCategory = (category) => {
+    setVisibleCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }))
+  }
+
+  const toggleAllCategories = () => {
+    const allVisible = categories.every(cat => visibleCategories[cat])
+    const newVisibility = {}
+    categories.forEach(category => {
+      newVisibility[category] = !allVisible
+    })
+    setVisibleCategories(newVisibility)
+  }
+
+  const getVisibleCategories = () => {
+    return categories.filter(category => visibleCategories[category])
+  }
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length > 0) {
@@ -240,6 +275,41 @@ const Stats = () => {
             </select>
           </div>
         </div>
+
+        {/* Nueva sección de control de visibilidad */}
+        {categories.length > 0 && (
+          <div className={styles.visibilityControls}>
+            <div className={styles.visibilityHeader}>
+              <h3 className={styles.visibilityTitle}>Mostrar/Ocultar Categorías</h3>
+              <button 
+                onClick={toggleAllCategories}
+                className={styles.toggleAllButton}
+              >
+                {categories.every(cat => visibleCategories[cat]) ? 'Ocultar Todas' : 'Mostrar Todas'}
+              </button>
+            </div>
+            
+            <div className={styles.categoryGrid}>
+              {categories.map((category, index) => (
+                <div key={category} className={styles.categoryItem}>
+                  <label className={styles.categoryLabel}>
+                    <input
+                      type="checkbox"
+                      checked={visibleCategories[category] || false}
+                      onChange={() => toggleCategory(category)}
+                      className={styles.categoryCheckbox}
+                    />
+                    <span 
+                      className={styles.categoryColorBox}
+                      style={{ backgroundColor: colors[index % colors.length] }}
+                    ></span>
+                    <span className={styles.categoryName}>{category}</span>
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.chartContainer}>
@@ -258,9 +328,12 @@ const Stats = () => {
             <YAxis domain={[0, 10]} fontSize={12} />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
-            {categories.map((category, index) => (
-              <Bar key={category} dataKey={category} fill={colors[index % colors.length]} name={category} />
-            ))}
+            {getVisibleCategories().map((category) => {
+              const index = categories.indexOf(category)
+              return (
+                <Bar key={category} dataKey={category} fill={colors[index % colors.length]} name={category} />
+              )
+            })}
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -273,6 +346,9 @@ const Stats = () => {
         <p>
           Mostrando promedios de {chartData.length} preguntas agrupadas por {groupBy}
           {selectedCompany !== "all" && ` para ${selectedCompany}`}
+        </p>
+        <p>
+          Categorías visibles: {getVisibleCategories().length} de {categories.length}
         </p>
       </div>
     </div>

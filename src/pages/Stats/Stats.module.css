@@ -142,6 +142,138 @@
   font-weight: 600;
   margin-left: 4px;
 }
+/* Controles de visibilidad */
+.visibilityControls {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.visibilityHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.visibilityTitle {
+  margin: 0;
+  color: #495057;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.toggleAllButton {
+  padding: 0.5rem 1rem;
+  background: #0a2ff1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.toggleAllButton:hover {
+  background: #0923cc;
+  transform: translateY(-1px);
+}
+
+.toggleAllButton:active {
+  transform: translateY(0);
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+}
+
+.categoryLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #495057;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.categoryLabel:hover {
+  color: #0a2ff1;
+}
+
+.categoryCheckbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #0a2ff1;
+  cursor: pointer;
+}
+
+.categoryColorBox {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.categoryName {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* Responsive design para controles de visibilidad */
+@media (max-width: 768px) {
+  .visibilityControls {
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .visibilityHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .toggleAllButton {
+    width: 100%;
+    justify-self: stretch;
+  }
+  
+  .categoryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .categoryName {
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .categoryName {
+    max-width: none;
+  }
+}
 
 @media (max-width: 768px) {
   .container {
