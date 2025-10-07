@@ -101,10 +101,10 @@ const QuestionsSettings = () => {
 
   // Guardar cambios en una pregunta
   const handleSaveQuestion = async () => {
-    if (!editedQuestion.text || !editedQuestion.category || !editedQuestion.phase) {
-      setError("Todos los campos son obligatorios")
-      return
-    }
+    // if (!editedQuestion.text || !editedQuestion.category || !editedQuestion.phase) {
+    //   setError("Todos los campos son obligatorios")
+    //   return
+    // }
     try {
       setSaving(true)
       setError(null)
