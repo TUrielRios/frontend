@@ -29,7 +29,7 @@ const Form = () => {
     email: "",
     cargo: "",
     cargoOtro: "",
-    curso: "", // Añadido campo curso
+    curso: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState(null)
@@ -82,7 +82,7 @@ const Form = () => {
       setModalidades(data)
     } catch (err) {
       console.error("Error al cargar las modalidades:", err)
-      // Fallback a modalidades por defecto en caso de error (cambiar 'activo' por 'habilitado')
+      // Fallback a modalidades por defecto en caso de error
       setModalidades([
         { nombre: "Curso", habilitado: true },
         { nombre: "Taller", habilitado: true },
@@ -230,19 +230,8 @@ const Form = () => {
     setIsSubmitting(true)
     setError(null)
     try {
-      // Preparar los datos según el tipo de formulario
       const userData = {
         modalidad: formType === "taller" ? "Taller" : "Curso",
-        compania: formData.compania,
-        industriaSector:
-          formData.industriaSector === "Otro" && formData.industriaSectorOtro
-            ? `Otro: ${formData.industriaSectorOtro}`
-            : formData.industriaSector || "",
-        sector: formData.sector,
-        areaDesempeno:
-          formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro
-            ? `Otro: ${formData.areaDesempenoOtro}`
-            : formData.areaDesempeno || "",
         validacionSocial: null,
         atractivo: null,
         reciprocidad: null,
@@ -251,15 +240,23 @@ const Form = () => {
         consistenciaCompromiso: null,
       }
 
-      // Agregar campos adicionales si es un curso
       if (formType === "curso") {
+        // For Curso, only send nombre, apellido, and curso
         userData.nombre = formData.nombre
         userData.apellido = formData.apellido
-        userData.email = formData.email
         userData.curso = formData.curso
-        userData.cargo =
-          formData.cargo === "Otro" && formData.cargoOtro ? `Otro: ${formData.cargoOtro}` : formData.cargo || ""
-        userData.compania = formData.compania // Asegúrate de incluir este campo también
+      } else {
+        // For Taller, send all the classification fields
+        userData.compania = formData.compania
+        userData.industriaSector =
+          formData.industriaSector === "Otro" && formData.industriaSectorOtro
+            ? `Otro: ${formData.industriaSectorOtro}`
+            : formData.industriaSector || ""
+        userData.sector = formData.sector
+        userData.areaDesempeno =
+          formData.areaDesempeno === "Otro" && formData.areaDesempenoOtro
+            ? `Otro: ${formData.areaDesempenoOtro}`
+            : formData.areaDesempeno || ""
       }
 
       console.log("Enviando datos al backend:", userData)
@@ -295,7 +292,6 @@ const Form = () => {
     }
   }
 
-  // Agrega esta función para manejar el click en el enlace
   const handlePrivacyClick = (e) => {
     e.preventDefault()
     setShowPrivacyModal(true)
@@ -309,7 +305,7 @@ const Form = () => {
     // Buscar la modalidad en el array para verificar si está habilitada
     const modalidad = modalidades.find((m) => m.nombre.toLowerCase() === type.toLowerCase())
 
-    // Solo permitir la selección si la modalidad está habilitada (cambiar 'activo' por 'habilitado')
+    // Solo permitir la selección si la modalidad está habilitada
     if (modalidad && modalidad.habilitado) {
       setFormType(type)
       // Guardar la modalidad seleccionada
@@ -413,7 +409,7 @@ const Form = () => {
     return (
       <div className={styles.formTypeOptions}>
         {modalidades.map((modalidad, index) => {
-          const isActive = modalidad.habilitado // Cambiar 'activo' por 'habilitado'
+          const isActive = modalidad.habilitado
           const buttonType = modalidad.nombre.toLowerCase()
 
           return (
@@ -562,7 +558,6 @@ const Form = () => {
     )
   }
 
-  // Formulario para CURSO
   const renderCursoForm = () => {
     return (
       <form className={styles.form} onSubmit={handleNavigate}>
@@ -594,19 +589,6 @@ const Form = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Email*</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Ingrese su email"
-            className={styles.inputMedium}
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
           <label>Curso*</label>
           <div className={styles.selectWrapper}>
             <select
@@ -623,136 +605,7 @@ const Form = () => {
           </div>
         </div>
 
-        {!labels.compania.isHidden && (
-          <div className={styles.formGroup}>
-            <label>{loadingLabels ? "Cargando..." : labels.compania.value}*</label>
-            <input
-              type="text"
-              name="compania"
-              value={formData.compania}
-              onChange={handleInputChange}
-              placeholder="Nombre de la compañía"
-              className={styles.inputlarge}
-              required
-            />
-          </div>
-        )}
-
-        {!labels.industria.isHidden && (
-          <div className={styles.formGroup}>
-            <label>{loadingLabels ? "Cargando..." : labels.industria.value}*</label>
-            <div className={styles.selectWrapper}>
-              <select
-                name="industriaSector"
-                value={formData.industriaSector}
-                onChange={handleSelectChange}
-                className={styles.select}
-                required
-              >
-                <option value="">Seleccione una opción</option>
-                {renderDropdownOptions("industriaSector")}
-              </select>
-              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-            </div>
-            {formData.industriaSector === "Otro" && (
-              <input
-                type="text"
-                name="industriaSectorOtro"
-                value={formData.industriaSectorOtro}
-                onChange={handleInputChange}
-                placeholder="Especifique la industria/sector"
-                className={styles.inputlarge}
-                style={{ marginTop: "10px" }}
-                required
-              />
-            )}
-          </div>
-        )}
-
-        {!labels.sector.isHidden && (
-          <div className={styles.formGroup}>
-            <label>{loadingLabels ? "Cargando..." : labels.sector.value}*</label>
-            <div className={styles.selectWrapper}>
-              <select
-                name="sector"
-                value={formData.sector}
-                onChange={handleSelectChange}
-                className={styles.select}
-                required
-              >
-                <option value="">Seleccione una opción</option>
-                {renderDropdownOptions("sector")}
-              </select>
-              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-            </div>
-          </div>
-        )}
-
-        {!labels.areaDesempeno.isHidden && (
-          <div className={styles.formGroup}>
-            <label>{loadingLabels ? "Cargando..." : labels.areaDesempeno.value}*</label>
-            <div className={styles.selectWrapper}>
-              <select
-                name="areaDesempeno"
-                value={formData.areaDesempeno}
-                onChange={handleSelectChange}
-                className={styles.select}
-                required
-              >
-                <option value="">Seleccione una opción</option>
-                {renderDropdownOptions("areaDesempeno")}
-              </select>
-              <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-            </div>
-            {formData.areaDesempeno === "Otro" && (
-              <input
-                type="text"
-                name="areaDesempenoOtro"
-                value={formData.areaDesempenoOtro}
-                onChange={handleInputChange}
-                placeholder="Especifique el área de desempeño"
-                className={styles.inputlarge}
-                style={{ marginTop: "10px" }}
-                required
-              />
-            )}
-          </div>
-        )}
-
-        <div className={styles.formGroup}>
-          <label>Cargo/Posición*</label>
-          <div className={styles.selectWrapper}>
-            <select
-              name="cargo"
-              value={formData.cargo}
-              onChange={handleSelectChange}
-              className={styles.select}
-              required
-            >
-              <option value="">Seleccione una opción</option>
-              {renderDropdownOptions("cargo")}
-            </select>
-            <ChevronDown className={styles.selectIcon} size={20} color="#0041FF" />
-          </div>
-          {formData.cargo === "Otro" && (
-            <input
-              type="text"
-              name="cargoOtro"
-              value={formData.cargoOtro}
-              onChange={handleInputChange}
-              placeholder="Especifique el cargo/posición"
-              className={styles.inputlarge}
-              style={{ marginTop: "10px" }}
-              required
-            />
-          )}
-        </div>
-
         <div className={styles.checkboxGroup}>
-          <label className={styles.checkbox}>
-            <input type="checkbox" />
-            <span>Acepto recibir comunicaciones de La cocina.</span>
-          </label>
           <label className={styles.checkbox}>
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>

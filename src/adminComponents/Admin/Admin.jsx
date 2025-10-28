@@ -17,7 +17,6 @@ const Admin = () => {
     switch (activeSection) {
       case "dashboard":
         return <AdminDashboard />
-
       case "accessCodes":
         return <AccessCodes />
       case "users":
