@@ -5,6 +5,7 @@ import { Download } from "lucide-react"
 import RadarChart from "../RadarChart/RadarChart"
 import AdminChartPDF from "./AdminChartPDF"
 import portadaImage from "../../assets/portada-pdf/portada.png"
+import logo from "../../assets/logo_clara_dots_blue.svg"
 
 const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
   const [feedback, setFeedback] = useState("")
@@ -66,63 +67,63 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
   const downloadPDF = async () => {
     setIsGeneratingPDF(true)
     
-      try {
-    const { jsPDF } = await import('jspdf')
-    const { Canvg } = await import('canvg')
+    try {
+      const { jsPDF } = await import('jspdf')
+      const { Canvg } = await import('canvg')
 
-    const pdf = new jsPDF('l', 'mm', 'a4')
-    const pageWidth = pdf.internal.pageSize.getWidth()
-    const pageHeight = pdf.internal.pageSize.getHeight()
+      const pdf = new jsPDF('l', 'mm', 'a4')
+      const pageWidth = pdf.internal.pageSize.getWidth()
+      const pageHeight = pdf.internal.pageSize.getHeight()
 
-    // ============================================
-    // PÁGINA 1: PORTADA CON RELACIÓN DE ASPECTO
-    // ============================================
-    
-    // Convertir la imagen importada a base64
-    const response = await fetch(portadaImage)
-    const blob = await response.blob()
-    const reader = new FileReader()
-    
-    const portadaBase64 = await new Promise((resolve) => {
-      reader.onloadend = () => resolve(reader.result)
-      reader.readAsDataURL(blob)
-    })
-    
-    // Crear una imagen para obtener sus dimensiones
-    const img = new Image()
-    await new Promise((resolve, reject) => {
-      img.onload = resolve
-      img.onerror = reject
-      img.src = portadaBase64
-    })
-    
-    const imgWidth = img.width
-    const imgHeight = img.height
-    const imgAspectRatio = imgWidth / imgHeight
-    const pageAspectRatio = pageWidth / pageHeight
-    
-    let finalWidth, finalHeight, x, y
-    
-    if (imgAspectRatio > pageAspectRatio) {
-      // La imagen es más ancha que la página
-      finalWidth = pageWidth
-      finalHeight = pageWidth / imgAspectRatio
-      x = 0
-      y = (pageHeight - finalHeight) / 2
-    } else {
-      // La imagen es más alta que la página
-      finalHeight = pageHeight
-      finalWidth = pageHeight * imgAspectRatio
-      x = (pageWidth - finalWidth) / 2
-      y = 0
-    }
-    
-    // Fondo azul detrás de la imagen
-    pdf.setFillColor(4, 59, 255) // RGB equivalente a #0A2FF1
-    pdf.rect(0, 0, pageWidth, pageHeight, 'F')
-    
-    // Agregar la imagen centrada con relación de aspecto correcta
-    pdf.addImage(portadaBase64, 'PNG', x, y, finalWidth, finalHeight)
+      // ============================================
+      // PÁGINA 1: PORTADA CON RELACIÓN DE ASPECTO
+      // ============================================
+      
+      // Convertir la imagen importada a base64
+      const response = await fetch(portadaImage)
+      const blob = await response.blob()
+      const reader = new FileReader()
+      
+      const portadaBase64 = await new Promise((resolve) => {
+        reader.onloadend = () => resolve(reader.result)
+        reader.readAsDataURL(blob)
+      })
+      
+      // Crear una imagen para obtener sus dimensiones
+      const img = new Image()
+      await new Promise((resolve, reject) => {
+        img.onload = resolve
+        img.onerror = reject
+        img.src = portadaBase64
+      })
+      
+      const imgWidth = img.width
+      const imgHeight = img.height
+      const imgAspectRatio = imgWidth / imgHeight
+      const pageAspectRatio = pageWidth / pageHeight
+      
+      let finalWidth, finalHeight, x, y
+      
+      if (imgAspectRatio > pageAspectRatio) {
+        // La imagen es más ancha que la página
+        finalWidth = pageWidth
+        finalHeight = pageWidth / imgAspectRatio
+        x = 0
+        y = (pageHeight - finalHeight) / 2
+      } else {
+        // La imagen es más alta que la página
+        finalHeight = pageHeight
+        finalWidth = pageHeight * imgAspectRatio
+        x = (pageWidth - finalWidth) / 2
+        y = 0
+      }
+      
+      // Fondo azul detrás de la imagen
+      pdf.setFillColor(4, 59, 255) // RGB equivalente a #0A2FF1
+      pdf.rect(0, 0, pageWidth, pageHeight, 'F')
+      
+      // Agregar la imagen centrada con relación de aspecto correcta
+      pdf.addImage(portadaBase64, 'PNG', x, y, finalWidth, finalHeight)
 
       // ============================================
       // PÁGINA 2: RESULTADOS
@@ -134,15 +135,64 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
       pdf.setFillColor(255, 255, 255)
       pdf.rect(0, 0, pageWidth, pageHeight, 'F')
 
-      // Título principal
-      pdf.setFontSize(22)
+      // Agregar logo en la esquina superior derecha
+      try {
+        const logoResponse = await fetch(logo)
+        const logoBlob = await logoResponse.blob()
+        const logoReader = new FileReader()
+        
+        const logoBase64 = await new Promise((resolve) => {
+          logoReader.onloadend = () => resolve(logoReader.result)
+          logoReader.readAsDataURL(logoBlob)
+        })
+        
+        // Tamaño del logo (ajustable)
+        const logoWidth = 25
+        const logoHeight = 8
+        const logoX = pageWidth - logoWidth - 10
+        const logoY = 10
+        
+        pdf.addImage(logoBase64, 'SVG', logoX, logoY, logoWidth, logoHeight)
+      } catch (error) {
+        console.error('Error al cargar el logo:', error)
+      }
+
+      // Título principal - más pequeño
+      pdf.setFontSize(18)
       pdf.setFont(undefined, 'bold')
       pdf.setTextColor(10, 47, 241)
-      pdf.text('Análisis de Factores', 15, 25)
+      pdf.text('Análisis de factores', 15, 22)
 
-      // Título de sección
-      let yPos = 45
-      pdf.setFontSize(14)
+      // Capturar y agregar el gráfico radar (lado derecho)
+      if (radarChartLightRef.current) {
+        const svgElement = radarChartLightRef.current.querySelector('svg')
+        
+        if (svgElement) {
+          const canvas = document.createElement('canvas')
+          canvas.width = 800
+          canvas.height = 800
+          const ctx = canvas.getContext('2d')
+          
+          const svgString = new XMLSerializer().serializeToString(svgElement)
+          
+          const v = await Canvg.from(ctx, svgString)
+          await v.render()
+          
+          const radarImgData = canvas.toDataURL('image/png')
+          
+          // Gráfico más pequeño y mejor posicionado
+          const radarWidth = 110
+          const radarHeight = 110
+          const xPosition = pageWidth - radarWidth - 20
+          const yPosition = 40
+          
+          pdf.addImage(radarImgData, 'PNG', xPosition, yPosition, radarWidth, radarHeight)
+        }
+      }
+
+      // Título de sección - más pequeño
+      let yPos = 42
+      pdf.setFontSize(13)
       pdf.setFont(undefined, 'bold')
       pdf.setTextColor(10, 47, 241)
       pdf.text('Factores de Influencia', 15, yPos)
@@ -159,80 +209,65 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
       ]
 
       const maxValor = 10
-      const barWidth = 85
-      const barHeight = 0.5
+      const barWidth = 100
+      const barHeight = 4 // Barras más delgadas
 
       factores.forEach((factor) => {
-        // Nombre del factor (izquierda, color oscuro)
-        pdf.setFontSize(10)
-        pdf.setFont(undefined, 'normal')
-        pdf.setTextColor(40, 40, 60)
-        pdf.text(factor.nombre, 15, yPos)
-        
-        // Valor numérico (derecha, color azul)
+        // Nombre del factor
+        pdf.setFontSize(9.5)
         pdf.setFont(undefined, 'bold')
         pdf.setTextColor(10, 47, 241)
+        pdf.text(factor.nombre, 15, yPos)
+        
+        // Valor numérico
         const valorText = factor.valor.toFixed(1)
-        pdf.text(valorText, 15 + barWidth + 5, yPos)
+        pdf.setFontSize(9.5)
+        pdf.setFont(undefined, 'bold')
+        pdf.setTextColor(10, 47, 241)
+        pdf.text(valorText, 15 + barWidth + 3, yPos)
         
-        yPos += 2.5
+        yPos += 3
         
-        // Barra de fondo (gris claro)
+        // Barra de fondo (gris claro) con bordes redondeados
         pdf.setFillColor(230, 232, 245)
-        pdf.rect(15, yPos, barWidth, barHeight, 'F')
+        pdf.roundedRect(15, yPos, barWidth, barHeight, 2, 2, 'F')
         
-        // Barra de valor (azul)
+        // Barra de valor (azul) con bordes redondeados
         const fillWidth = (factor.valor / maxValor) * barWidth
         pdf.setFillColor(10, 47, 241)
-        pdf.rect(15, yPos, fillWidth, barHeight, 'F')
+        pdf.roundedRect(15, yPos, fillWidth, barHeight, 2, 2, 'F')
         
-        yPos += 8
+        yPos += 9
       })
 
       // Separador visual
       yPos += 2
-      pdf.setDrawColor(220, 220, 230)
-      pdf.setLineWidth(0.3)
+      pdf.setDrawColor(200, 200, 220)
+      pdf.setLineWidth(0.4)
       pdf.line(15, yPos, 15 + barWidth + 15, yPos)
       yPos += 8
 
       // Promedio General
       pdf.setFontSize(11)
-      pdf.setFont(undefined, 'normal')
-      pdf.setTextColor(40, 40, 60)
-      pdf.text('Promedio General', 15, yPos)
+      pdf.setFont(undefined, 'bold')
+      pdf.setTextColor(10, 47, 241)
+      pdf.text('PROMEDIO GENERAL', 15, yPos)
       
       const promedio = factores.reduce((sum, f) => sum + f.valor, 0) / factores.length
       pdf.setFont(undefined, 'bold')
-      pdf.setFontSize(14)
+      pdf.setFontSize(11)
       pdf.setTextColor(10, 47, 241)
-      pdf.text(promedio.toFixed(1), 15 + barWidth + 5, yPos)
-
-      // Capturar el SVG del AdminChartPDF
-      if (radarChartLightRef.current) {
-        const svgElement = radarChartLightRef.current.querySelector('svg')
-        
-        if (svgElement) {
-          const canvas = document.createElement('canvas')
-          canvas.width = 600
-          canvas.height = 600
-          const ctx = canvas.getContext('2d')
-          
-          const svgString = new XMLSerializer().serializeToString(svgElement)
-          
-          const v = await Canvg.from(ctx, svgString)
-          await v.render()
-          
-          const radarImgData = canvas.toDataURL('image/png')
-          
-          const radarWidth = 120
-          const radarHeight = 120
-          const xPosition = pageWidth - radarWidth - 20
-          const yPosition = 25
-          
-          pdf.addImage(radarImgData, 'PNG', xPosition, yPosition, radarWidth, radarHeight)
-        }
-      }
+      pdf.text(promedio.toFixed(1), 15 + barWidth + 3, yPos)
+      
+      yPos += 3
+      
+      // Barra del promedio con bordes redondeados
+      pdf.setFillColor(230, 232, 245)
+      pdf.roundedRect(15, yPos, barWidth, barHeight, 2, 2, 'F')
+      
+      const promedioFillWidth = (promedio / maxValor) * barWidth
+      pdf.setFillColor(10, 47, 241)
+      pdf.roundedRect(15, yPos, promedioFillWidth, barHeight, 2, 2, 'F')
 
       pdf.save(`diamante-influencia-${new Date().getTime()}.pdf`)
     } catch (error) {
@@ -328,16 +363,21 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '0.5rem',
-                padding: '0.75rem 1.5rem',
-                background: 'transparent',
+                backgroundColor: 'transparent',
                 color: 'white',
                 border: '1px solid white',
-                borderRadius: '2rem',
+                padding: '12px 24px',
+                borderRadius: '30px',
+                
+                fontSize: '16px',
                 fontWeight: 500,
                 cursor: isGeneratingPDF ? 'not-allowed' : 'pointer',
-                transition: 'all 0.2s',
-                marginTop: '1rem',
+                transition: 'all 0.2s ease',
+                marginTop: '20px',
+                alignSelf: 'flex-start',
+                width: '40%',
                 opacity: isGeneratingPDF ? 0.6 : 1
               }}
             >
