@@ -174,6 +174,8 @@ const Stats = () => {
         return newVisible
       })
     }
+    // categories.join(',') se usa a propósito como dependencia estable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories.join(',')]) // Dependency en string para evitar re-renders innecesarios
 
   const uniqueCompanies = getUniqueCompanies()

@@ -201,6 +201,8 @@ const Questionnaire = () => {
     }
 
     initializeUser()
+    // Solo debe inicializar el usuario una vez al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Cargar preguntas
@@ -283,6 +285,7 @@ const Questionnaire = () => {
     if (userId && progressLoaded && !loading) {
       saveProgress()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     userId,
     currentPhase,
@@ -566,6 +569,7 @@ const Questionnaire = () => {
   }
 
   // Función para reiniciar el cuestionario (útil para testing)
+  // eslint-disable-next-line no-unused-vars
   const handleRestart = () => {
     if (window.confirm("¿Estás seguro de que quieres reiniciar el cuestionario? Se perderá todo el progreso.")) {
       clearProgress()
@@ -607,9 +611,6 @@ const Questionnaire = () => {
       </div>
     )
   }
-
-  // Check if we're on the last question of the phase
-  const isLastQuestion = currentStep === phaseQuestions.length - 1
 
   return (
     <div className={`${styles.wrapper} ${theme === "light" ? styles.wrapperLight : ""}`}>

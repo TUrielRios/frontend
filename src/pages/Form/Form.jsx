@@ -117,6 +117,8 @@ const Form = () => {
           case "titulo_campo_cuatro":
             labelsMap.areaDesempeno = { value: item.value, isHidden: item.isHidden || false }
             break
+          default:
+            break
         }
       })
       // Actualizar el estado con los nuevos labels, manteniendo los defaults si no se encuentran
@@ -540,9 +542,9 @@ const Form = () => {
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>
               Acepto la{" "}
-              <a href="#" className={styles.link} onClick={handlePrivacyClick}>
+              <button type="button" className={styles.link} onClick={handlePrivacyClick}>
                 política de privacidad
-              </a>
+              </button>
               .
             </span>
           </label>
@@ -610,9 +612,9 @@ const Form = () => {
             <input type="checkbox" required onChange={handleTermsChange} />
             <span>
               Acepto la{" "}
-              <a href="#" className={styles.link} onClick={handlePrivacyClick}>
+              <button type="button" className={styles.link} onClick={handlePrivacyClick}>
                 política de privacidad
-              </a>
+              </button>
               .
             </span>
           </label>

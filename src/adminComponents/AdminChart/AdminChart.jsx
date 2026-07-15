@@ -105,6 +105,8 @@ const AdminChart = ({ data, theme = "dark", completedPhases = [], startedPhases 
         cancelAnimationFrame(animationRef.current)
       }
     }
+    // La animación se dispara intencionalmente solo al cambiar `data`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   const calculatePoints = () => {

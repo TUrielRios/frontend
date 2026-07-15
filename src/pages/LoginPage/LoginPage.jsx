@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import styles from "./LoginPage.module.css"
 import Header from "../../components/Header/Header"
-import { ChevronRight, Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import logoLight from "../../assets/logo.png"
 import logoDark from "../../assets/logo-black.png"
 

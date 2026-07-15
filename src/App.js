@@ -100,6 +100,8 @@ function AppContent() {
     }
 
     setAccessLoaded(true)
+    // Solo debe ejecutarse una vez al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Detector de cambio de sección (app general vs admin)
@@ -187,6 +189,7 @@ function AppContent() {
   }, [appAccess, adminAccess, appAccessInfo, adminAccessInfo])
 
   // Función para cerrar sesión (útil para desarrollo o botón de logout)
+  // eslint-disable-next-line no-unused-vars
   const handleLogout = () => {
     setAppAccess(false)
     setAdminAccess(false)

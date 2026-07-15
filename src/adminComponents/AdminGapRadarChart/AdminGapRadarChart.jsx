@@ -8,7 +8,7 @@ import autenticidadIcono from "../../assets/iconos-animados/autenticidad-icono.g
 import consistenciaIcono from "../../assets/iconos-animados/compromiso-icono.gif"
 
 const AdminGapRadarChart = ({ data, theme = "light", completedPhases = [] }) => {
-  const [animatedData, setAnimatedData] = useState({})
+  const [, setAnimatedData] = useState({})
   const [isInitialRender, setIsInitialRender] = useState(true)
   const [hiddenAreas, setHiddenAreas] = useState({}) // Estado para áreas ocultas
   const prevDataRef = useRef({})

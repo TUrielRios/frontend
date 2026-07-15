@@ -1,7 +1,6 @@
 import React from "react";
-import { HelpCircle, LayoutDashboard, Users as UsersIcon, Key, Settings as SettingsIcon, BookOpen } from "lucide-react";
+import { HelpCircle, LayoutDashboard, Users as UsersIcon, Key, Settings as SettingsIcon } from "lucide-react";
 import styles from "./Help.module.css";
-import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader";
 
 const Help = () => {
   const sections = [

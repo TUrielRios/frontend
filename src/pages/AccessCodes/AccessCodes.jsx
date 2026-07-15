@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Search, Filter, X, Plus, Trash2, Check, XCircle } from "lucide-react"
+import { X, Plus, Trash2, Check, XCircle } from "lucide-react"
 import styles from "./AccessCodes.module.css"
 import AdminHeader from "../../adminComponents/AdminHeader/AdminHeader"
 

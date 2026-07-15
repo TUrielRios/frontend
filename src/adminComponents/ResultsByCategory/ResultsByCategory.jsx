@@ -101,14 +101,8 @@ const CategoryChartPreviewModal = ({
   detailedQuestionScores, // Average question scores for the category
   chartType = "radar",
 }) => {
-  const chartRef = useRef(null)
-
   const displayTitle = title
   const maxValue = 10
-
-  const handleDownload = () => {
-    downloadChartAsPNG(chartRef, `${displayTitle.replace(/\s+/g, "-").toLowerCase()}-${chartType}.png`)
-  }
 
   if (!isOpen) return null
 

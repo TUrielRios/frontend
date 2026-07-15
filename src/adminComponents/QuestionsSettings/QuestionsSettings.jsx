@@ -59,6 +59,8 @@ const QuestionsSettings = () => {
       }
     }
     fetchQuestions()
+    // Solo debe cargar las preguntas una vez al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Seleccionar una pregunta para editar

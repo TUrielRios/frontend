@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Save, PlusCircle, Trash2, RefreshCw, Move } from "lucide-react";
+import { Save, PlusCircle, Trash2, Move } from "lucide-react";
 import styles from "./DropdownEditor.module.css";
 
 const API_URL = "https://lacocina-backend-deploy.vercel.app";
@@ -49,6 +49,8 @@ const DropdownEditor = () => {
     };
     
     fetchDropdowns();
+    // Solo debe cargar las opciones una vez al montar
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Seleccionar una categoría para editar
