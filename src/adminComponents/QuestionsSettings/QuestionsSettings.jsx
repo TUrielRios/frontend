@@ -41,10 +41,11 @@ const QuestionsSettings = () => {
           throw new Error("Error al cargar las preguntas")
         }
         const data = await response.json()
-        setQuestions(data)
-        setOriginalQuestions(data) // Guardar el orden original
+        const sortedData = [...data].sort((a, b) => a.id - b.id)
+        setQuestions(sortedData)
+        setOriginalQuestions(sortedData) // Guardar el orden original
         // Extract unique phases
-        const uniquePhases = [...new Set(data.map((q) => q.phase))]
+        const uniquePhases = [...new Set(sortedData.map((q) => q.phase))]
         setPhases(uniquePhases)
         console.log(phases)
         // Set default selected phase if available
@@ -136,9 +137,11 @@ const QuestionsSettings = () => {
       const updatedQuestion = await response.json()
       // Actualizar el estado local manteniendo el orden original
       if (isCreating) {
-        // Para nuevas preguntas, agregar al final
-        setQuestions([...questions, updatedQuestion])
-        setOriginalQuestions([...originalQuestions, updatedQuestion])
+        // Para nuevas preguntas, agregar manteniendo el orden por id
+        const newQuestions = [...questions, updatedQuestion].sort((a, b) => a.id - b.id)
+        const newOriginalQuestions = [...originalQuestions, updatedQuestion].sort((a, b) => a.id - b.id)
+        setQuestions(newQuestions)
+        setOriginalQuestions(newOriginalQuestions)
         setSelectedQuestion(updatedQuestion)
         setIsCreating(false)
       } else {
