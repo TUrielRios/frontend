@@ -127,8 +127,8 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
 
       // ============================================
       // FECHA DINÁMICA SOBRE LA PORTADA
-      // Tapar la fecha fija de la imagen con un rect del mismo color azul,
-      // y escribir encima la fecha actual en español.
+      // Tapamos la fecha fija con un rect azul y dibujamos la nueva
+      // usando un canvas con Red Hat Display (ya cargada en el browser).
       // ============================================
       const today = new Date()
       const fechaActual = today.toLocaleDateString('es-ES', {
@@ -137,25 +137,34 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
         year: 'numeric'
       })
 
-      // La fecha en la portada aparece en la zona inferior-derecha de la imagen.
-      // Coordenadas calibradas para tapar la fecha fija y reemplazarla.
-      // La imagen ocupa el ancho completo de la página (297mm en A4 landscape).
-      // La fecha original está aprox. al 58% del ancho y al 76% del alto.
-      const fechaX = pageWidth * 0.575
+      // X alineado con el texto "Resultado" / "El Diamante" de la portada
+      // Y al ~76% del alto de la página
+      const fechaX = pageWidth * 0.565
       const fechaY = pageHeight * 0.765
-      const fechaBoxW = pageWidth * 0.40
-      // El box cubre las dos líneas de fecha (la vieja y el overflow que aparecía)
+      const fechaBoxW = pageWidth * 0.42
       const fechaBoxH = pageHeight * 0.22
 
       // Rectángulo azul para tapar AMBAS líneas de fecha grabadas en la imagen
       pdf.setFillColor(4, 59, 255)
       pdf.rect(fechaX, fechaY - 5, fechaBoxW, fechaBoxH, 'F')
 
-      // Escribir la fecha dinámica con el mismo estilo turquesa de la portada
-      pdf.setFont(undefined, 'normal')
-      pdf.setFontSize(12)
-      pdf.setTextColor(100, 220, 210) // color turquesa similar al original
-      pdf.text(fechaActual, fechaX, fechaY)
+      // --- Renderizar la fecha con Red Hat Display usando canvas del browser ---
+      // El browser ya tiene cargada la fuente, así que la usamos directamente.
+      const fontCanvas = document.createElement('canvas')
+      const scale = 4 // super-resolución para que quede nítido en PDF
+      fontCanvas.width = 800 * scale
+      fontCanvas.height = 60 * scale
+      const fontCtx = fontCanvas.getContext('2d')
+      fontCtx.scale(scale, scale)
+      // Fondo transparente (no hacemos fillRect → queda sobre el rect azul)
+      fontCtx.font = '400 28px "Red Hat Display", sans-serif'
+      fontCtx.fillStyle = 'rgba(100, 220, 210, 1)'
+      fontCtx.textBaseline = 'middle'
+      fontCtx.fillText(fechaActual, 0, 30)
+
+      const dateImgData = fontCanvas.toDataURL('image/png')
+      // Ancho en mm: ~68mm; alto: ~6mm (equivalente al font 12pt de jsPDF)
+      pdf.addImage(dateImgData, 'PNG', fechaX, fechaY - 6, 68, 6)
 
       // ============================================
       // PÁGINA 2: RESULTADOS
