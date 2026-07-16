@@ -137,16 +137,19 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
         year: 'numeric'
       })
 
-      // Posición de la fecha en la portada (zona inferior derecha)
-      // La imagen ocupa todo el ancho, la fecha está al ~58% del ancho y ~83% del alto
+      // La fecha en la portada aparece en la zona inferior-derecha de la imagen.
+      // Coordenadas calibradas para tapar la fecha fija y reemplazarla.
+      // La imagen ocupa el ancho completo de la página (297mm en A4 landscape).
+      // La fecha original está aprox. al 58% del ancho y al 76% del alto.
       const fechaX = pageWidth * 0.575
-      const fechaY = pageHeight * 0.845
-      const fechaBoxW = pageWidth * 0.38
-      const fechaBoxH = pageHeight * 0.1
+      const fechaY = pageHeight * 0.765
+      const fechaBoxW = pageWidth * 0.40
+      // El box cubre las dos líneas de fecha (la vieja y el overflow que aparecía)
+      const fechaBoxH = pageHeight * 0.22
 
-      // Rectángulo azul para tapar la fecha grabada en la imagen
+      // Rectángulo azul para tapar AMBAS líneas de fecha grabadas en la imagen
       pdf.setFillColor(4, 59, 255)
-      pdf.rect(fechaX, fechaY - 6, fechaBoxW, fechaBoxH, 'F')
+      pdf.rect(fechaX, fechaY - 5, fechaBoxW, fechaBoxH, 'F')
 
       // Escribir la fecha dinámica con el mismo estilo turquesa de la portada
       pdf.setFont(undefined, 'normal')
