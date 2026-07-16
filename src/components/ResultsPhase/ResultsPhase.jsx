@@ -127,8 +127,6 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
 
       // ============================================
       // FECHA DINÁMICA SOBRE LA PORTADA
-      // Tapamos la fecha fija con un rect azul y dibujamos la nueva
-      // usando un canvas con Red Hat Display (ya cargada en el browser).
       // ============================================
       const today = new Date()
       const fechaActual = today.toLocaleDateString('es-ES', {
@@ -137,34 +135,34 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
         year: 'numeric'
       })
 
-      // X alineado con el texto "Resultado" / "El Diamante" de la portada
-      // Y al ~76% del alto de la página
-      const fechaX = pageWidth * 0.565
-      const fechaY = pageHeight * 0.765
-      const fechaBoxW = pageWidth * 0.42
-      const fechaBoxH = pageHeight * 0.22
+      // Posición X alineada con "Resultado" de la portada (~59% del ancho)
+      const fechaX = pageWidth * 0.59
+      const fechaBoxW = pageWidth * 0.40
 
-      // Rectángulo azul para tapar AMBAS líneas de fecha grabadas en la imagen
+      // Rectángulo azul para tapar la fecha vieja grabada en la imagen
       pdf.setFillColor(4, 59, 255)
-      pdf.rect(fechaX, fechaY - 5, fechaBoxW, fechaBoxH, 'F')
+      pdf.rect(fechaX - 5, pageHeight * 0.70, fechaBoxW, pageHeight * 0.30, 'F')
 
-      // --- Renderizar la fecha con Red Hat Display usando canvas del browser ---
-      // El browser ya tiene cargada la fuente, así que la usamos directamente.
+      // --- Renderizar fecha con Red Hat Display via canvas ---
       const fontCanvas = document.createElement('canvas')
-      const scale = 4 // super-resolución para que quede nítido en PDF
-      fontCanvas.width = 800 * scale
-      fontCanvas.height = 60 * scale
+      const pxSize = 64 // font size grande para nitidez
       const fontCtx = fontCanvas.getContext('2d')
-      fontCtx.scale(scale, scale)
-      // Fondo transparente (no hacemos fillRect → queda sobre el rect azul)
-      fontCtx.font = '400 28px "Red Hat Display", sans-serif'
-      fontCtx.fillStyle = 'rgba(100, 220, 210, 1)'
-      fontCtx.textBaseline = 'middle'
-      fontCtx.fillText(fechaActual, 0, 30)
+      fontCtx.font = `400 ${pxSize}px "Red Hat Display", sans-serif`
+      const textWidth = fontCtx.measureText(fechaActual).width
+      // Canvas justo del tamaño del texto + un poco de padding
+      fontCanvas.width = Math.ceil(textWidth) + 20
+      fontCanvas.height = Math.ceil(pxSize * 1.5)
+      // Hay que re-setear el font después de cambiar el tamaño del canvas
+      fontCtx.font = `400 ${pxSize}px "Red Hat Display", sans-serif`
+      fontCtx.fillStyle = '#64dcd2' // turquesa igual al original
+      fontCtx.textBaseline = 'top'
+      fontCtx.fillText(fechaActual, 0, pxSize * 0.15)
 
       const dateImgData = fontCanvas.toDataURL('image/png')
-      // Ancho en mm: ~68mm; alto: ~6mm (equivalente al font 12pt de jsPDF)
-      pdf.addImage(dateImgData, 'PNG', fechaX, fechaY - 6, 68, 6)
+      // Calcular mm proporcional: queremos ~8mm de alto para el texto
+      const pdfDateH = 8
+      const pdfDateW = pdfDateH * (fontCanvas.width / fontCanvas.height)
+      pdf.addImage(dateImgData, 'PNG', fechaX, pageHeight * 0.775, pdfDateW, pdfDateH)
 
       // ============================================
       // PÁGINA 2: RESULTADOS
