@@ -126,6 +126,35 @@ const ResultsPhase = ({ phaseScores, onFeedbackSubmit }) => {
       pdf.addImage(portadaBase64, 'PNG', x, y, finalWidth, finalHeight)
 
       // ============================================
+      // FECHA DINÁMICA SOBRE LA PORTADA
+      // Tapar la fecha fija de la imagen con un rect del mismo color azul,
+      // y escribir encima la fecha actual en español.
+      // ============================================
+      const today = new Date()
+      const fechaActual = today.toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      })
+
+      // Posición de la fecha en la portada (zona inferior derecha)
+      // La imagen ocupa todo el ancho, la fecha está al ~58% del ancho y ~83% del alto
+      const fechaX = pageWidth * 0.575
+      const fechaY = pageHeight * 0.845
+      const fechaBoxW = pageWidth * 0.38
+      const fechaBoxH = pageHeight * 0.1
+
+      // Rectángulo azul para tapar la fecha grabada en la imagen
+      pdf.setFillColor(4, 59, 255)
+      pdf.rect(fechaX, fechaY - 6, fechaBoxW, fechaBoxH, 'F')
+
+      // Escribir la fecha dinámica con el mismo estilo turquesa de la portada
+      pdf.setFont(undefined, 'normal')
+      pdf.setFontSize(12)
+      pdf.setTextColor(100, 220, 210) // color turquesa similar al original
+      pdf.text(fechaActual, fechaX, fechaY)
+
+      // ============================================
       // PÁGINA 2: RESULTADOS
       // ============================================
       
